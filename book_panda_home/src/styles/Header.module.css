@@ -1,0 +1,42 @@
+.top{
+    background-color: #33afe9;
+    height: 38px;
+    display: flex;
+    justify-content: center;
+}
+
+.topContainer{
+    display: flex;
+    justify-content: center;
+    width: 1030px;
+    min-width: 1030px;
+}
+
+.leftCategoryContainer{
+    display: flex;
+    width: 608px;
+}
+
+
+.rightCategoryContainer{
+    margin-left: auto;
+    display: flex;
+    width: 262px;
+}
+
+.rightCategoryContainer div{
+    width: 38px;
+    font-size: 8px;
+    margin: auto 1px;
+    display: flex;
+    justify-content: center;
+    color: white;
+}
+
+.leftCategoryContainer div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto 1px;
+    color: white;
+}

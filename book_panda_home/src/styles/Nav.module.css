@@ -1,0 +1,43 @@
+
+
+hr{
+    background: #33afe9;
+    height: 1px;
+    border: 0;
+}
+
+
+.container{
+    width: 1030px;
+    margin: auto;
+    position: relative;
+}
+
+.categoryButton:hover{
+    cursor: pointer;
+}
+
+.categoryHidden{
+    border: 1px solid black;
+    height: 300px;
+    z-index: 5;
+    position: absolute;
+    width: 100%;
+    background-color: white;
+    visibility: hidden;
+}
+
+.categoryVisible{
+    border: 1px solid black;
+    height: 300px;
+    z-index: 5;
+    position: absolute;
+    width: 100%;
+    background-color: white;
+    visibility: visible;
+}
+
+
+.categoryVisible:hover{
+    visibility: visible;
+}

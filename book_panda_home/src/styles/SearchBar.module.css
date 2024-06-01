@@ -1,0 +1,40 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1030px;
+    margin: auto;
+    min-width: 1030px;
+}
+
+
+.searchBar{
+    border: 5px solid #33afe9;
+    border-radius: 30px;
+    display: flex;
+    width: 535px;
+    height: 41px;
+    margin: 30px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+.searchBar > select{
+    width: 20%;
+    border: none;
+    background-color: white;
+
+}
+
+.searchBar > input{
+    width: 70%;
+    color: white;
+    border: none;
+}
+
+.searchBar > button{
+    width: 10%;
+    border: none;
+    color: white;
+    background-color: #33afe9;
+}
