@@ -5,7 +5,7 @@ import BookItem from './BookItem';
 function BookSearch (){
   const [inputValue, setInputValue] = useState('');
   const [sortValue, setSortValue] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setQueryParams({ ...queryParams, query: inputValue});
@@ -19,7 +19,7 @@ function BookSearch (){
   const [bookList, setBookList] = useState([]); // 빈 책 목록 state
 
   const handleSubmit = (event) => {
-    isLoading(true);
+    setIsLoading(true);
     event.preventDefault();
     getBook();
   };
@@ -33,14 +33,15 @@ function BookSearch (){
   };
 
   const [queryParams, setQueryParams] = useState({
-    query: inputValue,
+    query: "",
     start: 1,
-    display: 10,
+    display: 100,
     sort: "sim"
   });
 
   const getBook = async () => {
     try{
+      console.log(queryParams);
       const response = await axios.post('http://localhost:8080/book', queryParams, {
         "Content-Type": "application/json",
         withCredentials: true
