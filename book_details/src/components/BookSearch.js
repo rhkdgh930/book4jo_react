@@ -1,17 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import BookItem from './BookItem';
 
 function BookSearch (){
   const [inputValue, setInputValue] = useState('');
   const [sortValue, setSortValue] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setQueryParams({ ...queryParams, query: inputValue});
+  }, [inputValue]);
+
+  useEffect(() => {
+    setQueryParams({ ...queryParams, sort: sortValue});
+  }, [sortValue]);
+
 
   const [bookList, setBookList] = useState([]); // 빈 책 목록 state
 
   const handleSubmit = (event) => {
+    isLoading(true);
     event.preventDefault();
-    console.log('Input value:', inputValue);
-    console.log('Sort value:', sortValue);
     getBook();
   };
 
@@ -24,28 +33,27 @@ function BookSearch (){
   };
 
   const [queryParams, setQueryParams] = useState({
-    query: "자바",
+    query: inputValue,
     start: 1,
     display: 10,
     sort: "sim"
   });
 
-  const getBook = () => {
-    setQueryParams({ ...queryParams, query: inputValue, sort: sortValue });
-    axios.post('http://localhost:8080/book', queryParams, {
-      "Content-Type": "application/json",
-      withCredentials: true
-    })
-      .then(response => {
-        console.log('요청 성공:', response.data);
-        setBookList(response.data); // state 업데이트
-
-        // 여기서 응답을 처리합니다.
+  const getBook = async () => {
+    try{
+      const response = await axios.post('http://localhost:8080/book', queryParams, {
+        "Content-Type": "application/json",
+        withCredentials: true
       })
-      .catch(error => {
-        console.error('요청 실패:', error);
-        // 여기서 오류를 처리합니다.
-      });
+      setBookList([])
+      console.log('요청 성공:', response.data);
+      setBookList(response.data); // state 업데이트
+      setIsLoading(false);
+    }
+    catch (error) {
+      console.error('요청 실패:', error);
+      // 여기서 오류를 처리합니다.
+    }
   };
 
   
@@ -61,12 +69,13 @@ function BookSearch (){
         <input type="text" value={sortValue} onChange={handleSortInput} />
       </label>
       <button type="submit">제출</button>
+      {isLoading && (
+        <div>로딩중</div>
+      )}
 
-      {bookList.length > 0 && (
+      {!isLoading && bookList.length > 0 && (
         <div className="book-list">
-          {bookList.map(book => (
-            <BookItem key={book.isbn} book={book} />
-          ))}
+          {bookList.map(book => (<BookItem key={book.isbn} book={book} />))}
         </div>
       )}
 
