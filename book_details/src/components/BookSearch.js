@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import BookItem from './BookItem';
 
 function BookSearch (){
   const [inputValue, setInputValue] = useState('');
   const [sortValue, setSortValue] = useState('');
+
+  const [bookList, setBookList] = useState([]); // 빈 책 목록 state
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -35,6 +38,8 @@ function BookSearch (){
     })
       .then(response => {
         console.log('요청 성공:', response.data);
+        setBookList(response.data); // state 업데이트
+
         // 여기서 응답을 처리합니다.
       })
       .catch(error => {
@@ -42,6 +47,8 @@ function BookSearch (){
         // 여기서 오류를 처리합니다.
       });
   };
+
+  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -54,6 +61,15 @@ function BookSearch (){
         <input type="text" value={sortValue} onChange={handleSortInput} />
       </label>
       <button type="submit">제출</button>
+
+      {bookList.length > 0 && (
+        <div className="book-list">
+          {bookList.map(book => (
+            <BookItem key={book.isbn} book={book} />
+          ))}
+        </div>
+      )}
+
     </form>
   );
 };
