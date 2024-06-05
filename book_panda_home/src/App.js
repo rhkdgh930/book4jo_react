@@ -6,6 +6,9 @@ import Main from './pages/Main';
 import AdminPage from './pages/AdminPage';
 import Category from './components/Category';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Signin from './pages/Signin';
+import Signup from './pages/Signup';
+import Mypage from './pages/Mypage';
 
 
 const privatePaths = ["/admin", "/profile", "/order"];
@@ -23,8 +26,8 @@ function App() {
   */
   return (
     <div className="App">
-      
-     
+
+
         <Header></Header>
         <SearchBar></SearchBar>
         <Nav></Nav>
@@ -34,6 +37,9 @@ function App() {
                 <Route path="category" element={<Category/>}/>
                 <Route path="user" element={<p>member</p>}/>
           </Route>
+          <Route path="/signin" element={<Signin/>} />
+          <Route path="/signup" element={<Signup/>} />
+
         </Routes>
 
     </div>
