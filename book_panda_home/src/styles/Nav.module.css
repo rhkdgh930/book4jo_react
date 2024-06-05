@@ -35,9 +35,16 @@ hr{
     width: 100%;
     background-color: white;
     visibility: visible;
+    display: flex;
 }
 
 
 .categoryVisible:hover{
     visibility: visible;
+}
+
+
+.categoryList{
+    list-style-type: none;
+    margin: 10px;
 }
