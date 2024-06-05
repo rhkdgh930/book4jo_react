@@ -9,7 +9,7 @@ function CategoryList(){
 
     const [categoryList,setCategoryList] = useContext(CategoryListContext);
     const inputRef = useRef(null);
-
+    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkc2ZAbmF2ZXIuY29tIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE3MTc2NDU3OTN9.dMDFPQvyKLIPw8lHRgLM1g4sIu1E8UVkhimj_UiXWQ8";
 
     let selected = "";
     let inputVal = "";
@@ -29,7 +29,7 @@ function CategoryList(){
             name:inputVal
         },{
             headers: {
-                Authorization:`Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYXV0aCI6ImFkbWluIn0.OYlDdUOQUy29VnT1bUM_gomjMsblliBrMIS35QXHKUs`,
+                Authorization:`Bearer ${token}`,
             }
         })
         .then((res) => {
@@ -45,7 +45,7 @@ function CategoryList(){
     const deleteCategory = async () => {
         await axios.delete("http://localhost:8080/api/category/"+selected ,{
             headers:{
-                Authorization:`Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaGZqc2RrQHNkZmdzZGguY29tIiwiYXV0aCI6IlJPTEVfVVNFUiIsImV4cCI6MTcxNzQ3NzE0NX0.594B0xlUe75QWvP2ULZ-K0KIVyjDj6F3gW1poHAWLnk`
+                Authorization:`Bearer ${token}`,
             }
         })
         .then((res)=>{
@@ -53,6 +53,23 @@ function CategoryList(){
         })
         .catch((err)=>{
 
+        });
+    }
+
+
+    const updateCategory = async () => {
+        await axios.put("http://localhost:8080/api/category/"+selected , {
+            name:inputVal
+        }, {
+            headers:{
+                Authorization:`Bearer ${token}`,
+            }
+        })
+        .then(()=>{
+            showCategories();
+        })
+        .catch((err)=>{
+            console.log(err);
         });
     }
     
@@ -64,10 +81,7 @@ function CategoryList(){
         selected = event.target.value;
     }
 
-    useEffect(() => {
-        showCategories();
-    }, [])
-
+  
     return(
         <div>
             
@@ -78,7 +92,7 @@ function CategoryList(){
             )}
             <input type="text" onChange={inputChangeHandler} ref={inputRef}/>
             <p>
-                <input type="button" value="수정"/>
+                <input type="button" value="수정" onClick={updateCategory}/>
                 <input type="button" value="삭제" onClick={deleteCategory}/>
                 <input type="button" value="추가" onClick={addCategory}/>
             </p>

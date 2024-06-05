@@ -7,6 +7,7 @@ function AdminPage(){
         <div className={styles.container}>
             <Link to="category"> <button>카테고리 관리</button> </Link>  
             <Link to="user"> <button>유저 관리</button> </Link>  
+            <Link to="enroll"><button>책 등록</button></Link>
             <Outlet/>
         </div>
     )

@@ -8,6 +8,7 @@ import CategoryList from './components/CategoryList';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CategoryListContext } from './context/CategoryListContext';
 import { useState } from 'react';
+import EnrollBook from './components/EnrollBook';
 
 const privatePaths = ["/admin", "/profile", "/order"];
 function App() {
@@ -34,6 +35,7 @@ function App() {
           <Route path="/admin" element={<AdminPage/>}>
                 <Route path="category" element={<CategoryList/>}/>
                 <Route path="user" element={<p>member</p>}/>
+                <Route path="enroll" element={<EnrollBook/>}></Route>
           </Route>
         </Routes>
 
