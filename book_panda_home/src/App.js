@@ -4,12 +4,8 @@ import SearchBar from './components/SearchBar';
 import Nav from './components/Nav';
 import Main from './pages/Main';
 import AdminPage from './pages/AdminPage';
-<<<<<<< HEAD
 import CategoryList from './components/CategoryList';
-=======
-import Category from './components/Category';
 import CartPage from './pages/CartPage';
->>>>>>> feature/cart
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
@@ -33,11 +29,7 @@ function App() {
   }, [location.pathname]);
   */
   return (
-<<<<<<< HEAD
   <CategoryListContext.Provider value={[categoryList , setCategoryList]}>
-=======
-
->>>>>>> feature/cart
     <div className="App">
         <Header></Header>
         <SearchBar></SearchBar>
@@ -49,19 +41,13 @@ function App() {
                 <Route path="user" element={<p>member</p>}/>
                 <Route path="enroll" element={<EnrollBook/>}></Route>
           </Route>
-<<<<<<< HEAD
           <Route path="/signin" element={<Signin/>} />
           <Route path="/signup" element={<Signup/>} />
-=======
           <Route path="/cart" element={<CartPage />} />
->>>>>>> feature/cart
         </Routes>
     </div>
-<<<<<<< HEAD
-    </CategoryListContext.Provider>
-=======
 
->>>>>>> feature/cart
+    </CategoryListContext.Provider>
   );
 }
 
