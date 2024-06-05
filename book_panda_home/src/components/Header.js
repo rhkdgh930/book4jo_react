@@ -15,7 +15,7 @@ function Header(){
             <div className={styles.rightCategoryContainer}>
                 <div>로그인</div>
                 <div>마이페이지</div>
-                <div>장바구니</div>
+                <div> <Link to="/cart">장바구니</Link> </div>
             </div>
             </div>   
         </div>

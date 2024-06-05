@@ -1,0 +1,34 @@
+.itemInfo {
+    display: flex;
+    align-items: center;
+}
+
+.itemImage {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.itemTitle {
+    font-weight: bold;
+    text-align: left;
+}
+
+.quantityInput {
+    width: 20px;
+    height: 10px;
+    padding: 5px; 
+    text-align: center;
+}
+
+.deleteButton {
+    background-color: #ddd;
+    border: none;
+    padding: 5px 10px;
+    margin: 0; 
+    cursor: pointer;
+}
+
+.deleteButton:hover {
+    background-color: #ccc;
+}
