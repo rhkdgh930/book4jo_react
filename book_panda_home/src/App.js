@@ -5,6 +5,7 @@ import Nav from './components/Nav';
 import Main from './pages/Main';
 import AdminPage from './pages/AdminPage';
 import Category from './components/Category';
+import CartPage from './pages/CartPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 
@@ -22,6 +23,7 @@ function App() {
   }, [location.pathname]);
   */
   return (
+
     <div className="App">
       
      
@@ -34,9 +36,11 @@ function App() {
                 <Route path="category" element={<Category/>}/>
                 <Route path="user" element={<p>member</p>}/>
           </Route>
+          <Route path="/cart" element={<CartPage />} />
         </Routes>
 
     </div>
+
   );
 }
 
