@@ -4,16 +4,13 @@ import SearchBar from './components/SearchBar';
 import Nav from './components/Nav';
 import Main from './pages/Main';
 import AdminPage from './pages/AdminPage';
-<<<<<<< HEAD
 import CategoryList from './components/CategoryList';
-=======
-import Category from './components/Category';
-import CartPage from './pages/CartPage';
->>>>>>> feature/cart
+import Cart from './components/Cart';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
 import Mypage from './pages/Mypage';
+import Order from './components/Order'
 import { CategoryListContext } from './context/CategoryListContext';
 import { useState } from 'react';
 import EnrollBook from './components/EnrollBook';
@@ -33,11 +30,7 @@ function App() {
   }, [location.pathname]);
   */
   return (
-<<<<<<< HEAD
   <CategoryListContext.Provider value={[categoryList , setCategoryList]}>
-=======
-
->>>>>>> feature/cart
     <div className="App">
         <Header></Header>
         <SearchBar></SearchBar>
@@ -49,19 +42,13 @@ function App() {
                 <Route path="user" element={<p>member</p>}/>
                 <Route path="enroll" element={<EnrollBook/>}></Route>
           </Route>
-<<<<<<< HEAD
           <Route path="/signin" element={<Signin/>} />
           <Route path="/signup" element={<Signup/>} />
-=======
-          <Route path="/cart" element={<CartPage />} />
->>>>>>> feature/cart
+          <Route path="/cart" element={<Cart />} />
+          <Route paht="/order" element={<Order />} />
         </Routes>
     </div>
-<<<<<<< HEAD
     </CategoryListContext.Provider>
-=======
-
->>>>>>> feature/cart
   );
 }
 

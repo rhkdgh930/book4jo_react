@@ -27,7 +27,7 @@ function CartItem({ item, onQuantityChange, onCheckChange, onRemove }) {
                     className={styles.quantityInput}
                 />
             </td>
-            <td>{item.price * item.quantity}원</td>
+            <td>{(item.price * item.quantity).toLocaleString()}원</td>
             <td>
                 <button className={styles.deleteButton} onClick={onRemove}>삭제</button>
             </td>
