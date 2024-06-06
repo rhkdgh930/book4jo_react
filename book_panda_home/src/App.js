@@ -8,6 +8,7 @@ import Category from './components/Category';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import BookSearch from './components/daehee/BookSearch';
 import BookSales from './components/daehee/BookSales';
+import BookSalesDetail from './components/daehee/BookSalesDetail';
 
 
 const privatePaths = ["/admin", "/profile", "/order"];
@@ -37,6 +38,7 @@ function App() {
                 <Route path="user" element={<p>member</p>}/>
                 <Route path="search" element ={<BookSearch/>}/>
                 <Route path="sales" element={<BookSales />} />
+                <Route path="salesDetail" element={<BookSalesDetail/>}/>
           </Route>
         </Routes>
 

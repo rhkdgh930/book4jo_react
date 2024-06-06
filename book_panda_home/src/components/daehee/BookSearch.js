@@ -1,27 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import BookItem from './BookItem';
-import Pagination from 'react-js-pagination';
-import PaginationComponent from '../PaginationComponent'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import BookItem from "./BookItem";
+import Pagination from "react-js-pagination";
+import PaginationComponent from "../PaginationComponent";
 
-function BookSearch (){
-  const [inputValue, setInputValue] = useState('');
-  const [sortValue, setSortValue] = useState('');
+function BookSearch() {
+  const [inputValue, setInputValue] = useState("");
+  const [sortValue, setSortValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-
-
   useEffect(() => {
-    setQueryParams({ ...queryParams, query: inputValue});
+    setQueryParams({ ...queryParams, query: inputValue });
   }, [inputValue]);
 
   useEffect(() => {
-    setQueryParams({ ...queryParams, sort: sortValue});
+    setQueryParams({ ...queryParams, sort: sortValue });
   }, [sortValue]);
 
-
   const [bookList, setBookList] = useState([]); // 빈 책 목록 state
-
 
   const handleSubmit = (event) => {
     setIsLoading(true);
@@ -41,28 +37,25 @@ function BookSearch (){
     query: "",
     start: 1,
     display: 100,
-    sort: "sim"
+    sort: "sim",
   });
 
   const getBook = async () => {
-    try{
+    try {
       console.log(queryParams);
-      const response = await axios.post('http://localhost:8080/book', queryParams, {
+      const response = await axios.post("http://localhost:8080/book", queryParams, {
         "Content-Type": "application/json",
-        withCredentials: true
-      })
-      setBookList([])
-      console.log('요청 성공:', response.data);
+        withCredentials: true,
+      });
+      setBookList([]);
+      console.log("요청 성공:", response.data);
       setBookList(response.data); // state 업데이트
       setIsLoading(false);
-    }
-    catch (error) {
-      console.error('요청 실패:', error);
+    } catch (error) {
+      console.error("요청 실패:", error);
       // 여기서 오류를 처리합니다.
     }
   };
-
-  
 
   return (
     <form onSubmit={handleSubmit}>
@@ -75,9 +68,7 @@ function BookSearch (){
         <input type="text" value={sortValue} onChange={handleSortInput} />
       </label>
       <button type="submit">제출</button>
-      {isLoading && (
-        <div>로딩중</div>
-      )}
+      {isLoading && <div>로딩중</div>}
 
       {!isLoading && bookList.length > 0 && (
         // <div className="book-list">
@@ -87,23 +78,21 @@ function BookSearch (){
         // <PaginationComponent/>
 
         <div>
-        <PaginationComponent
-        items={bookList}
-        itemsPerPage={10}
-        renderItems={(currentBooks) => (
-          <div className="book-list">
-            {currentBooks.map(book => (
-              <BookItem key={book.isbn} book={book} />
-            ))}
-          </div>
-        )}
-      />
-      </div>
-        
+          <PaginationComponent
+            items={bookList}
+            itemsPerPage={10}
+            renderItems={(currentBooks) => (
+              <div className="book-list">
+                {currentBooks.map((book) => (
+                  <BookItem key={book.isbn} book={book} />
+                ))}
+              </div>
+            )}
+          />
+        </div>
       )}
-
     </form>
   );
-};
+}
 
 export default BookSearch;
