@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReviewItem from "./ReviewItem";
@@ -9,10 +9,19 @@ const BookReview = ({ bookSales }) => {
   const [reviewList, setReviewList] = useState([]); // 빈 리뷰 목록 state
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {}, [reviewList]);
+
+  useEffect(() => {
+    createReview();
+  }, []);
+
   const createReview = async () => {
+    setReviewList([]);
     try {
       setIsLoading(true);
-      const response = await axios.get("http://localhost:8080/reviews", {
+      console.log(state);
+
+      const response = await axios.get("http://localhost:8080/reviewss", {
         params: { id: bookSales.id },
         "Content-Type": "application/json",
         withCredentials: true,
