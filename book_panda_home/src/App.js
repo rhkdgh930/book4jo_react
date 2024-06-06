@@ -6,6 +6,8 @@ import Main from './pages/Main';
 import AdminPage from './pages/AdminPage';
 import Category from './components/Category';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import BookSearch from './components/daehee/BookSearch';
+import BookSales from './components/daehee/BookSales';
 
 
 const privatePaths = ["/admin", "/profile", "/order"];
@@ -33,6 +35,8 @@ function App() {
           <Route path="/admin" element={<AdminPage/>}>
                 <Route path="category" element={<Category/>}/>
                 <Route path="user" element={<p>member</p>}/>
+                <Route path="search" element ={<BookSearch/>}/>
+                <Route path="sales" element={<BookSales />} />
           </Route>
         </Routes>
 

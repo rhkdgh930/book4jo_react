@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import BookItem from './BookItem';
+import Pagination from 'react-js-pagination';
+import PaginationComponent from '../PaginationComponent'
 
 function BookSearch (){
   const [inputValue, setInputValue] = useState('');
   const [sortValue, setSortValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+
 
   useEffect(() => {
     setQueryParams({ ...queryParams, query: inputValue});
@@ -17,6 +21,7 @@ function BookSearch (){
 
 
   const [bookList, setBookList] = useState([]); // 빈 책 목록 state
+
 
   const handleSubmit = (event) => {
     setIsLoading(true);
@@ -75,9 +80,26 @@ function BookSearch (){
       )}
 
       {!isLoading && bookList.length > 0 && (
-        <div className="book-list">
-          {bookList.map(book => (<BookItem key={book.isbn} book={book} />))}
-        </div>
+        // <div className="book-list">
+        // {currentBooks.map(book => (
+        //   <BookItem key={book.isbn} book={book} />
+        // ))}
+        // <PaginationComponent/>
+
+        <div>
+        <PaginationComponent
+        items={bookList}
+        itemsPerPage={10}
+        renderItems={(currentBooks) => (
+          <div className="book-list">
+            {currentBooks.map(book => (
+              <BookItem key={book.isbn} book={book} />
+            ))}
+          </div>
+        )}
+      />
+      </div>
+        
       )}
 
     </form>
