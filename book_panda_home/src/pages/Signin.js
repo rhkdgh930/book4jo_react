@@ -19,17 +19,12 @@ const Signin = () => {
   const onClick = async (e) => {
     e.preventDefault(); // 기본 폼 제출 동작을 막습니다.
     try {
-      console.log("0 성공함");
-      const result = login({ email, pw });
-      console.log("1 성공함");
+      const result = await login({ email, pw });
       const { accessToken, refreshToken } = result;
-      console.log("2 성공함");
       localStorage.setItem('access', accessToken);
       localStorage.setItem('refresh', refreshToken);
-      console.log("토큰삽입 성공함");
       router('/');
     } catch (error) {
-      console.log("실패함");
       console.error('로그인 실패:', error);
     }
   };
