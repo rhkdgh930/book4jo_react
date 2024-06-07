@@ -7,25 +7,27 @@ import { CategoryListContext } from "../context/CategoryListContext";
 function EnrollBook(){
 
     const [bookInfoList,setBookInfoList] = useState([]);
-    const [categoryList,setCategoryList] = useContext(CategoryListContext);
-    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkc2ZAbmF2ZXIuY29tIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE3MTc2NDU3OTN9.dMDFPQvyKLIPw8lHRgLM1g4sIu1E8UVkhimj_UiXWQ8";
+    const [isLoading,setIsLoading] = useState(false);
+    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkc2ZAbmF2ZXIuY29tIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE3MTc4MTEyMDZ9.itU3soVS6d35eQXAafD5lvpL1Qgg4bfY0VwLNtHRMpg";
+    
     const salesInfo = {
         visitCount: 0,
         sellCount: 0,
-        stock:0
+        stock:0,
+        categoryId:0
     }
+
 
     let inputVal = "";
     let selectedInfo = 0;
-
-
+   
 
     const inputHandler = (event)=>{
         inputVal = event.target.value;
     }
 
     const search = async ()=>{
-
+        setIsLoading(true);
        await axios.get("http://localhost:8080/book?query="+encodeURIComponent(inputVal)+"&display=10&start=1&sort=sim")
         .then((res)=>{
             setBookInfoList(res.data);
@@ -34,56 +36,30 @@ function EnrollBook(){
         .catch((err)=>{
             console.log(err);
         });
-
+        setIsLoading(false);
     }
-
-    const selectInfoHandler = function(event){
-        selectedInfo = event.target.value;
-        bookInfoList[event.target.value].salesInfoDto=salesInfo;
-        console.log(selectedInfo);
-    } 
 
     const selectStockHandler = function(event){
         salesInfo.stock = event.target.value;
     }
-
-    const enroll = async () => {
-        axios.post("http://localhost:8080/bookSales",bookInfoList[selectedInfo],{
-            headers:{
-                Authorization:`Bearer ${token}`,
-            }
-        })
-        .then((res)=>{
-            alert('등록완료!');
-        })
-        .catch((err)=>{
-            alert('오류 발생!');
-        });
+    const selectCategoryHandler  = function(e){
+        salesInfo.categoryId = e.target.value;
     }
+
+    
 
     return(
         <div>
              <input type="text" onChange={inputHandler}/><input type="button" value="검색" onClick={search}/>
              <div>
                 {
-                    bookInfoList.map((bookInfo,i)=>
+                    isLoading === false ?
+                    bookInfoList.map((bookInfo,i) =>
                         <div className={styles.container} key={i}>
-                            <input type='radio' name='bookInfoId' onChange={selectInfoHandler} value={i}/>
-                            <BookInfo  title={bookInfo.title} img={bookInfo.image}
-                                author={bookInfo.author} discount={bookInfo.discount} publisher={bookInfo.publisher} pubdate={bookInfo.pubdate} isbn={bookInfo.isbn}/>
+                            <BookInfo  bookInfo={ bookInfo }   />
                         </div>
-                    )
+                    ) : <h1>로딩중....</h1>
                 }
-                <select name="categories">
-                    {
-                        categoryList.map((category,i)=>
-                            <option value={category.id} key={i}>{category.name}</option>
-                        )
-                    }
-                </select>
-                <input type='number' min='0' onChange={selectStockHandler} placeholder='재고를 입력하세요'></input>
-                <input type='button' value="등록" onClick={enroll}></input>
-
              </div>
         </div>
     )

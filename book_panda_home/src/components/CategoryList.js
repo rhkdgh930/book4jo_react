@@ -9,7 +9,7 @@ function CategoryList(){
 
     const [categoryList,setCategoryList] = useContext(CategoryListContext);
     const inputRef = useRef(null);
-    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkc2ZAbmF2ZXIuY29tIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE3MTc2NDU3OTN9.dMDFPQvyKLIPw8lHRgLM1g4sIu1E8UVkhimj_UiXWQ8";
+    const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkc2ZAbmF2ZXIuY29tIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE3MTc4MTEyMDZ9.itU3soVS6d35eQXAafD5lvpL1Qgg4bfY0VwLNtHRMpg";
 
     let selected = "";
     let inputVal = "";
