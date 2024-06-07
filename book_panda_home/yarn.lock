@@ -4950,6 +4950,7 @@ fs.realpath@^1.0.0:
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 fstream@^1.0.12, fstream@1.0.12:
   version "1.0.12"
   resolved "https://registry.npmjs.org/fstream/-/fstream-1.0.12.tgz"
@@ -4960,10 +4961,15 @@ fstream@^1.0.12, fstream@1.0.12:
     mkdirp ">=0.5 0"
     rimraf "2"
 =======
+=======
+>>>>>>> 15dc70bda7feab803f4b01ca637d3948ed7536a4
 fsevents@^2.3.2, fsevents@~2.3.2:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.3.tgz#cac6407785d03675a2a5e1a5305c697b347d90d6"
   integrity sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==
+<<<<<<< HEAD
+>>>>>>> 15dc70bda7feab803f4b01ca637d3948ed7536a4
+=======
 >>>>>>> 15dc70bda7feab803f4b01ca637d3948ed7536a4
 
 function-bind@^1.1.2:
@@ -5438,7 +5444,11 @@ inflight@^1.0.4:
     wrappy "1"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.0, inherits@~2.0.3, inherits@2, inherits@2.0.4:
+=======
+inherits@2, inherits@2.0.4, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.3:
+>>>>>>> 15dc70bda7feab803f4b01ca637d3948ed7536a4
 =======
 inherits@2, inherits@2.0.4, inherits@^2.0.1, inherits@^2.0.3, inherits@~2.0.3:
 >>>>>>> 15dc70bda7feab803f4b01ca637d3948ed7536a4
@@ -8087,6 +8097,7 @@ react-is@^18.0.0:
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 react-js-pagination@^3.0.3:
   version "3.0.3"
   resolved "https://registry.npmjs.org/react-js-pagination/-/react-js-pagination-3.0.3.tgz"
@@ -8100,6 +8111,9 @@ react-js-pagination@^3.0.3:
     tar "2.2.2"
 
 react-refresh@^0.11.0, "react-refresh@>=0.10.0 <1.0.0":
+=======
+react-refresh@^0.11.0:
+>>>>>>> 15dc70bda7feab803f4b01ca637d3948ed7536a4
 =======
 react-refresh@^0.11.0:
 >>>>>>> 15dc70bda7feab803f4b01ca637d3948ed7536a4
