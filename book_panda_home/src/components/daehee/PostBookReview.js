@@ -7,15 +7,17 @@ const PostBookReview = ({ bookSalesInfo }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [queryParams, setQueryParams] = useState({
-    // ...bookSalesInfo,
     // bookSales: { id: 1 },
     rate: 0,
     content: "",
   });
-  console.log(bookSalesInfo);
 
   useEffect(() => {
-    setQueryParams({ ...bookSalesInfo, rate: rateValue, content: contentValue });
+    setQueryParams({ bookSales: { ...bookSalesInfo } });
+  }, []);
+
+  useEffect(() => {
+    setQueryParams({ bookSales: bookSalesInfo, rate: rateValue, content: contentValue });
   }, [contentValue, rateValue]);
 
   const handleSubmit = (event) => {
@@ -33,11 +35,11 @@ const PostBookReview = ({ bookSalesInfo }) => {
   };
 
   const createReview = async () => {
-    console.log(queryParams);
+    console.log("asasa" + JSON.stringify(queryParams));
     try {
       const response = await axios.post(
         "http://localhost:8080/review",
-        { ...queryParams, bookSales: { ...bookSalesInfo } },
+        { ...queryParams },
         {
           "Content-Type": "application/json",
           withCredentials: true,

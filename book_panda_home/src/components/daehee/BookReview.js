@@ -21,7 +21,7 @@ const BookReview = ({ bookSales }) => {
       setIsLoading(true);
       console.log(state);
 
-      const response = await axios.get("http://localhost:8080/reviewss", {
+      const response = await axios.get("http://localhost:8080/reviews", {
         params: { id: bookSales.id },
         "Content-Type": "application/json",
         withCredentials: true,

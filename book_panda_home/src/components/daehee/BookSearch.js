@@ -71,12 +71,6 @@ function BookSearch() {
       {isLoading && <div>로딩중</div>}
 
       {!isLoading && bookList.length > 0 && (
-        // <div className="book-list">
-        // {currentBooks.map(book => (
-        //   <BookItem key={book.isbn} book={book} />
-        // ))}
-        // <PaginationComponent/>
-
         <div>
           <PaginationComponent
             items={bookList}

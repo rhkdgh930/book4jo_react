@@ -11,12 +11,8 @@ const BookSalesDetail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [queryParams, setQueryParams] = useState({
     ...state,
-    salesInfoDto: {
-      visitCount: 0,
-      sellCount: 0,
-      stock: 0,
-    },
   });
+  console.log("ckckckckc" + JSON.stringify(queryParams));
   const getSales = async () => {
     setIsLoading(true);
     try {
@@ -46,15 +42,15 @@ const BookSalesDetail = () => {
 
       {!isLoading && (
         <div>
-          <img src={queryParams.bookInfo.image} alt={queryParams.title} />
-          <h3>{queryParams.bookInfo.title}</h3>
+          <img src={queryParams.image} alt={queryParams.title} />
+          <h3>{queryParams.title}</h3>
           <div>
-            <p>{queryParams.bookInfo.discount}</p>
+            <p>{queryParams.discount}</p>
             <p>{queryParams.stock}</p>
             <button>장바구니 담기</button>
             <button>바로 구매</button>
           </div>
-          <p>{queryParams.bookInfo.description}</p>
+          <p>{queryParams.description}</p>
           <div>
             <BookReview bookSales={queryParams} />
             <PostBookReview bookSalesInfo={queryParams} />
