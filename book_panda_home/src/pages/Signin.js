@@ -31,15 +31,18 @@ const Signin = () => {
 
   return (
     <Wrapper>
-      <Title>로그인</Title>
       <Form>
+        <Title>로그인</Title>
         <Inputs>
           <Input placeholder="이메일" value={email} onChange={onChangeEmail} />
           <Input placeholder="비밀번호" type="password" value={pw} onChange={onChangePW} />
         </Inputs>
         <Button onClick={onClick}>로그인</Button>
+          <div className="custom-links">
+            <p className="the-custom-link">아직 회원가입을 안하셨나요? <CustomLink to="/signup">회원가입하기</CustomLink></p>
+            <p className="the-custom-link">아직 비밀번호 찾기 구현을 안하셨나요? <CustomLink to="/signup">네...</CustomLink></p>
+          </div>
       </Form>
-      <CustomLink to="/signup">회원가입하기</CustomLink>
     </Wrapper>
   );
 };
