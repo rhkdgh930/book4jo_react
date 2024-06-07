@@ -31,7 +31,7 @@ const Signin = () => {
 
   return (
     <Wrapper>
-      <Title>로그인하기</Title>
+      <Title>로그인</Title>
       <Form>
         <Inputs>
           <Input placeholder="이메일" value={email} onChange={onChangeEmail} />
