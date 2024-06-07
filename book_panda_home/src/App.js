@@ -5,6 +5,7 @@ import Nav from './components/Nav';
 import Main from './pages/Main';
 import AdminPage from './pages/AdminPage';
 import CategoryList from './components/CategoryList';
+import BookDetail from './components/BookDetail';
 import CartPage from './pages/CartPage';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Signin from './pages/Signin';
@@ -40,6 +41,7 @@ function App() {
                 <Route path="category" element={<CategoryList/>}/>
                 <Route path="user" element={<p>member</p>}/>
                 <Route path="enroll" element={<EnrollBook/>}></Route>
+                <Route path="bookDetail" element={<BookDetail/>}></Route>
           </Route>
           <Route path="/signin" element={<Signin/>} />
           <Route path="/signup" element={<Signup/>} />
