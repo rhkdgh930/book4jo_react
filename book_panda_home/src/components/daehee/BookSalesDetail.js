@@ -6,17 +6,18 @@ import PostBookReview from "./PostBookReview";
 
 const BookSalesDetail = () => {
   const { state } = useLocation();
+  const navigate = useNavigate();
 
   const [newstock, setStock] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [queryParams, setQueryParams] = useState({
     ...state,
-    salesInfoDto: {
-      visitCount: 0,
-      sellCount: 0,
-      stock: 0,
-    },
   });
+  console.log("ckckckckc" + JSON.stringify(queryParams));
+  //장바구니 추가시 알림창, 로딩버튼
+  const [showNotification, setShowNotification] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const getSales = async () => {
     setIsLoading(true);
     try {
@@ -38,6 +39,22 @@ const BookSalesDetail = () => {
     }
   };
 
+  const addToCart = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post("http://localhost:8080/api/cart/items", null, { 
+        params: { id: queryParams.id},
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+        })
+      setShowNotification(true)
+    } catch (error) {
+      console.error("장바구니에 추가 실패: ", error)
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="sales">
       <button onClick={getSales} />
@@ -46,21 +63,31 @@ const BookSalesDetail = () => {
 
       {!isLoading && (
         <div>
-          <img src={queryParams.bookInfo.image} alt={queryParams.title} />
-          <h3>{queryParams.bookInfo.title}</h3>
+          <img src={queryParams.image} alt={queryParams.title} />
+          <h3>{queryParams.title}</h3>
           <div>
-            <p>{queryParams.bookInfo.discount}</p>
+            <p>{queryParams.discount}</p>
             <p>{queryParams.stock}</p>
-            <button>장바구니 담기</button>
+            <button onClick={addToCart} disabled={loading}> {loading ? "추가 중..." : "장바구니 담기"}</button>
             <button>바로 구매</button>
           </div>
-          <p>{queryParams.bookInfo.description}</p>
+          <p>{queryParams.description}</p>
           <div>
             <BookReview bookSales={queryParams} />
             <PostBookReview bookSalesInfo={queryParams} />
           </div>
         </div>
       )}
+
+      {/* 장바구니에 추가 시 알림 창 */}
+      {showNotification && (
+        <div className="notification">
+          <p>장바구니에 추가되었습니다.</p>
+          <button onClick={()=>setShowNotification(false)}>확인</button>
+          <button onClick={()=>{setShowNotification(false); navigate("/cart");}}>장바구니로 이동</button>
+        </div>
+      )}
+
     </div>
   );
 };

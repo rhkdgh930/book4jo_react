@@ -6,8 +6,8 @@ import Main from "./pages/Main";
 import AdminPage from "./pages/AdminPage";
 import CategoryList from "./components/CategoryList";
 //import Category from "./components/Category";
-import BookDetail from './components/BookDetail';
-import Cart from './components/Cart';
+import BookDetail from "./components/BookDetail";
+import Cart from "./components/Cart";
 import Order from "./components/Order";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signin from "./pages/Signin";
@@ -41,22 +41,22 @@ function App() {
         <SearchBar></SearchBar>
         <Nav></Nav>
         <Routes>
-          <Route path="/" element={<Main/>}></Route>
-          <Route path="/admin" element={<AdminPage/>}>
-                <Route path="category" element={<CategoryList/>}/>
-                <Route path="user" element={<p>member</p>}/>
-                <Route path="enroll" element={<EnrollBook/>}></Route>
-                <Route path="bookDetail" element={<BookDetail/>}></Route>
-                <Route path="search" element={<BookSearch />} />
-                <Route path="sales" element={<BookSales />} />
-                <Route path="salesDetail" element={<BookSalesDetail />} />
+          <Route path="/" element={<Main />}></Route>
+          <Route path="/admin" element={<AdminPage />}>
+            <Route path="category" element={<CategoryList />} />
+            <Route path="user" element={<p>member</p>} />
+            <Route path="enroll" element={<EnrollBook />}></Route>
+            <Route path="bookDetail" element={<BookDetail />}></Route>
+            <Route path="search" element={<BookSearch />} />
+            <Route path="sales" element={<BookSales />} />
+            <Route path="salesDetail" element={<BookSalesDetail />} />
           </Route>
-          <Route path="/signin" element={<Signin/>} />
-          <Route path="/signup" element={<Signup/>} />
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<Order />} />
         </Routes>
-    </div>
+      </div>
     </CategoryListContext.Provider>
   );
 }
