@@ -11,16 +11,17 @@ function BookInfo(props){
 
     return(
         <div className={styles.container}>
-            <img  src={props.bookInfo.image} className={styles.image}/>
-            <div>
-                <div>
-                    <h6>{props.bookInfo.title}</h6>
-                   <Link to="../bookDetail" state={{ bookInfo : props.bookInfo}}><input type='button' value="등록"/></Link> 
-                </div>
+            <div className={styles.imageContainer}>
+                <img  src={props.bookInfo.image} className={styles.image} alt="Book Cover" />
+                <Link to="../bookDetail" state={{ bookInfo : props.bookInfo}}>
+                    <button className={styles.registerButton}>등록</button>
+                </Link>
+            </div>
+            
+            <div className={styles.infoContainer}>
+                <h3 className={styles.infoContainer}>{props.bookInfo.title}</h3>
                 <div>저자: {props.bookInfo.author}</div>
-                <div>
-                    {props.bookInfo.description}
-                </div>
+                <div className={styles.bookDescription}>{props.bookInfo.description}</div>
             </div>
         </div>
     )

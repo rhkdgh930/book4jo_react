@@ -5,6 +5,7 @@ import Nav from "./components/Nav";
 import Main from "./pages/Main";
 import AdminPage from "./pages/AdminPage";
 import CategoryList from "./components/CategoryList";
+import ShippingManagement from "./components/ShippingManagement";
 //import Category from "./components/Category";
 import BookDetail from "./components/BookDetail";
 import Cart from "./components/Cart";
@@ -44,8 +45,9 @@ function App() {
           <Route path="/" element={<Main />}></Route>
           <Route path="/admin" element={<AdminPage />}>
             <Route path="category" element={<CategoryList />} />
-            <Route path="user" element={<p>member</p>} />
-            <Route path="enroll" element={<EnrollBook />}></Route>
+            <Route path="shippingManagement" element={<ShippingManagement />} />
+            <Route path="enrollBook" element={<EnrollBook />}></Route>
+
             <Route path="bookDetail" element={<BookDetail />}></Route>
             <Route path="search" element={<BookSearch />} />
             <Route path="sales" element={<BookSales />} />

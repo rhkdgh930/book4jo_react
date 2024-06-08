@@ -5,7 +5,29 @@ import axios from "axios"
 import { useNavigate } from 'react-router-dom';
 
 function Cart() {
-    const [items, setItems] = useState([])
+    // const [items, setItems] = useState([])
+    const [items, setItems] = useState(
+        [
+        //테스트 데이터
+        {
+          id: 1,
+          title: "테스트 책 1",
+          image: "https://via.placeholder.com/50",
+          quantity: 1,
+          price: 50000,
+          checked: true
+        },
+        {
+          id: 2,
+          title: "테스트 책 2",
+          image: "https://via.placeholder.com/50",
+          quantity: 2,
+          price: 30000,
+          checked: true
+        }
+      ]
+    )
+
     const [allChecked, setAllChecked] = useState(true)
     const navigate = useNavigate()
 

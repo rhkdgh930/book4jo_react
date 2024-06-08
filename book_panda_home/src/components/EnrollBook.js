@@ -61,15 +61,19 @@ function EnrollBook() {
   };
 
   return (
-    <div>
-      <input type="text" onChange={handleQueryInput} />
-      <input type="button" value="검색" onClick={search} />
-      <div>
+    <div className={styles.container}>
+      <h2>도서 등록</h2>
+      <div className={styles.searchContainer}>
+        <div className={styles.searchBox}>
+          <input type="text" onChange={handleQueryInput} placeholder="도서 검색" value={inputValue} className={styles.searchInput}/>
+          <button onClick={search} className={styles.searchButton}>검색</button>
+        </div>
+      </div>
+      
+      <div className={styles.bookList}>
         {isLoading === false ? (
           bookInfoList.map((bookInfo, i) => (
-            <div className={styles.container} key={i}>
-              <BookInfo bookInfo={bookInfo} />
-            </div>
+              <BookInfo key={i} bookInfo={bookInfo} />
           ))
         ) : (
           <h1>로딩중....</h1>

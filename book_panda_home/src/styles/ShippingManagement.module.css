@@ -1,0 +1,136 @@
+.container {
+    width: 100%;
+    max-width: 1030px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+    margin-bottom: 30px;
+    font-size: 2em; 
+    text-align: center; 
+}
+
+.searchContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.searchBox {
+    display: flex;
+}
+
+.searchBox input {
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+}
+
+.searchBox  button {
+    padding: 8px 16px;
+    background-color: #006769;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.searchContainer button:hover {
+    background-color: #005457;
+}
+
+.filterButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+}
+
+.filterButtons button {
+    padding: 8px 16px;
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    cursor: pointer;
+    width: 100px;
+    text-align: center;
+}
+
+.filterButtons button:hover {
+    background-color: #bbb;
+}
+
+.filterButtons .active {
+    background-color: #006769;
+    color: #fff;
+}
+
+.ordersTable {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.ordersTable table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ordersTable th, .ordersTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.ordersTable th {
+    background-color: #f0f0f0;
+}
+
+.ordersTable th:nth-child(1),
+.ordersTable td:nth-child(1) {
+    width: 15%;
+}
+
+.ordersTable th:nth-child(2),
+.ordersTable td:nth-child(2) {
+    width: 25%;
+}
+
+.ordersTable th:nth-child(3),
+.ordersTable td:nth-child(3) {
+    width: 30%;
+}
+
+.ordersTable th:nth-child(4),
+.ordersTable td:nth-child(4) {
+    width: 10%;
+}
+
+.ordersTable a {
+    color: #006769;
+    text-decoration: none;
+}
+
+.ordersTable a:hover {
+    text-decoration: underline;
+}
+
+.ordersTable select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+.ordersTable button {
+    padding: 8px 16px;
+    background-color: #006769;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+.ordersTable button:hover {
+    background-color: #005457;
+}
