@@ -21,7 +21,7 @@ const PaginationComponent = ({ items, itemsPerPage, renderItems }) => {
         {renderItems(currentItems)}
       </div>
       <div className="pagination-container"> 
-        <Pagination
+        <Pagination 
           activePage={activePage}
           itemsCountPerPage={itemsPerPage}
           totalItemsCount={items.length}

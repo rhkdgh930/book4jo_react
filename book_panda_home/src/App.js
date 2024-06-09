@@ -21,6 +21,8 @@ import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
 
+import CategoryDetailPage from './pages/CategoryDetailPage';
+
 const privatePaths = ["/admin", "/profile", "/order"];
 function App() {
   const [categoryList, setCategoryList] = useState([]);
@@ -53,6 +55,7 @@ function App() {
             <Route path="sales" element={<BookSales />} />
             <Route path="salesDetail" element={<BookSalesDetail />} />
           </Route>
+          <Route path="/category" element={<CategoryDetailPage/>} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/cart" element={<Cart />} />
