@@ -17,7 +17,6 @@ import EnrollBook from "./components/EnrollBook";
 import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
-
 const privatePaths = ["/admin", "/profile", "/order"];
 function App() {
   const [categoryList, setCategoryList] = useState([]);
