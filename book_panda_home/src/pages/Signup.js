@@ -3,8 +3,9 @@ import { Form, Input, Inputs, Title, Wrapper, Button, CustomLink } from '../comp
 import { useNavigate } from 'react-router-dom';
 import { useForm } from '../hooks/useForm';
 import { signUp } from '../apis/signUp';
-import { login } from '../apis/login'; // 로그인 API 추가
+import { login } from '../apis/login';
 import axios from 'axios';
+import styled from 'styled-components';
 
 const Signup = () => {
   const [email, onChangeEmail] = useForm();
@@ -71,33 +72,37 @@ const Signup = () => {
 
   return (
     <Wrapper>
+      <Form>
       <Title>회원가입</Title>
       <Inputs>
-        <h3>이메일(필수)</h3>
-        <Input placeholder="ex)bookpanda@elice.com" value={email} onChange={onChangeEmail} />
-        <Button onClick={sendEmail}>인증번호 전송</Button>
+        <div className="custom-text">이메일 * :</div>
+        <div className="email-input-wrapper">
+          <Input placeholder="bookpanda@elice.com" value={email} onChange={onChangeEmail} />
+          <button className="styled-button" onClick={sendEmail}>인증번호 받기</button>
+        </div>
         {codeSent && (
           <div>
-            <h3>인증번호(필수)</h3>
+            <div className="custom-text">인증번호 * :</div>
             <div>
               <Input placeholder="인증번호 입력" value={code} onChange={handleCodeChange} />
               <Button onClick={verifyCode}>확인</Button>
             </div>
           </div>
         )}
-        <h3>비밀번호(필수)</h3>
+        <div className="custom-text">비밀번호 * :</div>
         <Input placeholder="특수문자, 영어 대, 소문자 숫자를 포함시켜 주세요" type="password" value={pw} onChange={onChangePW} />
-        <h3>비밀번호 확인(필수)</h3>
-        <Input placeholder="비밀번호 확인" type="password" value={confirmPw} onChange={onChangeConfirmPW} />
-        <h3>이름(필수)</h3>
-        <Input placeholder="이름" value={name} onChange={onChangeName} />
-        <h3>주소</h3>
-        <Input placeholder="주소" value={address} onChange={onChangeAddress} />
-        <h3>전화번호</h3>
+        <div className="custom-text">비밀번호 재확인 * :</div>
+        <Input placeholder="특수문자, 영어 대, 소문자 숫자를 포함시켜 주세요" type="password" value={confirmPw} onChange={onChangeConfirmPW} />
+        <div className="custom-text">이름 * :</div>
+        <Input placeholder="홍길둥" value={name} onChange={onChangeName} />
+        <div className="custom-text">주소 :</div>
+        <Input placeholder="서울특별시 종로구 청와대로 1" value={address} onChange={onChangeAddress} />
+        <div className="custom-text">휴대전화 :</div>
         <Input placeholder="하이픈, 띄어쓰기를 제외한 숫자만 입력해주세요." value={phoneNumber} onChange={onChangePhoneNumber} />
       </Inputs>
-      <Button onClick={onClickSignUp}>회원 가입하기</Button>
+      <Button onClick={onClickSignUp}>가입하기</Button>
       {message && <p>{message}</p>}
+      </Form>
     </Wrapper>
   );
 };

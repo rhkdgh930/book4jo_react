@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Form, Input, Inputs, Title, Wrapper, Button, CustomLink } from '../components/Common';
 import { useNavigate } from 'react-router-dom';
-import { login } from '../apis/login.js';
+import { login } from '../apis/auth.js';
 
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [pw, setPW] = useState('');
-  const router = useNavigate();
+  const navigate = useNavigate();
 
   const onChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -17,13 +17,11 @@ const Signin = () => {
   };
 
   const onClick = async (e) => {
-    e.preventDefault(); // 기본 폼 제출 동작을 막습니다.
+    e.preventDefault();
     try {
-      const result = await login({ email, pw });
-      const { accessToken, refreshToken } = result;
-      localStorage.setItem('access', accessToken);
-      localStorage.setItem('refresh', refreshToken);
-      router('/');
+      const result = await login({ userEmail: email, userPassword: pw });
+      console.log('Login successful:', result);
+      navigate('/');
     } catch (error) {
       console.error('로그인 실패:', error);
     }
@@ -31,15 +29,18 @@ const Signin = () => {
 
   return (
     <Wrapper>
-      <Title>로그인</Title>
       <Form>
+        <Title>로그인</Title>
         <Inputs>
           <Input placeholder="이메일" value={email} onChange={onChangeEmail} />
           <Input placeholder="비밀번호" type="password" value={pw} onChange={onChangePW} />
         </Inputs>
         <Button onClick={onClick}>로그인</Button>
+        <div className="custom-links">
+          <p className="the-custom-link">아직 회원가입을 안하셨나요? <CustomLink to="/signup">회원가입하기</CustomLink></p>
+          <p className="the-custom-link">아직 비밀번호 찾기 구현을 안하셨나요? <CustomLink to="/signup">네!</CustomLink></p>
+        </div>
       </Form>
-      <CustomLink to="/signup">회원가입하기</CustomLink>
     </Wrapper>
   );
 };
