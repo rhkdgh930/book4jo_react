@@ -13,19 +13,14 @@ import Order from "./components/Order";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
-import Mypage from "./pages/Mypage";
+import MyPage from "./pages/MyPage";
 import { CategoryListContext } from "./context/CategoryListContext";
 import { useState } from "react";
 import EnrollBook from "./components/EnrollBook";
 import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
-<<<<<<< HEAD
-
 import CategoryDetailPage from './pages/CategoryDetailPage';
-
-=======
->>>>>>> feature/login-ms
 const privatePaths = ["/admin", "/profile", "/order"];
 function App() {
   const [categoryList, setCategoryList] = useState([]);
@@ -61,6 +56,7 @@ function App() {
           <Route path="/category" element={<CategoryDetailPage/>} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/mypage" element={<MyPage />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<Order />} />
         </Routes>
