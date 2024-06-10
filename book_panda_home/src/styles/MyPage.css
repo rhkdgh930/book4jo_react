@@ -1,0 +1,46 @@
+.mypage-container {
+  width: 50%;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #E0FBE2;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.info-item label {
+  width: 20%;
+  font-weight: bold;
+}
+
+.info-item input {
+  width: 60%;
+  padding: 8px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.info-item button {
+  padding: 8px 12px;
+  background-color: #006769;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.info-item button:hover {
+  background-color: #005457;
+}

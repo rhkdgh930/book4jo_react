@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.imageContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.image {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.registerButton {
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    background-color: white;
+    color: #000;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 80px;
+    text-align: center;
+}
+
+.registerButton:hover {
+    background-color: #005457;
+    color: white;
+}
+
+.infoContainer {
+    flex-grow: 1;
+}
+
+.bookTitle {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+}
+
+.bookDescription {
+    padding-top: 10px;
+    font-size: 1em;
+    line-height: 1.5;
+}

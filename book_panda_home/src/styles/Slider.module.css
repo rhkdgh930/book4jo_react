@@ -1,0 +1,48 @@
+.slide{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1030px;
+    margin: auto;
+ }
+ .slide_container{
+    
+     width: 1030px;
+     height: 300px;
+     display: flex;
+     
+     overflow: hidden;
+     
+ }
+ 
+ 
+ .slide_item{
+     position: relative;
+     min-width: 1030px;
+     transition-property: left; /* 어떤 css 프로퍼티를 transition할지 지정 */
+     transition-duration: 2s;
+     left:0;
+ }
+ 
+ .slide_item:nth-child(1){
+     background-color: aqua;
+     
+ }
+ 
+ .slide_item:nth-child(2){
+     background-color: blue;
+ }
+ 
+ .slide_item:nth-child(3){
+     background-color: brown;
+ }
+ 
+ .slide_item:nth-child(4){
+     background-color: chartreuse;
+ }
+ 
+ .slide_item:nth-child(5){
+     background-color: darkgreen;
+ }
+ 

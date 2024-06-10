@@ -1,0 +1,111 @@
+/* components/Common.css */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 1030px;
+  margin: 5rem auto;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #006769;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+  padding: 2.5rem;
+  background-color: #E0FBE2;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.input {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+}
+
+.button {
+  width: 100%;
+  padding: 1rem;
+  background-color: #006769;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+}
+
+.button:hover {
+  background-color: #005457;
+}
+
+.email-input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.styled-button {
+  padding: 0.5rem 1rem;
+  margin-left: 1rem;
+  background-color: #006769;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+  height: 50px;
+  margin-bottom: 1rem;
+}
+
+.styled-button:hover {
+  background-color: #005457;
+}
+
+.the-custom-link {
+  margin: 0.2rem auto 0.2rem auto;
+}
+
+.custom-link {
+  color: #006769 !important;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.custom-link:hover {
+  text-decoration: underline;
+}
+
+.custom-text {
+  font-weight: bold;
+  font-size: 1rem; /* 원하는 글자 크기 */
+  margin-bottom: 0.2rem;
+}
+
+.custom-links {
+  margin-top: 1.5rem;
+}
