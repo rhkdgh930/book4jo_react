@@ -21,6 +21,7 @@ import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
 import CategoryDetailPage from './pages/CategoryDetailPage';
+import Payment from "./components/Payment"
 const privatePaths = ["/admin", "/profile", "/order"];
 function App() {
   const [categoryList, setCategoryList] = useState([]);
@@ -59,6 +60,7 @@ function App() {
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<Order />} />
+          <Route path="/payment" element={<Payment />} />
         </Routes>
       </div>
     </CategoryListContext.Provider>
