@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Inputs, Title, Wrapper, Button, CustomLink } from '../components/Common';
+import { Form, Input, Inputs, Title, Wrapper, Button, ButtonB, CustomLink } from '../components/Common';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../apis/auth.js';
 

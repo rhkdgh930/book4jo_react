@@ -66,7 +66,7 @@
   width: 100%;
 }
 
-.styled-button {
+.buttonB {
   padding: 0.5rem 1rem;
   margin-left: 1rem;
   background-color: #006769;
@@ -81,7 +81,7 @@
   margin-bottom: 1rem;
 }
 
-.styled-button:hover {
+.buttonB:hover {
   background-color: #005457;
 }
 
@@ -108,4 +108,10 @@
 
 .custom-links {
   margin-top: 1.5rem;
+}
+
+.email-input-wrapper,
+.code-input-wrapper {
+  display: flex;
+  align-items: center;
 }

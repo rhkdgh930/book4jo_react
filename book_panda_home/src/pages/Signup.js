@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Form, Input, Inputs, Title, Wrapper, Button, CustomLink } from '../components/Common';
+import { Form, Input, Inputs, Title, Wrapper, Button, ButtonB, CustomLink } from '../components/Common';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from '../hooks/useForm';
 import { signUp } from '../apis/signUp';
 import { login } from '../apis/login';
 import axios from 'axios';
-import styled from 'styled-components';
 
 const Signup = () => {
   const [email, onChangeEmail] = useForm();
@@ -78,14 +77,14 @@ const Signup = () => {
         <div className="custom-text">이메일 * :</div>
         <div className="email-input-wrapper">
           <Input placeholder="bookpanda@elice.com" value={email} onChange={onChangeEmail} />
-          <button className="styled-button" onClick={sendEmail}>인증번호 받기</button>
+          <ButtonB onClick={sendEmail}>인증번호 받기</ButtonB>
         </div>
         {codeSent && (
           <div>
             <div className="custom-text">인증번호 * :</div>
             <div>
               <Input placeholder="인증번호 입력" value={code} onChange={handleCodeChange} />
-              <Button onClick={verifyCode}>확인</Button>
+              <ButtonB onClick={verifyCode}>확인</ButtonB>
             </div>
           </div>
         )}
