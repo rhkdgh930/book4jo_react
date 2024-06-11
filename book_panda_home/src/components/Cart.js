@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react"
+import React, { useState, useEffect } from "react"
 import CartItem from "./CartItem"
 import styles from "../styles/Cart.module.css"
 import axios from "axios"
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 function Cart() {
     const [items, setItems] = useState([])
     const [allChecked, setAllChecked] = useState(true)
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -38,26 +39,26 @@ function Cart() {
 
     const saveCartState = async () => {
         try {
-            await axios.post('/api/cart/save', {items})
+            await axios.post('/api/cart/save', { items })
         } catch (error) {
             console.error('Error saving cart state', error)
         }
     }
 
     const handleQuantityChange = (id, quantity) => {
-        setItems(items.map(item => item.id === id? {...item, quantity: Number(quantity)} : item
+        setItems(items.map(item => item.id === id ? { ...item, quantity: Number(quantity) } : item
         ))
     }
 
     const handleCheckChange = (id) => {
-        setItems(items.map(item => item.id === id ? {...item, checked: !item.checked } : item
+        setItems(items.map(item => item.id === id ? { ...item, checked: !item.checked } : item
         ))
     }
 
     const handleSelectAllToggle = () => {
         const newAllChecked = !allChecked;
         setAllChecked(newAllChecked)
-        setItems(items.map((item) => ({...item, checked: newAllChecked})))
+        setItems(items.map((item) => ({ ...item, checked: newAllChecked })))
     }
 
     const handleRemoveItem = (id) => {
@@ -73,13 +74,26 @@ function Cart() {
     }
 
     const handleOrder = async () => {
+        setIsLoading(true);
         try {
-            await saveCartState()
-            navigate('/order') // 주문 페이지로 이동
+            await saveCartState();
+
+            const queryParams = new URLSearchParams(location.search);
+            const id = queryParams.get('id');
+
+            // 주문 추가
+            const response = await axios.post("http://localhost:8080/api/orders", null, {
+                params: { id: queryParams.id },
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
+            navigate('/order');
         } catch (error) {
-            console.error('Error placing order', error)
+            console.error("주문 오류: ", error);
+        } finally {
+            setIsLoading(false);
         }
-    }
+    };
 
     const handleGoBack = () => {
         navigate(-1)
@@ -88,7 +102,7 @@ function Cart() {
     const checkedItemsCount = items.filter(item => item.checked).length
     const totalQuantity = items.reduce((total, item) => item.checked ? total + item.quantity : total, 0)
     const totalPrice = items.reduce((total, item) => item.checked ? total + item.price * item.quantity : total, 0)
-    
+
 
     return (
         <div className={styles.cartContainer}>
@@ -103,10 +117,10 @@ function Cart() {
                     <table className={styles.cartTable}>
                         <thead>
                             <tr>
-                                <th><input 
-                                        type = "checkbox"
-                                        checked = {allChecked}
-                                        onChange = {handleSelectAllToggle}
+                                <th><input
+                                    type="checkbox"
+                                    checked={allChecked}
+                                    onChange={handleSelectAllToggle}
                                 /></th>
                                 <th>상품명</th>
                                 <th>주문 수량</th>
@@ -121,7 +135,7 @@ function Cart() {
                                     item={item}
                                     onQuantityChange={handleQuantityChange}
                                     onCheckChange={handleCheckChange}
-                                    onRemove={()=>handleRemoveItem(item.id)}
+                                    onRemove={() => handleRemoveItem(item.id)}
                                 />
                             ))}
                         </tbody>
@@ -130,7 +144,7 @@ function Cart() {
                         총 {checkedItemsCount}종, {totalQuantity}권의 가격은 {totalPrice.toLocaleString()}원입니다.
                     </div>
                     <div className={styles.buttonContainer}>
-                        <button className={styles.orderButton} onClick={handleOrder}>선택 상품 주문하기</button>
+                        <button className={styles.orderButton} onClick={handleOrder} disabled={isLoading}>{isLoading ? "추가 중..." : "선택 상품 주문하기"}</button>
                         <button className={styles.continueButton} onClick={handleGoBack}>더 담으러 가기</button>
                     </div>
                 </>
