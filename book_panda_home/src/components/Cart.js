@@ -113,12 +113,11 @@ function Cart() {
         try {
             await saveCartState();
 
-            const queryParams = new URLSearchParams(location.search);
-            const id = queryParams.get('id');
+            const id = new URLSearchParams(window.location.search).get('id');
 
             // 주문 추가
             const response = await axios.post("http://localhost:8080/api/orders", null, {
-                params: { id: queryParams.id },
+                params: { id: id }, // 여기서 수정
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
