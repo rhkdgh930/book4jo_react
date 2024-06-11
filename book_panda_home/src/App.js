@@ -14,6 +14,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
+import FindPassword from "./pages/FindPassword"
 import { CategoryListContext } from "./context/CategoryListContext";
 import { useState } from "react";
 import EnrollBook from "./components/EnrollBook";
@@ -21,9 +22,12 @@ import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
 import CategoryDetailPage from './pages/CategoryDetailPage';
+
+
 const privatePaths = ["/admin", "/profile", "/order"];
-function App() {
+const App = () => {
   const [categoryList, setCategoryList] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   // 인증되지 않은 사용자가 들어가면 안되는 곳
   // => 구매페이지, 프로필페이지, 관리자페이지
   //
@@ -38,7 +42,7 @@ function App() {
   return (
     <CategoryListContext.Provider value={[categoryList, setCategoryList]}>
       <div className="App">
-        <Header></Header>
+        <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
         <SearchBar></SearchBar>
         <Nav></Nav>
         <Routes>
@@ -54,9 +58,10 @@ function App() {
             <Route path="salesDetail" element={<BookSalesDetail />} />
           </Route>
           <Route path="/category" element={<CategoryDetailPage/>} />
-          <Route path="/signin" element={<Signin />} />
+          <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/find-password" element={<FindPassword />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<Order />} />
         </Routes>

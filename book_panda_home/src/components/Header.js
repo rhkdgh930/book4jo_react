@@ -1,29 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import styles from "../styles/Header.module.css";
 import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
 import { logout } from '../apis/auth.js';
-import { useAuthCookies } from '../components/cookieHelper';
 
-const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { hasAccessToken, hasRefreshToken } = useAuthCookies();
+const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
 
-  const checkLoginStatus = () => {
-    setIsLoggedIn(hasAccessToken() || hasRefreshToken());
-  };
-
   useEffect(() => {
-    checkLoginStatus();
-  }, [hasAccessToken, hasRefreshToken]); // 쿠키 상태가 변경될 때마다 다시 확인
+    const checkAuthStatus = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/users/login-check', { withCredentials: true });
+        setIsLoggedIn(response.data.isLoggedIn);
+      } catch (error) {
+        console.error('실패:', error);
+      }
+    };
+
+    checkAuthStatus();
+  }, [setIsLoggedIn]);
 
   const onLogoutClick = async () => {
     try {
       await logout();
-      checkLoginStatus(); // 로그아웃 후 로그인 상태를 다시 확인합니다.
+      setIsLoggedIn(false);
       navigate('/signin');
     } catch (error) {
       console.error('로그아웃 실패:', error);
+      alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
@@ -31,7 +35,7 @@ const Header = () => {
     <div className={styles.top}>
       <div className={styles.topContainer}>
         <div className={styles.leftCategoryContainer}>
-          <div><Link to="/"> HOME</Link></div>
+          <div><Link to="/">HOME</Link></div>
           <div>국내도서</div>
         </div>
         <div className={styles.rightCategoryContainer}>
