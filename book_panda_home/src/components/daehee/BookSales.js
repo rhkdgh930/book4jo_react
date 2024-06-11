@@ -28,6 +28,19 @@ const BookSales = () => {
 
   const createSales = async () => {
     try {
+      console.log("ASDFASFASDF");
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error("No access token found");
+      }
+      console.log("토큰 : " + token);
+      setQueryParams({
+        ...queryParams,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const response = await axios.post("http://localhost:8080/bookSales", queryParams, {
         "Content-Type": "application/json",
         withCredentials: true,

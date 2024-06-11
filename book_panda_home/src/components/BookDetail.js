@@ -8,7 +8,6 @@ import axios from "axios";
 function BookDetail(props) {
   const navigate = useNavigate();
   const { state } = useLocation();
-  console.log("state : " + JSON.stringify(state));
 
   const location = useLocation();
   const [categoryList, setCategoryList] = useContext(CategoryListContext);
@@ -29,8 +28,6 @@ function BookDetail(props) {
   }, []);
 
   const initialDiscount = bookInfo.discount;
-  const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkc2ZAbmF2ZXIuY29tIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE3MTc4MTEyMDZ9.itU3soVS6d35eQXAafD5lvpL1Qgg4bfY0VwLNtHRMpg";
   const salesInfo = {
     visitCount: 0,
     sellCount: 0,
@@ -39,22 +36,27 @@ function BookDetail(props) {
   };
 
   const enroll = async () => {
-    //setIsLoading(true);
     try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error("No access token found");
+      }
+      console.log("토큰 : " + token);
+      setQueryParams({
+        ...queryParams,
+      });
       console.log("쿼리 파람 : " + JSON.stringify(queryParams));
       const response = await axios.post("http://localhost:8080/bookSales", queryParams, {
-        "Content-Type": "application/json",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
       });
       console.log("요청 성공:", response.data);
-      //setQueryParams(...response.data.bookSales, ...response.data.reviewList);
-      console.log("쿼리 파람 : " + queryParams);
-      //setIsLoading(false);
       navigate(`/admin/salesDetail`, { state: { ...queryParams, id: response.data.id } });
-      // 여기서 응답을 처리합니다.
     } catch (error) {
       console.error("요청 실패:", error);
-      // 여기서 오류를 처리합니다.
     }
   };
 

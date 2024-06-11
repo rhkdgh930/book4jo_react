@@ -14,7 +14,6 @@ const BookSalesDetail = () => {
   const [queryParams, setQueryParams] = useState({
     ...state,
   });
-  console.log("ckckckckc" + JSON.stringify(queryParams));
   //장바구니 추가시 알림창, 로딩버튼
   const [showNotification, setShowNotification] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -43,9 +42,9 @@ const BookSalesDetail = () => {
   const addToCart = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       if (!token) {
-        throw new Error('No access token found');
+        throw new Error("No access token found");
       }
       const response = await axios.post("http://localhost:8080/api/cart/items", null, {
         params: { id: queryParams.id },
@@ -54,14 +53,14 @@ const BookSalesDetail = () => {
           Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
-      })
-      setShowNotification(true)
+      });
+      setShowNotification(true);
     } catch (error) {
-      console.error("주문 실패: ", error)
+      console.error("주문 실패: ", error);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const createOrder = async () => {
     setLoading(true);
@@ -75,7 +74,7 @@ const BookSalesDetail = () => {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      navigate('/order');
+      navigate("/order");
     } catch (error) {
       console.error("주문 오류: ", queryParams.id, error);
     } finally {
@@ -118,7 +117,6 @@ const BookSalesDetail = () => {
           }}
         />
       )}
-
     </div>
   );
 };
