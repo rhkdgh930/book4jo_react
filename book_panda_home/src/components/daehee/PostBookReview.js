@@ -35,11 +35,24 @@ const PostBookReview = ({ bookSalesInfo }) => {
   };
 
   const createReview = async () => {
-    console.log("asasa" + JSON.stringify(queryParams));
     try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error("No access token found");
+      }
+      console.log("토큰 : " + token);
+      setQueryParams({
+        ...queryParams,
+      });
       const response = await axios.post(
         "http://localhost:8080/review",
-        { ...queryParams },
+        queryParams,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
         {
           "Content-Type": "application/json",
           withCredentials: true,
