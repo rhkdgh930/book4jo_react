@@ -81,9 +81,12 @@ const MyPage = () => {
   };
 
   return (
+    <form>
+    <div className="select-page">
+          <div className="select-page-button"><Link to="/mypage">회원정보관리</Link></div>
+          <div className="select-page-button"><Link to="/mypage/ordered">주문내역</Link></div>
+    </div>
     <div className="mypage-container">
-      <div><Link to="/mypage">장바구니</Link></div>
-      <div><Link to="/mypage/ordered">장바구니</Link></div>
       <h2>회원정보 관리</h2>
       <div className="info-item">
         <label>이메일: </label>
@@ -123,6 +126,7 @@ const MyPage = () => {
         </button>
       </div>
     </div>
+    </form>
   );
 };
 
