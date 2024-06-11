@@ -39,30 +39,49 @@ const BookSalesDetail = () => {
       // 여기서 오류를 처리합니다.
     }
   };
-  
+
   const addToCart = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('accessToken');
-        if (!token) {
-          throw new Error('No access token found');
-        }
-      const response = await axios.post("http://localhost:8080/api/cart/items", null, { 
-        params: { id: queryParams.id},
-        headers: { 
+      if (!token) {
+        throw new Error('No access token found');
+      }
+      const response = await axios.post("http://localhost:8080/api/cart/items", null, {
+        params: { id: queryParams.id },
+        headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         withCredentials: true,
-        })
+      })
       setShowNotification(true)
     } catch (error) {
-      console.error("장바구니에 추가 실패: ", error)
+      console.error("주문 실패: ", error)
     } finally {
       setLoading(false);
     }
   }
 
+  const createOrder = async () => {
+    setLoading(true);
+    try {
+      const requestData = {
+        orderDate: new Date(), // 현재 날짜로 설정
+      };
+      console.log("queryParams.id : " + queryParams.id);
+      const response = await axios.post(`http://localhost:8080/api/order`, requestData, {
+        params: { id: queryParams.id },
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      });
+      navigate('/order');
+    } catch (error) {
+      console.error("주문 오류: ", queryParams.id, error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="sales">
@@ -77,8 +96,8 @@ const BookSalesDetail = () => {
           <div>
             <p>{queryParams.discount}</p>
             <p>{queryParams.stock}</p>
-            <button onClick={addToCart} disabled={loading}> {loading ? "추가 중..." : "장바구니 담기"}</button>
-            <button>바로 구매</button>
+            <button onClick={addToCart}> {loading ? "추가 중..." : "장바구니 담기"}</button>
+            <button onClick={createOrder}> {loading ? "추가 중..." : "바로 구매"}</button>
           </div>
           <p>{queryParams.description}</p>
           <div>
@@ -90,7 +109,7 @@ const BookSalesDetail = () => {
 
       {/* 장바구니에 추가 시 알림 창 */}
       {showNotification && (
-        <Notification 
+        <Notification
           message="장바구니에 추가되었습니다."
           onClose={() => setShowNotification(false)}
           onNavigate={() => {
