@@ -32,29 +32,25 @@ const Payment = () => {
     };
   }, []);
 
-  // 이메일 주소 유효성을 확인하는 함수
-    const validateEmail = (email) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    };
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
-    // 전화번호 유효성을 확인하는 함수
-    const validatePhoneNumber = (phoneNumber) => {
-      const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
-      return phoneRegex.test(phoneNumber);
-    };
+  const validatePhoneNumber = (phoneNumber) => {
+    const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
+    return phoneRegex.test(phoneNumber);
+  };
 
   const requestPay = () => {
     const { IMP } = window;
     IMP.init('imp14170881'); // 상점 식별코드
 
-    // 이메일 주소의 유효성을 확인합니다.
     if (!validateEmail(buyerEmail)) {
       setError('올바른 이메일 주소를 입력하세요.');
       return;
     }
 
-    // 전화번호의 유효성을 확인합니다.
     if (!validatePhoneNumber(buyerTel)) {
       setError('올바른 전화번호를 입력하세요.');
       return;
@@ -76,6 +72,22 @@ const Payment = () => {
         try {
           const { data } = await axios.post('http://localhost:8080/api/payment/verify/' + rsp.imp_uid);
           if (rsp.paid_amount === data.amount) {
+          //if (1===1) {
+            const paymentData = {
+              impUid: rsp.imp_uid,
+              merchantUid: rsp.merchant_uid,
+              amount: rsp.paid_amount,
+              buyerEmail: buyerEmail,
+              buyerName: buyerName,
+              buyerTel: buyerTel,
+              buyerAddr: buyerAddr,
+              buyerPostcode: buyerPostcode,
+              status: rsp.status,
+              //orderId: 1 // 이 부분은 실제 주문 ID로 대체
+            };
+
+            await axios.post('http://localhost:8080/api/payment/save', paymentData);
+
             setPaymentInfo({
               product_name: productName,
               amount: rsp.paid_amount,
@@ -88,42 +100,15 @@ const Payment = () => {
             setError(null);
             alert('결제 성공');
           } else {
-            setPaymentInfo({
-              product_name: productName,
-              amount: rsp.paid_amount,
-              buyer_email: buyerEmail,
-              buyer_name: buyerName,
-              buyer_tel: buyerTel,
-              buyer_addr: buyerAddr,
-              buyer_postcode: buyerPostcode,
-            });
             setError('결제 검증 실패: 금액이 일치하지 않습니다.');
             alert('결제 실패');
           }
         } catch (error) {
-          console.error('Error while verifying payment:', error);
-          setPaymentInfo({
-            product_name: productName,
-            amount: amount,
-            buyer_email: buyerEmail,
-            buyer_name: buyerName,
-            buyer_tel: buyerTel,
-            buyer_addr: buyerAddr,
-            buyer_postcode: buyerPostcode,
-          });
-          setError('결제 검증 중 오류가 발생했습니다.');
+          console.error('Error while verifying and saving payment:', error);
+          setError('결제 검증 및 저장 중 오류가 발생했습니다.');
           alert('결제 실패');
         }
       } else {
-        setPaymentInfo({
-          product_name: productName,
-          amount: amount,
-          buyer_email: buyerEmail,
-          buyer_name: buyerName,
-          buyer_tel: buyerTel,
-          buyer_addr: buyerAddr,
-          buyer_postcode: buyerPostcode,
-        });
         setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
         alert('결제 실패');
       }
@@ -239,4 +224,3 @@ const Payment = () => {
 };
 
 export default Payment;
-
