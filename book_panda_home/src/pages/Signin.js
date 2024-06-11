@@ -3,7 +3,7 @@ import { Form, Input, Inputs, Title, Wrapper, Button, CustomLink } from '../comp
 import { useNavigate } from 'react-router-dom';
 import { login } from '../apis/auth.js';
 
-const Signin = () => {
+const Signin = ({setIsLoggedIn}) => {
   const [email, setEmail] = useState('');
   const [pw, setPW] = useState('');
   const navigate = useNavigate();
@@ -23,6 +23,7 @@ const Signin = () => {
       console.log('Login successful:', result);
       const accessToken = result.accessToken;
       localStorage.setItem('accessToken', accessToken);
+      setIsLoggedIn(true);
       navigate('/');
     } catch (error) {
       console.error('로그인 실패:', error);
@@ -40,7 +41,7 @@ const Signin = () => {
         <Button onClick={onClick}>로그인</Button>
         <div className="custom-links">
           <p className="the-custom-link">아직 회원가입을 안하셨나요? <CustomLink to="/signup">회원가입하기</CustomLink></p>
-          <p className="the-custom-link">아직 비밀번호 찾기 구현을 안하셨나요? <CustomLink to="/signup">네!</CustomLink></p>
+          <p className="the-custom-link">비밀번호를 잊어버리셨나요? <CustomLink to="/find-password">네!</CustomLink></p>
         </div>
       </Form>
     </Wrapper>
