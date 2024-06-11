@@ -44,7 +44,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
           ) : (
             <div><Link to="/signin" className={styles.link}>로그인</Link></div>
           )}
-          <div>마이페이지</div>
+          <div><Link to="/mypage">마이페이지</Link></div>
           <div><Link to="/cart">장바구니</Link></div>
         </div>
       </div>

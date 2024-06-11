@@ -1,115 +1,110 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Form, Input, Inputs, Title, Wrapper, Button, CustomLink } from '../components/Common';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from '../hooks/useForm';
+import { signUp } from '../apis/signUp';
+import { login } from '../apis/login';
 import axios from 'axios';
-import Cookies from 'js-cookie';
-import '../styles/MyPage.css';
+import styled from 'styled-components';
 
-const MyPage = () => {
-  const [userInfo, setUserInfo] = useState({
-    userEmail: '',
-    userName: '',
-    address: '',
-    phoneNumber: ''
-  });
+const Signup = () => {
+  const [email, onChangeEmail] = useForm();
+  const [pw, onChangePW] = useForm();
+  const [confirmPw, onChangeConfirmPW] = useForm();
+  const [name, onChangeName] = useForm();
+  const [address, onChangeAddress] = useForm();
+  const [phoneNumber, onChangePhoneNumber] = useForm();
+  const [code, setCode] = useState('');
+  const [codeSent, setCodeSent] = useState(false);
+  const [message, setMessage] = useState('');
+  const router = useNavigate();
 
-  const [editMode, setEditMode] = useState({
-    userName: false,
-    address: false,
-    phoneNumber: false
-  });
-
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const token = Cookies.get('accessToken');
-        console.log('Token:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', token);
-        const response = await axios.get('http://localhost:8080/api/mypage', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        setUserInfo(response.data);
-      } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
-      }
-    };
-
-    fetchUserInfo();
-  }, []);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUserInfo(prevState => ({ ...prevState, [name]: value }));
-  };
-
-  const handleUpdate = async (field) => {
+  const sendEmail = async () => {
     try {
-      const token = Cookies.get('accessToken');
-      console.log('Token:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', token);
-      const response = await axios.put(`http://localhost:8080/api/mypage/${field}`,
-        { [field]: userInfo[field] },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
-      if (response.status === 200) {
-        alert('업데이트 성공');
-        setEditMode(prevState => ({ ...prevState, [field]: false }));
-      }
+      const response = await axios.post('http://localhost:8080/api/users/sign-up/send-email', {
+        userEmail: email
+      });
+      setMessage(response.data);
+      setCodeSent(true);
     } catch (error) {
-      console.error('업데이트 실패:', error);
-      alert('업데이트 실패');
+      console.error("코드 전송에 실패 :", error);
+      setMessage('코드 전송에 실패했습니다.');
     }
   };
 
-  const toggleEditMode = (field) => {
-    setEditMode(prevState => ({ ...prevState, [field]: !prevState[field] }));
+  const verifyCode = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/users/sign-up/verify-code', {
+        userEmail: email,
+        authCode: code
+      });
+      setMessage(response.data);
+    } catch (error) {
+      console.error("코드 인증 실패 :", error);
+      setMessage('코드 인증 실패.');
+    }
+  };
+
+  const handleCodeChange = (e) => {
+    setCode(e.target.value);
+  };
+
+  const onClickSignUp = async () => {
+    if (pw !== confirmPw) {
+      setMessage('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    try {
+      await signUp(email, pw, name, address, phoneNumber);
+
+      // 회원가입 후 자동으로 로그인 처리
+      const loginResponse = await login({ email, pw });
+      const { accessToken, refreshToken } = loginResponse;
+      localStorage.setItem('access', accessToken);
+      localStorage.setItem('refresh', refreshToken);
+
+      router('/');
+    } catch (error) {
+      console.error("회원가입 실패 :", error);
+      setMessage('회원가입 실패.');
+    }
   };
 
   return (
-    <div className="mypage-container">
-      <h2>회원정보 관리</h2>
-      <div className="info-item">
-        <label>이메일: </label>
-        <span>{userInfo.userEmail}</span>
-      </div>
-      <div className="info-item">
-        <label>이름: </label>
-        {editMode.userName ? (
-          <input type="text" name="userName" value={userInfo.userName} onChange={handleChange} />
-        ) : (
-          <span>{userInfo.userName}</span>
+    <Wrapper>
+      <Form>
+      <Title>회원가입</Title>
+      <Inputs>
+        <div className="custom-text">이메일 * :</div>
+        <div className="email-input-wrapper">
+          <Input placeholder="bookpanda@elice.com" value={email} onChange={onChangeEmail} />
+          <button className="styled-button" onClick={sendEmail}>인증번호 받기</button>
+        </div>
+        {codeSent && (
+          <div>
+            <div className="custom-text">인증번호 * :</div>
+            <div>
+              <Input placeholder="인증번호 입력" value={code} onChange={handleCodeChange} />
+              <Button onClick={verifyCode}>확인</Button>
+            </div>
+          </div>
         )}
-        <button onClick={() => editMode.userName ? handleUpdate('userName') : toggleEditMode('userName')}>
-          {editMode.userName ? '저장' : '변경'}
-        </button>
-      </div>
-      <div className="info-item">
-        <label>주소: </label>
-        {editMode.address ? (
-          <input type="text" name="address" value={userInfo.address} onChange={handleChange} />
-        ) : (
-          <span>{userInfo.address}</span>
-        )}
-        <button onClick={() => editMode.address ? handleUpdate('address') : toggleEditMode('address')}>
-          {editMode.address ? '저장' : '변경'}
-        </button>
-      </div>
-      <div className="info-item">
-        <label>전화번호: </label>
-        {editMode.phoneNumber ? (
-          <input type="text" name="phoneNumber" value={userInfo.phoneNumber} onChange={handleChange} />
-        ) : (
-          <span>{userInfo.phoneNumber}</span>
-        )}
-        <button onClick={() => editMode.phoneNumber ? handleUpdate('phoneNumber') : toggleEditMode('phoneNumber')}>
-          {editMode.phoneNumber ? '저장' : '변경'}
-        </button>
-      </div>
-    </div>
+        <div className="custom-text">비밀번호 * :</div>
+        <Input placeholder="특수문자, 영어 대, 소문자 숫자를 포함시켜 주세요" type="password" value={pw} onChange={onChangePW} />
+        <div className="custom-text">비밀번호 재확인 * :</div>
+        <Input placeholder="특수문자, 영어 대, 소문자 숫자를 포함시켜 주세요" type="password" value={confirmPw} onChange={onChangeConfirmPW} />
+        <div className="custom-text">이름 * :</div>
+        <Input placeholder="홍길둥" value={name} onChange={onChangeName} />
+        <div className="custom-text">주소 :</div>
+        <Input placeholder="서울특별시 종로구 청와대로 1" value={address} onChange={onChangeAddress} />
+        <div className="custom-text">휴대전화 :</div>
+        <Input placeholder="하이픈, 띄어쓰기를 제외한 숫자만 입력해주세요." value={phoneNumber} onChange={onChangePhoneNumber} />
+      </Inputs>
+      <Button onClick={onClickSignUp}>가입하기</Button>
+      {message && <p>{message}</p>}
+      </Form>
+    </Wrapper>
   );
 };
 
-export default MyPage;
+export default Signup;
