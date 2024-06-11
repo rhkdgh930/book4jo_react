@@ -72,7 +72,6 @@ const Payment = () => {
         try {
           const { data } = await axios.post('http://localhost:8080/api/payment/verify/' + rsp.imp_uid);
           if (rsp.paid_amount === data.amount) {
-          //if (1===1) {
             const paymentData = {
               impUid: rsp.imp_uid,
               merchantUid: rsp.merchant_uid,
