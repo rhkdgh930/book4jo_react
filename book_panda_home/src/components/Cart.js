@@ -1,85 +1,99 @@
-import React, {useState, useEffect} from "react"
+import React, { useState, useEffect } from "react"
 import CartItem from "./CartItem"
 import styles from "../styles/Cart.module.css"
 import axios from "axios"
 import { useNavigate } from 'react-router-dom';
 
 function Cart() {
-    // const [items, setItems] = useState([])
-    const [items, setItems] = useState(
-        [
-        //테스트 데이터
-        {
-          id: 1,
-          title: "테스트 책 1",
-          image: "https://via.placeholder.com/50",
-          quantity: 1,
-          price: 50000,
-          checked: true
-        },
-        {
-          id: 2,
-          title: "테스트 책 2",
-          image: "https://via.placeholder.com/50",
-          quantity: 2,
-          price: 30000,
-          checked: true
-        }
-      ]
-    )
-
+    const [items, setItems] = useState([])
     const [allChecked, setAllChecked] = useState(true)
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate()
 
     useEffect(() => {
         fetchCartItems();
 
-        const handleBeforeUnload = async (event) => {
+        const handlePageHide = async (event) => {
             await saveCartState();
         }
-        window.addEventListener('beforeunload', handleBeforeUnload)
+
+        window.addEventListener('pagehide', handlePageHide);
+        window.addEventListener('unload', handlePageHide);
 
         return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload)
-            saveCartState();
+            window.removeEventListener('pagehide', handlePageHide);
+            window.removeEventListener('unload', handlePageHide);
         }
     }, [])
 
     const fetchCartItems = async () => {
         try {
-            const response = await axios.get('/api/cart/items')
-            const cartItems = response.data.map(item => ({
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                throw new Error('No access token found');
+            }
+            const response = await axios.get('http://localhost:8080/api/cart/items', {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            })
+            const cartItems = Array.isArray(response.data) ? response.data.map(item => ({
                 ...item,
-                checked: true
-            }))
-            setItems(cartItems)
+                checked: true,
+            })) : [];
+            setItems(cartItems);
         } catch (error) {
-            console.error('Error fetching cart items', error)
+            console.error('Error fetching cart items', error);
         }
     }
 
     const saveCartState = async () => {
         try {
-            await axios.post('/api/cart/save', {items})
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                throw new Error('No access token found')
+            }
+
+            const cartItems = items.map(item => ({
+                id: item.id,
+                bookSalesId: item.bookSalesId,
+                title: item.title,
+                image: item.image,
+                quantity: item.quantity,
+                price: item.price,
+                checked: item.checked
+            }))
+
+            console.log('Cart Items:', cartItems);
+
+            await axios.post('http://localhost:8080/api/cart/save', cartItems, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            })
         } catch (error) {
             console.error('Error saving cart state', error)
         }
     }
 
     const handleQuantityChange = (id, quantity) => {
-        setItems(items.map(item => item.id === id? {...item, quantity: Number(quantity)} : item
+        setItems(items.map(item => item.id === id ? { ...item, quantity: Number(quantity) } : item
         ))
     }
 
     const handleCheckChange = (id) => {
-        setItems(items.map(item => item.id === id ? {...item, checked: !item.checked } : item
+        setItems(items.map(item => item.id === id ? { ...item, checked: !item.checked } : item
         ))
     }
 
     const handleSelectAllToggle = () => {
         const newAllChecked = !allChecked;
         setAllChecked(newAllChecked)
-        setItems(items.map((item) => ({...item, checked: newAllChecked})))
+        setItems(items.map((item) => ({ ...item, checked: newAllChecked })))
     }
 
     const handleRemoveItem = (id) => {
@@ -95,22 +109,35 @@ function Cart() {
     }
 
     const handleOrder = async () => {
+        setIsLoading(true);
         try {
-            await saveCartState()
-            navigate('/order') // 주문 페이지로 이동
+            await saveCartState();
+
+            const id = new URLSearchParams(window.location.search).get('id');
+
+            // 주문 추가
+            const response = await axios.post("http://localhost:8080/api/orders", null, {
+                params: { id: id }, // 여기서 수정
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
+            navigate('/order');
         } catch (error) {
-            console.error('Error placing order', error)
+            console.error("주문 오류: ", error);
+        } finally {
+            setIsLoading(false);
         }
-    }
+    };
 
     const handleGoBack = () => {
+        saveCartState();
         navigate(-1)
     }
 
     const checkedItemsCount = items.filter(item => item.checked).length
     const totalQuantity = items.reduce((total, item) => item.checked ? total + item.quantity : total, 0)
     const totalPrice = items.reduce((total, item) => item.checked ? total + item.price * item.quantity : total, 0)
-    
+
 
     return (
         <div className={styles.cartContainer}>
@@ -125,10 +152,10 @@ function Cart() {
                     <table className={styles.cartTable}>
                         <thead>
                             <tr>
-                                <th><input 
-                                        type = "checkbox"
-                                        checked = {allChecked}
-                                        onChange = {handleSelectAllToggle}
+                                <th><input
+                                    type="checkbox"
+                                    checked={allChecked}
+                                    onChange={handleSelectAllToggle}
                                 /></th>
                                 <th>상품명</th>
                                 <th>주문 수량</th>
@@ -143,7 +170,7 @@ function Cart() {
                                     item={item}
                                     onQuantityChange={handleQuantityChange}
                                     onCheckChange={handleCheckChange}
-                                    onRemove={()=>handleRemoveItem(item.id)}
+                                    onRemove={() => handleRemoveItem(item.id)}
                                 />
                             ))}
                         </tbody>
@@ -152,7 +179,7 @@ function Cart() {
                         총 {checkedItemsCount}종, {totalQuantity}권의 가격은 {totalPrice.toLocaleString()}원입니다.
                     </div>
                     <div className={styles.buttonContainer}>
-                        <button className={styles.orderButton} onClick={handleOrder}>선택 상품 주문하기</button>
+                        <button className={styles.orderButton} onClick={handleOrder} disabled={isLoading}>{isLoading ? "추가 중..." : "선택 상품 주문하기"}</button>
                         <button className={styles.continueButton} onClick={handleGoBack}>더 담으러 가기</button>
                     </div>
                 </>
