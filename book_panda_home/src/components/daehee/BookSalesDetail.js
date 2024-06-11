@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BookReview from "./BookReview";
 import PostBookReview from "./PostBookReview";
+import Notification from "../Notification";
 
 const BookSalesDetail = () => {
   const { state } = useLocation();
@@ -38,13 +39,20 @@ const BookSalesDetail = () => {
       // 여기서 오류를 처리합니다.
     }
   };
-
+  
   const addToCart = async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('accessToken');
+        if (!token) {
+          throw new Error('No access token found');
+        }
       const response = await axios.post("http://localhost:8080/api/cart/items", null, { 
         params: { id: queryParams.id},
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
         })
       setShowNotification(true)
@@ -54,6 +62,7 @@ const BookSalesDetail = () => {
       setLoading(false);
     }
   }
+
 
   return (
     <div className="sales">
@@ -81,11 +90,14 @@ const BookSalesDetail = () => {
 
       {/* 장바구니에 추가 시 알림 창 */}
       {showNotification && (
-        <div className="notification">
-          <p>장바구니에 추가되었습니다.</p>
-          <button onClick={()=>setShowNotification(false)}>확인</button>
-          <button onClick={()=>{setShowNotification(false); navigate("/cart");}}>장바구니로 이동</button>
-        </div>
+        <Notification 
+          message="장바구니에 추가되었습니다."
+          onClose={() => setShowNotification(false)}
+          onNavigate={() => {
+            setShowNotification(false);
+            navigate("/cart");
+          }}
+        />
       )}
 
     </div>

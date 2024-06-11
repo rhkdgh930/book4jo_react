@@ -5,62 +5,75 @@ import axios from "axios"
 import { useNavigate } from 'react-router-dom';
 
 function Cart() {
-    // const [items, setItems] = useState([])
-    const [items, setItems] = useState(
-        [
-        //테스트 데이터
-        {
-          id: 1,
-          title: "테스트 책 1",
-          image: "https://via.placeholder.com/50",
-          quantity: 1,
-          price: 50000,
-          checked: true
-        },
-        {
-          id: 2,
-          title: "테스트 책 2",
-          image: "https://via.placeholder.com/50",
-          quantity: 2,
-          price: 30000,
-          checked: true
-        }
-      ]
-    )
-
+    const [items, setItems] = useState([])
     const [allChecked, setAllChecked] = useState(true)
     const navigate = useNavigate()
 
     useEffect(() => {
         fetchCartItems();
 
-        const handleBeforeUnload = async (event) => {
+        const handlePageHide = async (event) => {
             await saveCartState();
         }
-        window.addEventListener('beforeunload', handleBeforeUnload)
+
+        window.addEventListener('pagehide', handlePageHide);
+        window.addEventListener('unload', handlePageHide);
 
         return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload)
-            saveCartState();
+            window.removeEventListener('pagehide', handlePageHide);
+            window.removeEventListener('unload', handlePageHide);
         }
     }, [])
 
     const fetchCartItems = async () => {
         try {
-            const response = await axios.get('/api/cart/items')
-            const cartItems = response.data.map(item => ({
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                throw new Error('No access token found');
+            }
+            const response = await axios.get('http://localhost:8080/api/cart/items', {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            })
+            const cartItems = Array.isArray(response.data) ? response.data.map(item => ({
                 ...item,
-                checked: true
-            }))
-            setItems(cartItems)
+                checked: true,
+            })) : [];
+            setItems(cartItems);
         } catch (error) {
-            console.error('Error fetching cart items', error)
+            console.error('Error fetching cart items', error);
         }
     }
 
     const saveCartState = async () => {
         try {
-            await axios.post('/api/cart/save', {items})
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                throw new Error('No access token found')
+            }
+    
+            const cartItems = items.map(item => ({
+                id: item.id,
+                bookSalesId: item.bookSalesId,
+                title: item.title,
+                image: item.image,
+                quantity: item.quantity,
+                price: item.price,
+                checked: item.checked
+            }))
+
+            console.log('Cart Items:', cartItems);
+
+            await axios.post('http://localhost:8080/api/cart/save', cartItems, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            })
         } catch (error) {
             console.error('Error saving cart state', error)
         }
@@ -104,6 +117,7 @@ function Cart() {
     }
 
     const handleGoBack = () => {
+        saveCartState();
         navigate(-1)
     }
 

@@ -21,6 +21,8 @@ const Signin = () => {
     try {
       const result = await login({ userEmail: email, userPassword: pw });
       console.log('Login successful:', result);
+      const accessToken = result.accessToken;
+      localStorage.setItem('accessToken', accessToken);
       navigate('/');
     } catch (error) {
       console.error('로그인 실패:', error);

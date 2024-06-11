@@ -19,7 +19,8 @@ const Signup = () => {
   const [message, setMessage] = useState('');
   const router = useNavigate();
 
-  const sendEmail = async () => {
+  const sendEmail = async (event) => {
+    event.preventDefault();
     try {
       const response = await axios.post('http://localhost:8080/api/users/sign-up/send-email', {
         userEmail: email
@@ -32,7 +33,8 @@ const Signup = () => {
     }
   };
 
-  const verifyCode = async () => {
+  const verifyCode = async (event) => {
+    event.preventDefault();
     try {
       const response = await axios.post('http://localhost:8080/api/users/sign-up/verify-code', {
         userEmail: email,
@@ -49,21 +51,15 @@ const Signup = () => {
     setCode(e.target.value);
   };
 
-  const onClickSignUp = async () => {
+  const onClickSignUp = async (event) => {
+    event.preventDefault();
     if (pw !== confirmPw) {
       setMessage('비밀번호가 일치하지 않습니다.');
       return;
     }
     try {
       await signUp(email, pw, name, address, phoneNumber);
-
-      // 회원가입 후 자동으로 로그인 처리
-      const loginResponse = await login({ email, pw });
-      const { accessToken, refreshToken } = loginResponse;
-      localStorage.setItem('access', accessToken);
-      localStorage.setItem('refresh', refreshToken);
-
-      router('/');
+      router('/signin');
     } catch (error) {
       console.error("회원가입 실패 :", error);
       setMessage('회원가입 실패.');
