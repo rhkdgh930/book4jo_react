@@ -41,7 +41,8 @@ const BookSales = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      const response = await axios.post("http://localhost:8080/bookSales", queryParams, {
+
+      const response = await axios.post("/api/bookSales", queryParams, {
         "Content-Type": "application/json",
         withCredentials: true,
       });
