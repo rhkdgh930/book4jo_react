@@ -10,7 +10,7 @@ const refreshToken = async () => {
   const refreshToken = document.cookie.replace(/(?:(?:^|.*;\s*)refreshToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
 
   try {
-    const response = await axios.post('/auth/refresh-token', { token: refreshToken });
+    const response = await axios.post('"http://localhost:8080/api/refresh-token', { token: refreshToken });
     const { accessToken } = response.data;
 
     // 새로운 액세스 토큰을 로컬스토리지에 저장

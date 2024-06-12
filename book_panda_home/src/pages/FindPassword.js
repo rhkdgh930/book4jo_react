@@ -62,7 +62,7 @@ const FindPassword = () => {
         newPassword: newPassword
       });
       setMessage('비밀번호 변경에 성공했습니다.');
-      router('/');
+      router('/signin');
     } catch (error) {
       console.error("비밀번호 변경 실패 :", error);
       setMessage('비밀번호 변경에 실패했습니다.');

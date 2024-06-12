@@ -18,7 +18,8 @@ const Signup = () => {
   const [message, setMessage] = useState('');
   const router = useNavigate();
 
-  const sendEmail = async () => {
+  const sendEmail = async (e) => {
+    e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8080/api/users/sign-up/send-email', {
         userEmail: email
@@ -31,7 +32,8 @@ const Signup = () => {
     }
   };
 
-  const verifyCode = async () => {
+  const verifyCode = async (e) => {
+    e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8080/api/users/sign-up/verify-code', {
         userEmail: email,
@@ -48,7 +50,8 @@ const Signup = () => {
     setCode(e.target.value);
   };
 
-  const onClickSignUp = async () => {
+  const onClickSignUp = async (e) => {
+    e.preventDefault();
     if (pw !== confirmPw) {
       setMessage('비밀번호가 일치하지 않습니다.');
       return;
