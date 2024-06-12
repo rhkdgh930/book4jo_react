@@ -65,16 +65,26 @@ const BookSalesDetail = () => {
   const createOrder = async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        throw new Error('No access token found');
+      }
       const requestData = {
+        bookId: queryParams.id,
         orderDate: new Date(), // 현재 날짜로 설정
       };
       console.log("queryParams.id : " + queryParams.id);
       const response = await axios.post(`http://localhost:8080/api/order`, requestData, {
         params: { id: queryParams.id },
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
         withCredentials: true,
       });
+<<<<<<< HEAD
       navigate("/order");
+=======
+      console.log(response.data.id);
+      navigate(`/order?orderId=${response.data.id}`);
+>>>>>>> feature/order
     } catch (error) {
       console.error("주문 오류: ", queryParams.id, error);
     } finally {
