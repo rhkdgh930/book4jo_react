@@ -79,12 +79,8 @@ const BookSalesDetail = () => {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
         withCredentials: true,
       });
-<<<<<<< HEAD
-      navigate("/order");
-=======
       console.log(response.data.id);
       navigate(`/order?orderId=${response.data.id}`);
->>>>>>> feature/order
     } catch (error) {
       console.error("주문 오류: ", queryParams.id, error);
     } finally {

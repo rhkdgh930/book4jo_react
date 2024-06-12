@@ -19,7 +19,21 @@ function Order() {
             fetchOrder(orderId);
             fetchOrderItems(orderId);
         }
-    }, [searchParams]);
+
+        const handlePageHide = async (event) => {
+            if (order && order.status === 'NOT_PAID') {
+                await handleCancelOrder();
+            }
+        }
+
+        window.addEventListener('pagehide', handlePageHide);
+        window.addEventListener('unload', handlePageHide);
+
+        return () => {
+            window.removeEventListener('pagehide', handlePageHide);
+            window.removeEventListener('unload', handlePageHide);
+        }
+    }, [searchParams, order]);
 
     const fetchOrder = async (orderId) => {
         try {
