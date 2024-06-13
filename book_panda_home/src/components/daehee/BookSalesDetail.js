@@ -4,6 +4,7 @@ import axios from "axios";
 import BookReview from "./BookReview";
 import PostBookReview from "./PostBookReview";
 import Notification from "../Notification";
+import styles from "../../styles/BookSalesDetail.module.css";
 
 const BookSalesDetail = () => {
   const { state } = useLocation();
@@ -14,30 +15,24 @@ const BookSalesDetail = () => {
   const [queryParams, setQueryParams] = useState({
     ...state,
   });
-  //장바구니 추가시 알림창, 로딩버튼
   const [showNotification, setShowNotification] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const getSales = async () => {
-    setIsLoading(true);
-    try {
-      console.log("쿼리 파람 : " + queryParams.id);
-      const response = await axios.get("http://localhost:8080/bookSales", {
-        params: { id: queryParams.id }, // 쿼리 매개변수 설정
-        "Content-Type": "application/json",
-        withCredentials: true,
-      });
-      console.log("요청 성공:", response.data);
-      //setQueryParams(...response.data.bookSales, ...response.data.reviewList);
-      console.log("쿼리 파람 : " + queryParams);
-      setIsLoading(false);
-
-      // 여기서 응답을 처리합니다.
-    } catch (error) {
-      console.error("요청 실패:", error);
-      // 여기서 오류를 처리합니다.
-    }
-  };
+  // const getSales = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     console.log("쿼리 파람 : " + queryParams.id);
+  //     const response = await axios.get("http://localhost:8080/bookSales", {
+  //       params: { id: queryParams.id },
+  //       "Content-Type": "application/json",
+  //       withCredentials: true,
+  //     });
+  //     console.log("요청 성공:", response.data);
+  //     setIsLoading(false);
+  //   } catch (error) {
+  //     console.error("요청 실패:", error);
+  //   }
+  // };
 
   const addToCart = async () => {
     setLoading(true);
@@ -65,18 +60,17 @@ const BookSalesDetail = () => {
   const createOrder = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       if (!token) {
-        throw new Error('No access token found');
+        throw new Error("No access token found");
       }
       const requestData = {
         bookId: queryParams.id,
         orderDate: new Date(), // 현재 날짜로 설정
       };
-      console.log("queryParams.id : " + queryParams.id);
       const response = await axios.post(`http://localhost:8080/api/order`, requestData, {
         params: { id: queryParams.id },
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
       console.log(response.data.id);
@@ -89,22 +83,30 @@ const BookSalesDetail = () => {
   };
 
   return (
-    <div className="sales">
-      <button onClick={getSales} />
-
+    <div className={styles.sales}>
       {isLoading && <div>로딩중</div>}
 
       {!isLoading && (
-        <div>
-          <img src={queryParams.image} alt={queryParams.title} />
-          <h3>{queryParams.title}</h3>
-          <div>
-            <p>{queryParams.discount}</p>
-            <p>{queryParams.stock}</p>
-            <button onClick={addToCart}> {loading ? "추가 중..." : "장바구니 담기"}</button>
-            <button onClick={createOrder}> {loading ? "추가 중..." : "바로 구매"}</button>
+        <div className={styles.detailsContainer}>
+          <div className={styles.bookInfo}>
+            <div className={styles.imageContainer}>
+              <img src={queryParams.image} alt={queryParams.title} className={styles.bookImage} />
+            </div>
+            <div className={styles.bookDetails}>
+              <h3 className={styles.title}>{queryParams.title}</h3>
+              <p className={styles.price}>가격: {queryParams.discount}원</p>
+              <p className={styles.stock}>재고: {queryParams.stock}권</p>
+              <div className={styles.buttons}>
+                <button onClick={addToCart} disabled={loading}>
+                  {loading ? "추가 중..." : "장바구니 담기"}
+                </button>
+                <button onClick={createOrder} disabled={loading}>
+                  {loading ? "추가 중..." : "바로 구매"}
+                </button>
+              </div>
+            </div>
           </div>
-          <p>{queryParams.description}</p>
+          <p className={styles.description}>{queryParams.description}</p>
           <div>
             <BookReview bookSales={queryParams} />
             <PostBookReview bookSalesInfo={queryParams} />
@@ -112,7 +114,6 @@ const BookSalesDetail = () => {
         </div>
       )}
 
-      {/* 장바구니에 추가 시 알림 창 */}
       {showNotification && (
         <Notification
           message="장바구니에 추가되었습니다."

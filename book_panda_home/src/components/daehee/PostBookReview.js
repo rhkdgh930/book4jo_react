@@ -45,7 +45,7 @@ const PostBookReview = ({ bookSalesInfo }) => {
         ...queryParams,
       });
       const response = await axios.post(
-        "http://localhost:8080/review",
+        "/api/review",
         queryParams,
         {
           headers: {

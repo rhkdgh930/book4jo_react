@@ -37,20 +37,21 @@ function BookDetail(props) {
 
   const enroll = async () => {
     try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        throw new Error("No access token found");
-      }
-      console.log("토큰 : " + token);
+      // const token = localStorage.getItem("accessToken");
+      // if (!token) {
+      //   throw new Error("No access token found");
+      // }
+      // console.log("토큰 : " + token);
       setQueryParams({
         ...queryParams,
       });
       console.log("쿼리 파람 : " + JSON.stringify(queryParams));
-      const response = await axios.post("http://localhost:8080/bookSales", queryParams, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+      const response = await axios.post("/api/bookSales", queryParams, {
+        // headers: {
+        //   "Content-Type": "application/json",
+        //   // Authorization: `Bearer ${token}`,
+        // },
+        "Content-Type": "application/json",
         withCredentials: true,
       });
       console.log("요청 성공:", response.data);

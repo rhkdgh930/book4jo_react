@@ -1,0 +1,141 @@
+:root {
+  --primary-color: #006769;
+  --hover-color: #005457;
+  --text-color: #333;
+}
+
+.sales {
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.detailsContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.bookInfo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.imageContainer {
+  flex: 1;
+  margin-right: 20px; /* 이미지와 책 정보 사이의 간격 조정 */
+}
+
+.bookImage {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.bookDetails {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 1.8em;
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.price,
+.stock {
+  margin: 5px 0;
+  font-size: 1.2em;
+  line-height: 1.5; /* 줄 간격 조정 */
+}
+
+.bookDetails p {
+  margin: 5px 0;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px; /* 버튼 위쪽 간격 추가 */
+}
+
+.buttons button {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px;
+  cursor: pointer;
+  font-size: 1em;
+  text-align: center;
+}
+
+.buttons button:hover {
+  background-color: var(--hover-color);
+}
+
+.description {
+  margin-top: 20px;
+  font-size: 1.1em;
+  color: var(--text-color);
+}
+
+.reviewSection {
+  margin-top: 30px;
+}
+
+.reviewTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.reviewTable th,
+.reviewTable td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: left;
+}
+
+.reviewTable th {
+  background-color: #f0f0f0;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.pagination button {
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.pagination button:hover {
+  background-color: var(--hover-color);
+}
+
+.notification {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
