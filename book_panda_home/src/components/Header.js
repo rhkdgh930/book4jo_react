@@ -36,7 +36,6 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       <div className={styles.topContainer}>
         <div className={styles.leftCategoryContainer}>
           <div><Link to="/">HOME</Link></div>
-          <div>국내도서</div>
         </div>
         <div className={styles.rightCategoryContainer}>
           {isLoggedIn ? (

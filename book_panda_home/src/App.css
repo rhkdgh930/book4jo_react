@@ -1,7 +1,16 @@
-a{
+a {
     text-decoration: none;
 }
 
 a:visited {
-    color: white;
+color: white; /* 기본 색상 상속 */
 }
+
+#logoLink {
+color: black; /* 명시적으로 설정 */
+}
+
+#logoLink:visited {
+color: black; /* 명시적으로 설정 */
+}
+  
