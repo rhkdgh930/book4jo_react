@@ -60,9 +60,9 @@ const BookSalesDetail = () => {
   const createOrder = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       if (!token) {
-        throw new Error('No access token found');
+        throw new Error("No access token found");
       }
       const requestData = {
         bookId: queryParams.id,
@@ -96,8 +96,12 @@ const BookSalesDetail = () => {
               <p className={styles.price}>가격: {queryParams.discount}원</p>
               <p className={styles.stock}>재고: {queryParams.stock}권</p>
               <div className={styles.buttons}>
-                <button onClick={addToCart} disabled={loading}>{loading ? "추가 중..." : "장바구니 담기"}</button>
-                <button onClick={createOrder} disabled={loading}>{loading ? "추가 중..." : "바로 구매"}</button>
+                <button onClick={addToCart} disabled={loading}>
+                  {loading ? "추가 중..." : "장바구니 담기"}
+                </button>
+                <button onClick={createOrder} disabled={loading}>
+                  {loading ? "추가 중..." : "바로 구매"}
+                </button>
               </div>
             </div>
           </div>

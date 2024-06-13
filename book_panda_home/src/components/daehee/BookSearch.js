@@ -43,7 +43,7 @@ function BookSearch() {
   const getBook = async () => {
     try {
       console.log(queryParams);
-      const response = await axios.post("http://localhost:8080/book", queryParams, {
+      const response = await axios.post("/api/book", queryParams, {
         "Content-Type": "application/json",
         withCredentials: true,
       });
