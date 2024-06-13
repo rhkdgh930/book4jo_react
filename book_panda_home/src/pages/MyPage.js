@@ -87,32 +87,6 @@ const MyPage = () => {
         throw new Error("No access token found");
       }
 
-      const response = await axios.put(`http://localhost:8080/api/mypage/${field}`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        params: {
-          value: userInfo[field],
-        },
-      });
-      if (response.status === 200) {
-        alert("업데이트 성공");
-        setEditMode((prevState) => ({ ...prevState, [field]: false }));
-      }
-    } catch (error) {
-      console.error("업데이트 실패:", error);
-      alert("업데이트 실패");
-    }
-  };
-
-  const handlePasswordUpdate = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        throw new Error("No access token found");
-      }
-
       const response = await axios.put("http://localhost:8080/api/mypage/change-password", null, {
         headers: {
           Authorization: `Bearer ${token}`,
