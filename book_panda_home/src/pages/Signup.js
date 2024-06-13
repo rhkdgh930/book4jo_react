@@ -58,14 +58,7 @@ const Signup = () => {
     }
     try {
       await signUp(email, pw, name, address, phoneNumber);
-
-      // 회원가입 후 자동으로 로그인 처리
-      const loginResponse = await login({ email, pw });
-      const { accessToken, refreshToken } = loginResponse;
-      localStorage.setItem('access', accessToken);
-      localStorage.setItem('refresh', refreshToken);
-
-      router('/');
+      router('/signin');
     } catch (error) {
       console.error("회원가입 실패 :", error);
       setMessage('회원가입 실패.');
