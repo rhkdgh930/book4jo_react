@@ -26,6 +26,10 @@ export const Button = ({ children, onClick }) => (
   <button className="button" onClick={onClick}>{children}</button>
 );
 
+export const ButtonB = ({ children, onClick }) => (
+  <button className="buttonB" onClick={onClick}>{children}</button>
+);
+
 export const CustomLink = ({ to, children }) => (
   <Link className="custom-link" to={to}>{children}</Link>
 );

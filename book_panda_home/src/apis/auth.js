@@ -13,6 +13,7 @@ export const login = async (credentials) => {
 export const logout = async () => {
   try {
     await axios.post('http://localhost:8080/api/users/logout', {}, { withCredentials: true });
+    localStorage.removeItem('accessToken');
   } catch (error) {
     console.error('Logout error:', error.response ? error.response.data : error.message);
     throw error;

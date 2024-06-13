@@ -1,3 +1,10 @@
+form {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 1030px;
+  margin: 5rem auto;
+}
 .select-page {
   width: 20%;
   background-color: #d3d3d3; /* 회색 배경 */
@@ -5,19 +12,22 @@
   box-sizing: border-box;
   float: left; /* 왼쪽에 위치 */
   height: 100vh; /* 전체 높이를 차지 */
+  border-right: 1px solid #ccc; /* 오른쪽 경계선 추가 */
 }
 
 .select-page-button {
   display: block; /* 버튼을 블록 요소로 설정 */
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 15px;
+  margin-bottom: 15px; /* 여백 증가 */
   background-color: #006769;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   text-align: center;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease; /* 부드러운 색상 전환 */
 }
 
 .select-page-button:hover {
@@ -26,49 +36,83 @@
 
 .mypage-container {
   width: 80%;
+  height: 100vh; /* 전체 높이를 차지 */
   margin: 0;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  background-color: #E0FBE2;
-  float: right; /* 오른쪽에 위치 */
+  padding: 30px; /* 패딩 증가 */
   box-sizing: border-box;
+  text-align: left; /* 텍스트를 왼쪽 정렬 */
+  overflow-y: auto; /* 스크롤 가능 */
 }
 
-h2 {
+.mypage-container h2 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px; /* 여백 증가 */
+  font-size: 24px; /* 글자 크기 증가 */
+  color: #333; /* 글자 색상 변경 */
 }
 
 .info-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 15px;
+  background-color: #E0FBE2;
+  padding: 15px; /* 패딩 추가 */
+  border-radius: 5px; /* 둥근 모서리 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
+  flex: 1; /* 남은 공간 차지 */
 }
 
 .info-item label {
-  width: 20%;
+  width: 30%;
   font-weight: bold;
+  color: #555; /* 글자 색상 변경 */
 }
 
-.info-item input {
-  width: 60%;
-  padding: 8px;
-  margin-right: 10px;
+.info-item .mypage-input {
+  width: 70%;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  box-sizing: border-box;
 }
 
-.info-item button {
-  padding: 8px 12px;
+.inputs-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 요소 사이의 공간을 균등 분배 */
+  margin-bottom: 20px; /* 여백 조정 */
+  font-size: 18px; /* 글자 크기 조정 */
+}
+
+.inputs-row .info-item {
+  flex: 1; /* 남은 공간 차지 */
+  margin-right: 10px; /* 버튼과의 간격 */
+}
+
+.inputs-row button {
+  height: 50px; /* 높이 통일 */
   background-color: #006769;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  padding: 0 15px; /* 패딩 추가 */
+  transition: background-color 0.3s ease; /* 부드러운 색상 전환 */
 }
 
-.info-item button:hover {
+.inputs-row .fake {
+  width: 56.67px;
+}
+
+.inputs-row button:hover {
   background-color: #005457;
+}
+
+.inputs-row .label {
+  flex: 0 0 30%; /* 고정 너비 */
+  margin-right: 10px; /* 입력 필드와의 간격 */
+}
+
+.inputs-row .mypage-input {
+  flex: 1; /* 남은 공간 차지 */
+  padding: 10px;
 }
