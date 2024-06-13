@@ -33,3 +33,11 @@ export const ButtonB = ({ children, onClick }) => (
 export const CustomLink = ({ to, children }) => (
   <Link className="custom-link" to={to}>{children}</Link>
 );
+
+export const Error = ({ children }) => (
+  <p className="error">{children}</p>
+);
+
+export const Red = ({ children }) => (
+  <p className="red">{children}</p>
+);
