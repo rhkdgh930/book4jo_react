@@ -1,0 +1,60 @@
+.orderInfo {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.heading {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.subheading {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.orderTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.orderTable th,
+.orderTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.orderDetail {
+  margin-bottom: 10px;
+}
+
+.addressSection {
+  margin-top: 20px;
+}
+
+.addressInput {
+  width: calc(100% - 110px);
+  padding: 8px;
+  margin-right: 10px;
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 18px;
+}
