@@ -109,31 +109,31 @@ function Cart() {
     }
 
     const handleOrder = async () => {
-        setIsLoading(true);
-        try {
-            await saveCartState();
+        // setIsLoading(true);
+        // try {
+        //     await saveCartState();
 
-            // 주문 추가
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-                throw new Error('No access token found');
-            }
-            const requestData = {
-                orderDate: new Date(), // 현재 날짜로 설정
-            };
-            const response = await axios.post("http://localhost:8080/api/orders", requestData, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                withCredentials: true,
-            });
-            navigate(`/order?orderId=${response.data.id}`);
-        } catch (error) {
-            console.error("주문 오류: ", error);
-        } finally {
-            setIsLoading(false);
-        }
+        //     // 주문 추가
+        //     const token = localStorage.getItem('accessToken');
+        //     if (!token) {
+        //         throw new Error('No access token found');
+        //     }
+        //     const requestData = {
+        //         orderDate: new Date(), // 현재 날짜로 설정
+        //     };
+        //     const response = await axios.post("http://localhost:8080/api/orders", requestData, {
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //             Authorization: `Bearer ${token}`,
+        //         },
+        //         withCredentials: true,
+        //     });
+        navigate(`/cart/order`);
+        // } catch (error) {
+        //     console.error("주문 오류: ", error);
+        // } finally {
+        //     setIsLoading(false);
+        // }
     };
 
     const handleGoBack = () => {

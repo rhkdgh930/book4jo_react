@@ -1,36 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import OrderItem from './OrderItem';
 import Post from './Post';
 import styles from '../styles/order.module.css';
 import style from '../styles/CartItem.module.css';
 
-function BookSalesOrder() {
-    const [searchParams] = useSearchParams();
-    const [book, setBook] = useState(null);
+function CartOrder() {
+    const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(true);
     const [address, setAddress] = useState(''); // 주소 상태 추가
     const [showPost, setShowPost] = useState(false); // 팝업 상태 추가
     const navigate = useNavigate();
 
     useEffect(() => {
-        const bookId = searchParams.get('bookId');
-        console.log('bookId:', bookId);
-        if (bookId) {
-            fetchBookOrder(bookId);
-        }
-    }, [searchParams]);
+        fetchCartOrder();
+    }, []);
 
-    const fetchBookOrder = async (bookId) => {
+    const fetchCartOrder = async () => {
         try {
-            console.log('Fetching book order for bookId:', bookId);
-            const response = await axios.get('http://localhost:8080/bookSales/order', {
-                params: { bookId },
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                throw new Error('No access token found');
+            }
+            const response = await axios.get('http://localhost:8080/api/cart/order', {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
                 withCredentials: true,
             });
-            setBook(response.data);
-            console.log('Book data:', response.data);
+            setCart(response.data);
         } catch (error) {
             console.error('주문 정보 요청 실패:', error);
         } finally {
@@ -64,23 +63,24 @@ function BookSalesOrder() {
                     </tr>
                 </thead>
                 <tbody>
-                    {book && (
-                        <tr>
+                    {cart && cart.cartItems.map((item) => (
+                        <tr key={item.id}>
                             <td>
                                 <div className={style.itemInfo}>
-                                    <img src={book.image} alt={book.title} className={style.itemImage} />
-                                    <span className={style.itemTitle}>{book.title}</span>
+                                    <img src={item.image} alt={item.title} className={style.itemImage} />
+                                    <span className={style.itemTitle}>{item.title}</span>
                                 </div>
                             </td>
-                            <td>{book.quantity.toLocaleString()}</td>
-                            <td>{book.discount.toLocaleString()}원</td>
+                            <td>{item.quantity.toLocaleString()}</td>
+                            <td>{(item.quantity * item.price).toLocaleString()}원</td>
                         </tr>
-                    )}
+                    ))}
                 </tbody>
             </table>
-            <div className={styles.orderDetail}>총 가격: {book && book.discount.toLocaleString()}원</div>
-            <div className={styles.orderDetail}>사용자 이름: {book && book.userName}</div>
-            <div className={styles.orderDetail}>주소: {book && book.userAddress}</div>
+            <div className={styles.orderDetail}>총 가격: {cart && cart.totalPrice.toLocaleString()}원</div>
+            <div className={styles.orderDetail}>사용자 이름: {cart && cart.userName}</div>
+            <div className={styles.orderDetail}>주소: {cart && cart.userAddress}</div>
+            <div className={styles.orderDetail}>전화번호: {cart && cart.userPhoneNumber}</div>
 
             <div className={styles.addressSection}>
                 <div className={styles.orderDetail}>
@@ -112,9 +112,8 @@ function BookSalesOrder() {
             </div>
 
             <button className={styles.button} onClick={handlePayment}>결제하기</button>
-            {/* <button className={styles.button} onClick={handleCancelOrder}>주문 취소</button> */}
         </div>
     );
 }
 
-export default BookSalesOrder;
+export default CartOrder;
