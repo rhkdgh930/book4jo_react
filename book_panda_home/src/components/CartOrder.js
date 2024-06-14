@@ -22,7 +22,7 @@ function CartOrder() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            const response = await axios.get('http://localhost:8080/api/cart/order', {
+            const response = await axios.get('/api/cart/order', {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -38,7 +38,8 @@ function CartOrder() {
     };
 
     const handlePayment = () => {
-        // 결제 처리 로직
+        //결제 버튼을 누르면 order가 생성되도록 설정!
+
     };
 
     const formatDate = (dateString) => {

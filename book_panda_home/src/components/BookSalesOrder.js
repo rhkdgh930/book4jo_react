@@ -25,7 +25,7 @@ function BookSalesOrder() {
     const fetchBookOrder = async (bookId) => {
         try {
             console.log('Fetching book order for bookId:', bookId);
-            const response = await axios.get('http://localhost:8080/bookSales/order', {
+            const response = await axios.get('/api/bookSales/order', {
                 params: { bookId },
                 withCredentials: true,
             });
