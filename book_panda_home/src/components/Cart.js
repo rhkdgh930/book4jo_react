@@ -20,7 +20,7 @@ function Cart() {
       if (!token) {
         throw new Error("No access token found");
       }
-      
+
       const response = await axios.get("/api/cart/items", {
         headers: {
           "Content-Type": "application/json",
@@ -61,13 +61,18 @@ function Cart() {
   };
 
   const handleQuantityChange = (id, quantity) => {
+    const item = items.find((item) => item.id === id);
+    if (quantity > item.stock) {
+      alert(`최대 주문 가능 수량은 ${item.stock}권입니다.`);
+      return;
+    }
     if (quantity < 1) return;
     setItems(items.map((item) => (item.id === id ? { ...item, quantity: Number(quantity) } : item)));
     updateCartItemQuantity(id, quantity);
   };
 
   const handleCheckChange = (id) => {
-    const updatedItems = items.map((item) => 
+    const updatedItems = items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
     setItems(updatedItems);
@@ -81,23 +86,25 @@ function Cart() {
   };
 
   const handleRemoveItem = async (id) => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        throw new Error("No access token found");
+    if (window.confirm("해당 상품을 삭제하시겠습니까?")) {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+          throw new Error("No access token found");
+        }
+
+        await axios.delete(`/api/cart/items/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        });
+
+        setItems(items.filter((item) => item.id !== id));
+      } catch (error) {
+        console.error("Error deleting cart item", error);
       }
-
-      await axios.delete(`/api/cart/items/${id}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      });
-
-      setItems(items.filter((item) => item.id !== id));
-    } catch (error) {
-      console.error("Error deleting cart item", error);
     }
   };
 

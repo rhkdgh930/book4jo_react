@@ -41,7 +41,7 @@ const BookSalesDetail = () => {
       if (!token) {
         throw new Error("No access token found");
       }
-      const response = await axios.post("http://localhost:8080/api/cart/items", null, {
+      const response = await axios.post("/api/cart/items", null, {
         params: { id: queryParams.id },
         headers: {
           "Content-Type": "application/json",
