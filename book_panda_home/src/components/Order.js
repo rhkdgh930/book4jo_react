@@ -183,6 +183,51 @@ function Order() {
         return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
     };
 
+    const handleAddress = () => {
+        new window.daum.Postcode({
+            oncomplete: (data) => {
+                const fullAddress = data.address;
+                const extraAddress = data.bname ? ` (${data.bname})` : '';
+                const fullAddrWithPostcode = `${fullAddress}${extraAddress} (${data.zonecode})`;
+                setOrder({
+                    ...order,
+                    userAddress: fullAddrWithPostcode,
+                    userPostcode: data.zonecode
+                });
+            }
+        }).open();
+    };
+
+    const openPaymentWindow = () => {
+        const width = 600;
+        const height = 400;
+        const left = (window.screen.width / 2) - (width / 2);
+        const top = (window.screen.height / 2) - (height / 2);
+
+        const paymentWindow = window.open("", "결제 정보", `width=${width},height=${height},top=${top},left=${left}`);
+        paymentWindow.document.write(`
+            <html>
+            <head><title>결제 정보</title></head>
+            <body>
+                <h3>결제 정보</h3>
+                <p><strong>상품명:</strong> ${paymentInfo.product_name}</p>
+                <p><strong>결제 금액:</strong> ${paymentInfo.amount}</p>
+                <p><strong>이메일:</strong> ${paymentInfo.buyer_email}</p>
+                <p><strong>구매자 이름:</strong> ${paymentInfo.buyer_name}</p>
+                <p><strong>구매자 전화번호:</strong> ${paymentInfo.buyer_tel}</p>
+                <p><strong>구매자 주소:</strong> ${paymentInfo.buyer_addr}</p>
+                <p><strong>우편번호:</strong> ${paymentInfo.buyer_postcode}</p>
+            </body>
+            </html>
+        `);
+    };
+
+    useEffect(() => {
+        if (paymentInfo) {
+            openPaymentWindow();
+        }
+    }, [paymentInfo]);
+
     return (
         <div className={styles.orderInfo}>
             {order ? (
@@ -208,21 +253,9 @@ function Order() {
                     <div className={styles.orderDetail}>총 가격: {order.totalPrice.toLocaleString()}원</div>
                     <div className={styles.orderDetail}>사용자 이름: {order.userName}</div>
                     <div className={styles.orderDetail}>주소: {order.userAddress}</div>
-                    <div></div>
+                    <button className={styles.button} onClick={handleAddress}>주소 검색</button>
                     <button className={styles.button} onClick={requestPay}>결제하기</button>
                     <button className={styles.button} onClick={handleCancelOrder}>주문 취소</button>
-                    {paymentInfo && (
-                        <div className={styles.paymentResult}>
-                            <h3>결제 정보</h3>
-                            <p><strong>상품명:</strong> {paymentInfo.product_name}</p>
-                            <p><strong>결제 금액:</strong> {paymentInfo.amount}</p>
-                            <p><strong>이메일:</strong> {paymentInfo.buyer_email}</p>
-                            <p><strong>구매자 이름:</strong> {paymentInfo.buyer_name}</p>
-                            <p><strong>구매자 전화번호:</strong> {paymentInfo.buyer_tel}</p>
-                            <p><strong>구매자 주소:</strong> {paymentInfo.buyer_addr}</p>
-                            <p><strong>우편번호:</strong> {paymentInfo.buyer_postcode}</p>
-                        </div>
-                    )}
                     {error && (
                         <div className={styles.errorInfo}>
                             <h3>결제 오류</h3>
