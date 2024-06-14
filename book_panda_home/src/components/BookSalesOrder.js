@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+// import { useSearchParams, useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
 import Post from './Post';
 import styles from '../styles/order.module.css';
