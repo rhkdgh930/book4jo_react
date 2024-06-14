@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import OrderItem from './OrderItem';
-import Post from './Post';
 import styles from '../styles/order.module.css';
 import style from '../styles/CartItem.module.css';
 
@@ -10,26 +8,39 @@ function BookSalesOrder() {
     const [searchParams] = useSearchParams();
     const [book, setBook] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [address, setAddress] = useState(''); // 주소 상태 추가
+    const [address, setAddress] = useState('');
     const [detailedAddress, setDetailedAddress] = useState('');
     const [postCode, setPostCode] = useState('');
     const [scriptLoaded, setScriptLoaded] = useState(false);
     const [errors, setErrors] = useState({});
-    const [deliveryType, setDeliveryType] = useState('default'); // 배송지 타입 추가
+    const [deliveryType, setDeliveryType] = useState('default');
+    const [error, setError] = useState(null);
+    const [paymentInfo, setPaymentInfo] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         const bookId = searchParams.get('bookId');
         const daumPostcodeScript = document.createElement("script");
+
+        const jquery = document.createElement("script");
+        jquery.src = "https://code.jquery.com/jquery-1.12.4.min.js";
+        const iamport = document.createElement("script");
+        iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.2.0.js";
+
         daumPostcodeScript.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-        daumPostcodeScript.onload = () => setScriptLoaded(true); // 스크립트 로드 완료 시 상태 업데이트
+        daumPostcodeScript.onload = () => setScriptLoaded(true);
+        document.head.appendChild(jquery);
+        document.head.appendChild(iamport);
         document.head.appendChild(daumPostcodeScript);
+
         if (bookId) {
             fetchBookOrder(bookId);
         }
 
         return () => {
             document.head.removeChild(daumPostcodeScript);
+            document.head.removeChild(jquery);
+            document.head.removeChild(iamport);
         };
     }, [searchParams]);
 
@@ -41,9 +52,9 @@ function BookSalesOrder() {
             });
             const bookData = response.data;
             setBook(bookData);
-            setAddress(bookData.userAddress1); // 기본 주소 설정
-            setDetailedAddress(bookData.userAddress2); // 상세 주소 설정
-            setPostCode(bookData.userPostCode); // 우편번호 설정
+            setAddress(bookData.userAddress1);
+            setDetailedAddress(bookData.userAddress2);
+            setPostCode(bookData.userPostCode);
         } catch (error) {
             console.error('주문 정보 요청 실패:', error);
         } finally {
@@ -68,43 +79,72 @@ function BookSalesOrder() {
 
     const handlePayment = async () => {
         setLoading(true);
-        const bookId = searchParams.get('bookId');
-        try {
-            const getKoreanDate = () => {
-                const date = new Date();
-                const offset = 9 * 60; // 한국 시간은 UTC+9
-                const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
-                return koreanDate;
-            };
-
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-                throw new Error('No access token found');
-            }
-            const requestData = {
-                bookId: bookId,
-                orderDate: getKoreanDate(), // 현재 날짜로 설정
-                address1: address,
-                address2: detailedAddress,
-                postCode: postCode,
-            };
-            console.log(requestData);
-            const response = await axios.post(`/api/order`, requestData, {
-                params: { id: bookId },
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
-                withCredentials: true,
-            });
-            console.log(response.data.id);
-        } catch (error) {
-            console.error("주문 오류: ", bookId, error);
-        } finally {
+        const { IMP } = window;
+        if (!IMP) {
+            console.error('IAMPORT가 로드되지 않았습니다.');
             setLoading(false);
+            return;
         }
-    };
 
-    const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-        return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
+        IMP.init('imp14170881'); // 아임포트 상점 식별 코드 입력
+
+        IMP.request_pay({
+            pg: 'html5_inicis',
+            pay_method: 'card',
+            merchant_uid: `merchant_${new Date().getTime()}`,
+            name: book.productName,
+            amount: book.totalPrice,
+            buyer_email: book.userEmail,
+            buyer_name: book.userName,
+            buyer_tel: book.userPhoneNumber,
+            buyer_addr: address,
+            buyer_postcode: postCode,
+        }, async (rsp) => {
+            if (rsp.success) {
+                try {
+                    const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
+                    if (rsp.paid_amount === data.amount) {
+                        const paymentData = {
+                            impUid: rsp.imp_uid,
+                            merchantUid: rsp.merchant_uid,
+                            amount: rsp.paid_amount,
+                            buyerEmail: book.userEmail,
+                            buyerName: book.userName,
+                            buyerTel: book.userPhoneNumber,
+                            buyerAddr: address,
+                            buyerPostcode: postCode,
+                            status: rsp.status,
+                        };
+
+                        await axios.post('/api/payment/save', paymentData);
+
+                        setPaymentInfo({
+                            product_name: book.productName,
+                            amount: rsp.paid_amount,
+                            buyer_email: book.userEmail,
+                            buyer_name: book.userName,
+                            buyer_tel: book.userPhoneNumber,
+                            buyer_addr: address,
+                            buyer_postcode: postCode,
+                        });
+                        setError(null);
+                        alert('결제 성공');
+                    } else {
+                        setError('결제 검증 실패: 금액이 일치하지 않습니다.');
+                        alert('결제 실패');
+                    }
+                } catch (error) {
+                    console.error('결제 검증 및 저장 중 오류 발생:', error);
+                    setError('결제 검증 및 저장 중 오류가 발생했습니다.');
+                    alert('결제 실패');
+                }
+            } else {
+                setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
+                alert('결제 실패');
+            }
+
+            setLoading(false);
+        });
     };
 
     if (loading) {
@@ -205,6 +245,18 @@ function BookSalesOrder() {
             )}
 
             <button className={styles.button} onClick={handlePayment}>결제하기</button>
+
+            {error && <div className={styles.error}>{error}</div>}
+            {paymentInfo && (
+                <div className={styles.paymentInfo}>
+                    <h3>결제 정보</h3>
+                    <div>상품명: {paymentInfo.product_name}</div>
+                    <div>결제 금액: {paymentInfo.amount.toLocaleString()}원</div>
+                    <div>이메일: {paymentInfo.buyer_email}</div>
+                    <div>주소: {paymentInfo.buyer_addr}</div>
+                    <div>우편번호: {paymentInfo.buyer_postcode}</div>
+                </div>
+            )}
         </div>
     );
 }
