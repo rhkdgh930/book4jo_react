@@ -1,17 +1,27 @@
 .orderInfo {
-  padding: 20px;
   max-width: 800px;
   margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  font-family: 'Arial, sans-serif';
 }
 
 .heading {
   font-size: 24px;
+  font-weight: bold;
   margin-bottom: 20px;
+  text-align: center;
+  color: #333;
 }
 
 .subheading {
   font-size: 20px;
+  font-weight: bold;
   margin-bottom: 10px;
+  color: #555;
 }
 
 .orderTable {
@@ -23,51 +33,67 @@
 .orderTable th,
 .orderTable td {
   border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
+  padding: 10px;
+  text-align: center;
+}
+
+.orderTable th {
+  background-color: #f4f4f4;
+  color: #333;
 }
 
 .orderDetail {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.address-input-wrapper {
+  display: flex;
+  align-items: center;
   margin-bottom: 10px;
 }
 
-.addressSection {
-  margin-top: 20px;
-}
-
-.addressInput {
-  width: calc(100% - 110px);
-  padding: 8px;
+.address-input-wrapper input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   margin-right: 10px;
+  font-size: 14px;
 }
 
-.button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+.address-input-wrapper button {
+  padding: 10px 15px;
   border: none;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 4px;
   cursor: pointer;
-  margin-right: 10px;
+  font-size: 14px;
 }
 
-.button:hover {
+.address-input-wrapper button:hover {
   background-color: #0056b3;
 }
 
-.errorMessage {
-  color: red;
-  font-size: 18px;
+.custom-text {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #333;
 }
 
-.addressButton {
-  margin-top: 10px;
-  padding: 10px 20px;
-  background-color: #28a745;
-  color: white;
+.button {
+  width: 100%;
+  padding: 15px;
   border: none;
+  background-color: #006769;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 16px;
   cursor: pointer;
 }
 
-.addressButton:hover {
-  background-color: #218838;
+.button:hover {
+  background-color: #006600;
 }

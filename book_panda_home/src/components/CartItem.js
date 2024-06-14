@@ -3,6 +3,16 @@ import styles from '../styles/CartItem.module.css';
 
 function CartItem({ item, onQuantityChange, onCheckChange, onRemove }) {
 
+    const handleDecrease = () => {
+        if (item.quantity > 1) {
+            onQuantityChange(item.id, item.quantity - 1);
+        }
+    };
+
+    const handleIncrease = () => {
+        onQuantityChange(item.id, item.quantity + 1);
+    };
+
     return (
         <tr>
             <td>
@@ -19,13 +29,17 @@ function CartItem({ item, onQuantityChange, onCheckChange, onRemove }) {
                 </div>
             </td>
             <td>
-                <input
-                    type="number"
-                    value={item.quantity}
-                    onChange={(event) => onQuantityChange(item.id, event.target.value)}
-                    min="1"
-                    className={styles.quantityInput}
-                />
+                <div className={styles.quantityContainer}>
+                    <button className={styles.quantityButton} onClick={handleDecrease}>-</button>
+                    <input
+                        type="number"
+                        value={item.quantity}
+                        onChange={(event) => onQuantityChange(item.id, parseInt(event.target.value))}
+                        min="1"
+                        className={styles.quantityInput}
+                    />
+                    <button className={styles.quantityButton} onClick={handleIncrease}>+</button>
+                </div>
             </td>
             <td>{(item.price * item.quantity).toLocaleString()}원</td>
             <td>
