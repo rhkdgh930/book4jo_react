@@ -14,11 +14,38 @@
     text-align: left;
 }
 
+.quantityContainer {
+    display: flex;
+    align-items: center;
+}
+
 .quantityInput {
-    width: 20px;
-    height: 10px;
+    width: 40px;  /* 수정된 너비 */
+    height: 20px;  /* 수정된 높이 */
     padding: 5px; 
     text-align: center;
+    border: 1px solid #ccc; /* 테두리 추가 */
+}
+
+.quantityButton {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #006769;
+    background: none;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    margin: 0 5px;
+    border-radius: 50%;
+}
+
+.quantityButton:hover {
+    color: #006769; /* 포인트 컬러의 어두운 버전 */
+    border-color: #006769; /* 포인트 컬러의 어두운 버전 */
 }
 
 .deleteButton {

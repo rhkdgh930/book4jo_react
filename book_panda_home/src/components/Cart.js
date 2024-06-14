@@ -12,18 +12,6 @@ function Cart() {
 
   useEffect(() => {
     fetchCartItems();
-
-    const handlePageHide = async (event) => {
-      await saveCartState();
-    };
-
-    window.addEventListener("pagehide", handlePageHide);
-    window.addEventListener("unload", handlePageHide);
-
-    return () => {
-      window.removeEventListener("pagehide", handlePageHide);
-      window.removeEventListener("unload", handlePageHide);
-    };
   }, []);
 
   const fetchCartItems = async () => {
@@ -32,7 +20,8 @@ function Cart() {
       if (!token) {
         throw new Error("No access token found");
       }
-      const response = await axios.get("/api/api/cart/items", {
+      
+      const response = await axios.get("/api/cart/items", {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -51,26 +40,15 @@ function Cart() {
     }
   };
 
-  const saveCartState = async () => {
+  const updateCartItemQuantity = async (id, quantity) => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
         throw new Error("No access token found");
       }
 
-      const cartItems = items.map((item) => ({
-        id: item.id,
-        bookSalesId: item.bookSalesId,
-        title: item.title,
-        image: item.image,
-        quantity: item.quantity,
-        price: item.price,
-        checked: item.checked,
-      }));
-
-      console.log("Cart Items:", cartItems);
-
-      await axios.post("/api/api/cart/save", cartItems, {
+      await axios.patch(`/api/cart/items/${id}/quantity`, null, {
+        params: { quantity },
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -78,16 +56,22 @@ function Cart() {
         withCredentials: true,
       });
     } catch (error) {
-      console.error("Error saving cart state", error);
+      console.error("Error updating cart item quantity", error);
     }
   };
 
   const handleQuantityChange = (id, quantity) => {
+    if (quantity < 1) return;
     setItems(items.map((item) => (item.id === id ? { ...item, quantity: Number(quantity) } : item)));
+    updateCartItemQuantity(id, quantity);
   };
 
   const handleCheckChange = (id) => {
-    setItems(items.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item)));
+    const updatedItems = items.map((item) => 
+      item.id === id ? { ...item, checked: !item.checked } : item
+    );
+    setItems(updatedItems);
+    setAllChecked(updatedItems.every(item => item.checked));
   };
 
   const handleSelectAllToggle = () => {
@@ -96,31 +80,60 @@ function Cart() {
     setItems(items.map((item) => ({ ...item, checked: newAllChecked })));
   };
 
-  const handleRemoveItem = (id) => {
-    if (window.confirm("해당 상품을 삭제하시겠습니까?")) {
+  const handleRemoveItem = async (id) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+        throw new Error("No access token found");
+      }
+
+      await axios.delete(`/api/cart/items/${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      });
+
       setItems(items.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error deleting cart item", error);
     }
   };
 
-  const handleRemoveSelected = () => {
+  const handleRemoveSelected = async () => {
     if (window.confirm("선택한 상품을 삭제하시겠습니까?")) {
-      setItems(items.filter((item) => !item.checked));
+      const selectedItems = items.filter((item) => item.checked);
+      for (const item of selectedItems) {
+        await handleRemoveItem(item.id);
+      }
     }
   };
 
   const handleOrder = async () => {
     setIsLoading(true);
     try {
-      await saveCartState();
-
-      // 주문 추가
       const token = localStorage.getItem("accessToken");
       if (!token) {
         throw new Error("No access token found");
       }
+
+      const selectedItems = items.filter((item) => item.checked).map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+      }));
+
+      if (selectedItems.length === 0) {
+        alert("선택한 상품이 없습니다.");
+        setIsLoading(false);
+        return;
+      }
+
       const requestData = {
-        orderDate: new Date(), // 현재 날짜로 설정
+        orderDate: new Date(),
+        items: selectedItems,
       };
+
       const response = await axios.post("http://localhost:8080/api/orders", requestData, {
         headers: {
           "Content-Type": "application/json",
@@ -137,7 +150,6 @@ function Cart() {
   };
 
   const handleGoBack = () => {
-    saveCartState();
     navigate(-1);
   };
 
