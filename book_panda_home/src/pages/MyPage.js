@@ -87,7 +87,7 @@ const MyPage = () => {
         throw new Error("No access token found");
       }
 
-      const response = await axios.put("http://localhost:8080/api/mypage/change-password", null, {
+      const response = await axios.put("api/mypage/change-password", null, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

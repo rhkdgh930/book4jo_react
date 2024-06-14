@@ -1,13 +1,17 @@
 import styles from "../styles/CategoryDetailPage.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams,Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 
 function CategoryDetailPage() {
   const [categoryName, setCategoryName] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  const [bookSalesList, setBookSalesList] = useState([]);
+  //const [bookSalesList, setBookSalesList] = useState([]);
+  const [pageInfo, setPageInfo] = useState({
+        pages:0,
+        books:[]
+  });
   const [order, setOrder] = useState("");
   const [page, setPage] = useState(1);
 
@@ -24,7 +28,8 @@ function CategoryDetailPage() {
         "/api/bookSales?categoryId=" + searchParams.get("id") + "&page=" + (page - 1) + "&size=10" + "&order=" + order
       )
       .then((res) => {
-        setBookSalesList(res.data);
+        //setBookSalesList(res.data);
+        setPageInfo(res.data);
         console.log(res.data);
       });
   }, [searchParams, page, order]);
@@ -49,8 +54,9 @@ function CategoryDetailPage() {
         <option value="visitCount">조회순</option>
       </select>
       <div className={styles.books}>
-        {bookSalesList.map((bookSales, i) => (
-          <div key={i} className={styles.bookContainer}>
+        {pageInfo.books.map((bookSales, i) => (
+            <Link  key={i} to={`/bookDetail?id=${bookSales.id}`}  style={{color: 'black' }} >
+          <div  className={styles.bookContainer}>
             <div className={styles.imageArea}>
               <img src={bookSales.bookInfo.image} className={styles.image}></img>
             </div>
@@ -64,6 +70,7 @@ function CategoryDetailPage() {
               <div className={styles.priceTag}>{bookSales.bookInfo.discount}원</div>
             </div>
           </div>
+          </Link>
         ))}
       </div>
 
@@ -71,7 +78,7 @@ function CategoryDetailPage() {
         className={styles.pagination}
         activePage={page}
         itemsCountPerPage={10}
-        totalItemsCount={300}
+        totalItemsCount={pageInfo.pages * 10}
         pageRangeDisplayed={5}
         prevPageText={"<"}
         nextPageText={">"}
