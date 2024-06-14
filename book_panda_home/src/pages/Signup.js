@@ -3,7 +3,6 @@ import { Form, Input, Inputs, Title, Wrapper, Button, ButtonB, CustomLink, Error
 import { useNavigate } from 'react-router-dom';
 import { useForm } from '../hooks/useForm';
 import { signUp } from '../apis/signUp';
-import { login } from '../apis/login';
 import axios from 'axios';
 
 const Signup = () => {
@@ -11,13 +10,27 @@ const Signup = () => {
   const [pw, onChangePW] = useForm();
   const [confirmPw, onChangeConfirmPW] = useForm();
   const [name, onChangeName] = useForm();
-  const [address, onChangeAddress] = useForm();
+  const [address, setAddress] = useState('');
+  const [detailedAddress, setDetailedAddress] = useState('');
+  const [postCode, setPostCode] = useState('');
   const [phoneNumber, onChangePhoneNumber] = useForm();
   const [code, setCode] = useState('');
   const [errors, setErrors] = useState({});
   const [timer, setTimer] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
+  const [scriptLoaded, setScriptLoaded] = useState(false); // 스크립트 로드 상태 추가
   const router = useNavigate();
+
+  useEffect(() => {
+    const daumPostcodeScript = document.createElement("script");
+    daumPostcodeScript.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    daumPostcodeScript.onload = () => setScriptLoaded(true); // 스크립트 로드 완료 시 상태 업데이트
+    document.head.appendChild(daumPostcodeScript);
+
+    return () => {
+      document.head.removeChild(daumPostcodeScript);
+    };
+  }, []);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -35,7 +48,7 @@ const Signup = () => {
   };
 
   const sendEmail = async (e) => {
-    e.preventDefault();  // 인증코드 유효시간은 5분입니다.
+    e.preventDefault();
     if (!validateEmail(email)) {
       setErrors({ ...errors, email: '유효한 이메일 주소를 입력해주세요.' });
       return;
@@ -45,8 +58,6 @@ const Signup = () => {
         userEmail: email
       });
       setErrors({ ...errors, message: response.data });
-
-      // 타이머 설정
       setTimeLeft(300); // 5분 = 300초
     } catch (error) {
       console.error("코드 전송에 실패 :", error);
@@ -70,6 +81,21 @@ const Signup = () => {
       console.error("코드 인증 실패 :", error);
       setErrors({ ...errors, message: '코드 인증 실패.' });
     }
+  };
+
+  const handlePostcode = (e) => {
+    e.preventDefault();
+    if (!scriptLoaded) {
+      setErrors({ ...errors, address: '주소 검색 스크립트가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.' });
+      return;
+    }
+
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        setAddress(data.address + (data.buildingName ? `, ${data.buildingName}` : ""));
+        setPostCode(data.zonecode);
+      },
+    }).open();
   };
 
   const handleCodeChange = (e) => {
@@ -96,7 +122,7 @@ const Signup = () => {
     }
 
     try {
-      await signUp(email, pw, name, address, phoneNumber);
+      await signUp(email, pw, name, address, detailedAddress, postCode, phoneNumber);
       alert('회원가입에 성공했습니다.');
       router('/signin');
     } catch (error) {
@@ -173,10 +199,24 @@ const Signup = () => {
             error={errors.name}
           />
           <div className="custom-text">주소</div>
+          <div className="address-input-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+            <Input
+              placeholder="주소를 검색해주세요."
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            <ButtonB onClick={handlePostcode}>주소 검색</ButtonB>
+          </div>
           <Input
-            placeholder="서울특별시 종로구 청와대로 1"
-            value={address}
-            onChange={onChangeAddress}
+            placeholder="상세 주소를 입력해주세요."
+            value={detailedAddress}
+            onChange={(e) => setDetailedAddress(e.target.value)}
+          />
+          <div className="custom-text">우편번호</div>
+          <Input
+            placeholder="우편번호"
+            value={postCode}
+            onChange={(e) => setPostCode(e.target.value)}
           />
           <div className="custom-text">휴대전화</div>
           <Input
