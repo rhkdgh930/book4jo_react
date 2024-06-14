@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Form, Input, Inputs, Title, Wrapper, Button, ButtonB, CustomLink, Error, Red } from '../components/Common';
 import "../styles/MyPage.css";
 import { Link } from "react-router-dom";
 
@@ -218,6 +219,7 @@ const MyPage = () => {
           </button>
         </div>
       </div>
+      <p className="the-custom-link"><CustomLink to="/resign">회원탈퇴하기</CustomLink></p>
     </form>
   );
 };

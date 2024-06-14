@@ -14,6 +14,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
+import Resign from "./pages/Resign";
 import FindPassword from "./pages/FindPassword"
 import { CategoryListContext } from "./context/CategoryListContext";
 import { useState } from "react";
@@ -61,6 +62,7 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/find-password" element={<FindPassword />} />
+          <Route path="/resign" element={<Resign />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/order" element={<Order />} />
           <Route path="/payment" element={<Payment />} />
