@@ -37,9 +37,48 @@ function CartOrder() {
         }
     };
 
-    const handlePayment = () => {
-        //결제 버튼을 누르면 order가 생성되도록 설정!
+    const handlePayment = async () => {
+        setLoading(true);
+        try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                throw new Error("No access token found");
+            }
 
+            // const selectedItems = items.filter((item) => item.checked).map((item) => ({
+            //     id: item.id,
+            //     quantity: item.quantity,
+            // }));
+
+            // if (selectedItems.length === 0) {
+            //     alert("선택한 상품이 없습니다.");
+            //     setIsLoading(false);
+            //     return;
+            // }
+
+            const getKoreanDate = () => {
+                const date = new Date();
+                const offset = 9 * 60; // 한국 시간은 UTC+9
+                const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+                return koreanDate;
+            };
+
+            const requestData = {
+                orderDate: getKoreanDate(),
+            };
+
+            // 주문 추가
+            const response = await axios.post("/api/orders", requestData, {
+                // params: { id: queryParams.id },
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
+                withCredentials: true,
+            });
+
+        } catch (error) {
+            console.error("주문 오류: ", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const formatDate = (dateString) => {

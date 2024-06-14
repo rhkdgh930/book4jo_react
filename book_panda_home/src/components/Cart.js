@@ -9,6 +9,7 @@ function Cart() {
     const [allChecked, setAllChecked] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const [cartId, setCartId] = useState('');
 
     useEffect(() => {
         fetchCartItems();
@@ -120,26 +121,26 @@ function Cart() {
     const handleOrder = async () => {
         setIsLoading(true);
         try {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                throw new Error("No access token found");
-            }
+            // const token = localStorage.getItem("accessToken");
+            // if (!token) {
+            //     throw new Error("No access token found");
+            // }
 
-            const selectedItems = items.filter((item) => item.checked).map((item) => ({
-                id: item.id,
-                quantity: item.quantity,
-            }));
+            // const selectedItems = items.filter((item) => item.checked).map((item) => ({
+            //     id: item.id,
+            //     quantity: item.quantity,
+            // }));
 
-            if (selectedItems.length === 0) {
-                alert("선택한 상품이 없습니다.");
-                setIsLoading(false);
-                return;
-            }
+            // if (selectedItems.length === 0) {
+            //     alert("선택한 상품이 없습니다.");
+            //     setIsLoading(false);
+            //     return;
+            // }
 
-            const requestData = {
-                orderDate: new Date(),
-                items: selectedItems,
-            };
+            // const requestData = {
+            //     orderDate: new Date(),
+            //     items: selectedItems,
+            // };
 
             navigate(`/cart/order`);
         } catch (error) {
