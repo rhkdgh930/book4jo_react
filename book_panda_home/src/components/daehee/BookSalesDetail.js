@@ -58,27 +58,30 @@ const BookSalesDetail = () => {
   };
 
   const createOrder = async () => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("accessToken");
-      if (!token) {
-        throw new Error("No access token found");
-      }
-      const requestData = {
-        bookId: queryParams.id,
-        orderDate: new Date(),
-      };
-      const response = await axios.post(`http://localhost:8080/api/order`, requestData, {
-        params: { id: queryParams.id },
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
-      navigate(`/order?orderId=${response.data.id}`);
-    } catch (error) {
-      console.error("주문 오류: ", queryParams.id, error);
-    } finally {
-      setLoading(false);
-    }
+    // setLoading(true);
+    // try {
+    //   const token = localStorage.getItem('accessToken');
+    //   if (!token) {
+    //     throw new Error('No access token found');
+    //   }
+    //   const requestData = {
+    //     bookId: queryParams.id,
+    //     orderDate: new Date(), // 현재 날짜로 설정
+    //   };
+    //   console.log("queryParams.id : " + queryParams.id);
+    //   const response = await axios.post(`http://localhost:8080/api/order`, requestData, {
+    //     params: { id: queryParams.id },
+    //     headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
+    //     withCredentials: true,
+    //   });
+    //   console.log(response.data.id);
+    console.log("bookId : ", queryParams.id);
+    navigate(`/bookDetails/order?bookId=${queryParams.id}`);
+    // } catch (error) {
+    //   console.error("주문 오류: ", queryParams.id, error);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (

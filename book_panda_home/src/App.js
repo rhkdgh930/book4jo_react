@@ -23,6 +23,8 @@ import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
 import CategoryDetailPage from './pages/CategoryDetailPage';
 import Payment from "./components/Payment"
+import BookSalesOrder from "./components/BookSalesOrder"
+import CartOrder from "./components/CartOrder"
 const privatePaths = ["/admin", "/profile", "/order"];
 const App = () => {
   const [categoryList, setCategoryList] = useState([]);
@@ -56,13 +58,14 @@ const App = () => {
             <Route path="sales" element={<BookSales />} />
             <Route path="salesDetail" element={<BookSalesDetail />} />
           </Route>
-          <Route path="/category" element={<CategoryDetailPage/>} />
+          <Route path="/category" element={<CategoryDetailPage />} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/find-password" element={<FindPassword />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/order" element={<Order />} />
+          <Route path="/bookDetails/order" element={<BookSalesOrder />} />
+          <Route path="/cart/order" element={<CartOrder />} />
           <Route path="/payment" element={<Payment />} />
         </Routes>
       </div>

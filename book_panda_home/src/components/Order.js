@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
-import styles from '../styles/CartItem.module.css';
+import styles from '../styles/order.module.css'; // Ensure this path is correct
 
 function Order() {
     const [searchParams] = useSearchParams();
@@ -19,21 +19,7 @@ function Order() {
             fetchOrder(orderId);
             fetchOrderItems(orderId);
         }
-
-        const handlePageHide = async (event) => {
-            if (order && order.status === 'NOT_PAID') {
-                await handleCancelOrder();
-            }
-        }
-
-        window.addEventListener('pagehide', handlePageHide);
-        window.addEventListener('unload', handlePageHide);
-
-        return () => {
-            window.removeEventListener('pagehide', handlePageHide);
-            window.removeEventListener('unload', handlePageHide);
-        }
-    }, [searchParams, order]);
+    }, [searchParams]);
 
     const fetchOrder = async (orderId) => {
         try {
@@ -95,12 +81,17 @@ function Order() {
         }
     };
 
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+        return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
+    };
+
     return (
-        <div>
+        <div className={styles.orderInfo}>
             {order ? (
                 <>
-                    <h2>주문 정보</h2>
-                    <h3>주문 상품</h3>
+                    <h2 className={styles.heading}>주문 정보</h2>
+                    <h3 className={styles.subheading}>주문 상품</h3>
                     <table className={styles.orderTable}>
                         <thead>
                             <tr>
@@ -115,16 +106,17 @@ function Order() {
                             ))}
                         </tbody>
                     </table>
-                    <div>주문 번호: {order.id}</div>
-                    <div>주문 날짜: {order.orderDate}</div>
-                    <div>총 가격: {order.totalPrice.toLocaleString()}원</div>
-                    <div>사용자 이름: {order.userName}</div>
-                    <div>주소: {order.userAddress}</div>
-                    <button onClick={handlePayment}>결제하기</button>
-                    <button onClick={handleCancelOrder}>주문 취소</button>
+                    <div className={styles.orderDetail}>주문 번호: {order.id}</div>
+                    <div className={styles.orderDetail}>주문 날짜: {formatDate(order.orderDate)}</div>
+                    <div className={styles.orderDetail}>총 가격: {order.totalPrice.toLocaleString()}원</div>
+                    <div className={styles.orderDetail}>사용자 이름: {order.userName}</div>
+                    <div className={styles.orderDetail}>주소: {order.userAddress}</div>
+                    <div></div>
+                    <button className={styles.button} onClick={handlePayment}>결제하기</button>
+                    <button className={styles.button} onClick={handleCancelOrder}>주문 취소</button>
                 </>
             ) : (
-                <div>주문 정보를 불러올 수 없습니다.</div>
+                <div className={styles.errorMessage}>주문 정보를 불러올 수 없습니다.</div>
             )}
         </div>
     );
