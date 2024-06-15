@@ -26,7 +26,7 @@ function CartOrder() {
         document.head.appendChild(iamport);
         document.head.appendChild(daumPostcodeScript);
 
-        fetchCartOrder();
+        fetchCartOrder(); // 주문 정보와 함께 주소 정보도 가져오도록 호출
 
         return () => {
             document.head.removeChild(daumPostcodeScript);
@@ -123,13 +123,11 @@ function CartOrder() {
                         await axios.post('/api/payment/save', paymentData);
 
                         setPaymentInfo({
-                            //product_name: cart.cartItems.map(item => item.title).join(', '),
-                            impUid: rsp.imp_uid,
-                            merchantUid: rsp.merchant_uid,
+                            product_name: cart.cartItems.map(item => item.title).join(', '),
                             amount: rsp.paid_amount,
                             buyer_email: cart.userEmail,
                             buyer_name: cart.userName,
-                            //buyer_tel: cart.userPhoneNumber,
+                            buyer_tel: cart.userPhoneNumber,
                             buyer_addr: address,
                             buyer_postcode: postCode,
                             status: rsp.status
