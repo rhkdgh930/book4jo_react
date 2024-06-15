@@ -55,6 +55,10 @@ function BookSalesOrder() {
             setAddress(bookData.userAddress1);
             setDetailedAddress(bookData.userAddress2);
             setPostCode(bookData.userPostCode);
+
+
+            console.log('Fetched book data:', bookData);
+            console.log('Total price:', bookData.totalPrice);
         } catch (error) {
             console.error('주문 정보 요청 실패:', error);
         } finally {
@@ -86,7 +90,14 @@ function BookSalesOrder() {
             return;
         }
 
-        IMP.init('imp14170881'); // 아임포트 상점 식별 코드 입력
+        if (!book || book.totalPrice <= 0) {
+            console.error('Invalid total price:', book.totalPrice);
+            setError('Invalid total price.');
+            setLoading(false);
+            return;
+        }
+
+        IMP.init('imp14170881');
 
         IMP.request_pay({
             pg: 'html5_inicis',

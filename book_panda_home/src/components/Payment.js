@@ -46,15 +46,15 @@ const Payment = () => {
     const { IMP } = window;
     IMP.init("imp14170881"); // 상점 식별코드
 
-    if (!validateEmail(buyerEmail)) {
-      setError("올바른 이메일 주소를 입력하세요.");
-      return;
-    }
-
-    if (!validatePhoneNumber(buyerTel)) {
-      setError("올바른 전화번호를 입력하세요.");
-      return;
-    }
+//    if (!validateEmail(buyerEmail)) {
+//      setError("올바른 이메일 주소를 입력하세요.");
+//      return;
+//    }
+//
+//    if (!validatePhoneNumber(buyerTel)) {
+//      setError("올바른 전화번호를 입력하세요.");
+//      return;
+//    }
 
     IMP.request_pay(
       {
