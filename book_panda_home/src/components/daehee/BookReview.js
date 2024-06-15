@@ -25,10 +25,9 @@ const BookReview = ({ bookSales }) => {
   const createReview = async () => {
     try {
       setIsLoading(true);
-      console.log(state);
+      console.log(bookSales.bookSales.id);
 
-      const response = await axios.get("/api/reviews", {
-        params: { id: bookSales.id },
+      const response = await axios.get(`/api/reviews?id=${bookSales.bookSales.id}`, {
         "Content-Type": "application/json",
         withCredentials: true,
       });
