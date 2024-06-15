@@ -1,19 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSearchParams, useNavigate } from 'react-router-dom';
-import Post from './Post';
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/order.module.css';
 import style from '../styles/CartItem.module.css';
 
 function CartOrder() {
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [address, setAddress] = useState(''); // 주소 상태 추가
-    const [showPost, setShowPost] = useState(false); // 팝업 상태 추가
+    const [address, setAddress] = useState('');
+    const [detailedAddress, setDetailedAddress] = useState('');
+    const [postCode, setPostCode] = useState('');
+    const [scriptLoaded, setScriptLoaded] = useState(false);
+    const [errors, setErrors] = useState({});
+    const [error, setError] = useState(null);
+    const [paymentInfo, setPaymentInfo] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
+        const daumPostcodeScript = document.createElement("script");
+        const iamport = document.createElement("script");
+        iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.2.0.js";
+
+        daumPostcodeScript.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+        daumPostcodeScript.onload = () => setScriptLoaded(true);
+        document.head.appendChild(iamport);
+        document.head.appendChild(daumPostcodeScript);
+
         fetchCartOrder();
+
+        return () => {
+            document.head.removeChild(daumPostcodeScript);
+            document.head.removeChild(iamport);
+        };
     }, []);
 
     const fetchCartOrder = async () => {
@@ -29,7 +47,11 @@ function CartOrder() {
                 },
                 withCredentials: true,
             });
-            setCart(response.data);
+            const cartData = response.data;
+            setCart(cartData);
+            setAddress(cartData.userAddress);
+            setDetailedAddress(cartData.userAddress2);
+            setPostCode(cartData.userPostCode);
         } catch (error) {
             console.error('주문 정보 요청 실패:', error);
         } finally {
@@ -37,53 +59,99 @@ function CartOrder() {
         }
     };
 
-    const handlePayment = async () => {
-        setLoading(true);
-        try {
-            const token = localStorage.getItem("accessToken");
-            if (!token) {
-                throw new Error("No access token found");
-            }
-
-            // const selectedItems = items.filter((item) => item.checked).map((item) => ({
-            //     id: item.id,
-            //     quantity: item.quantity,
-            // }));
-
-            // if (selectedItems.length === 0) {
-            //     alert("선택한 상품이 없습니다.");
-            //     setIsLoading(false);
-            //     return;
-            // }
-
-            const getKoreanDate = () => {
-                const date = new Date();
-                const offset = 9 * 60; // 한국 시간은 UTC+9
-                const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
-                return koreanDate;
-            };
-
-            const requestData = {
-                orderDate: getKoreanDate(),
-            };
-
-            // 주문 추가
-            const response = await axios.post("/api/orders", requestData, {
-                // params: { id: queryParams.id },
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
-                withCredentials: true,
-            });
-
-        } catch (error) {
-            console.error("주문 오류: ", error);
-        } finally {
-            setLoading(false);
+    const handlePostcode = (e) => {
+        e.preventDefault();
+        if (!scriptLoaded) {
+            setErrors({ ...errors, address: '주소 검색 스크립트가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.' });
+            return;
         }
+
+        new window.daum.Postcode({
+            oncomplete: function (data) {
+                setAddress(data.address + (data.buildingName ? `, ${data.buildingName}` : ""));
+                setPostCode(data.zonecode);
+            },
+        }).open();
     };
 
-    const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-        return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
+    const handlePayment = async () => {
+        setLoading(true);
+        const { IMP } = window;
+        if (!IMP) {
+            console.error('IAMPORT가 로드되지 않았습니다.');
+            setLoading(false);
+            return;
+        }
+
+        if (!cart || cart.totalPrice <= 0) {
+            console.error('Invalid total price:', cart.totalPrice);
+            setError('Invalid total price.');
+            setLoading(false);
+            return;
+        }
+
+        IMP.init('imp14170881');
+
+        IMP.request_pay({
+            pg: 'html5_inicis',
+            pay_method: 'card',
+            merchant_uid: `merchant_${new Date().getTime()}`,
+            name: cart.cartItems.map(item => item.title).join(', '),
+            amount: cart.totalPrice,
+            buyer_email: cart.userEmail,
+            buyer_name: cart.userName,
+            buyer_tel: cart.userPhoneNumber,
+            buyer_addr: address,
+            buyer_postcode: postCode,
+        }, async (rsp) => {
+            if (rsp.success) {
+                try {
+                    const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
+                    if (rsp.paid_amount === data.amount) {
+                        const paymentData = {
+                            impUid: rsp.imp_uid,
+                            merchantUid: rsp.merchant_uid,
+                            amount: rsp.paid_amount,
+                            buyerEmail: cart.userEmail,
+                            buyerName: cart.userName,
+                            buyerTel: cart.userPhoneNumber,
+                            buyerAddr: address,
+                            buyerPostcode: postCode,
+                            status: rsp.status,
+                        };
+
+                        await axios.post('/api/payment/save', paymentData);
+
+                        setPaymentInfo({
+                            //product_name: cart.cartItems.map(item => item.title).join(', '),
+                            impUid: rsp.imp_uid,
+                            merchantUid: rsp.merchant_uid,
+                            amount: rsp.paid_amount,
+                            buyer_email: cart.userEmail,
+                            buyer_name: cart.userName,
+                            //buyer_tel: cart.userPhoneNumber,
+                            buyer_addr: address,
+                            buyer_postcode: postCode,
+                            status: rsp.status
+                        });
+                        setError(null);
+                        alert('결제 성공');
+                    } else {
+                        setError('결제 검증 실패: 금액이 일치하지 않습니다.');
+                        alert('결제 실패');
+                    }
+                } catch (error) {
+                    console.error('결제 검증 및 저장 중 오류 발생:', error);
+                    setError('결제 검증 및 저장 중 오류가 발생했습니다.');
+                    alert('결제 실패');
+                }
+            } else {
+                setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
+                alert('결제 실패');
+            }
+
+            setLoading(false);
+        });
     };
 
     if (loading) {
@@ -124,7 +192,7 @@ function CartOrder() {
 
             <div className={styles.addressSection}>
                 <div className={styles.orderDetail}>
-                    새 주소:
+                    기본 배송지:
                     <input
                         type="text"
                         value={address}
@@ -133,25 +201,12 @@ function CartOrder() {
                         className={styles.addressInput}
                     />
                 </div>
-                <button className={styles.button} onClick={() => setShowPost(true)}>
-                    주소 검색
-                </button>
-                {showPost && (
-                    <div className={styles.postcodeModal}>
-                        <div className={styles.postcodeOverlay} onClick={() => setShowPost(false)}></div>
-                        <div className={styles.postcodeContainer}>
-                            <Post
-                                setAddress={(address) => {
-                                    setAddress(address);
-                                    setShowPost(false);
-                                }}
-                            />
-                        </div>
-                    </div>
-                )}
             </div>
 
-            <button className={styles.button} onClick={handlePayment}>결제하기</button>
+            <div className={styles.error}>{error && <p>{error}</p>}</div>
+            <button className={styles.button} onClick={handlePayment} disabled={loading}>
+                결제하기
+            </button>
         </div>
     );
 }
