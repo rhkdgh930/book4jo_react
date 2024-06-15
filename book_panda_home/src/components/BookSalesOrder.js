@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import OrderItem from './OrderItem';
+import Post from './Post';
 import styles from '../styles/order.module.css';
 import style from '../styles/CartItem.module.css';
 
 function BookSalesOrder() {
     const [searchParams] = useSearchParams();
     const [book, setBook] = useState(null);
+    const [orderId, setOrderId] = useState(null); // orderId 상태 추가
     const [loading, setLoading] = useState(true);
     const [address, setAddress] = useState('');
     const [detailedAddress, setDetailedAddress] = useState('');
@@ -29,18 +32,16 @@ function BookSalesOrder() {
 
         daumPostcodeScript.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
         daumPostcodeScript.onload = () => setScriptLoaded(true);
+
         document.head.appendChild(jquery);
         document.head.appendChild(iamport);
         document.head.appendChild(daumPostcodeScript);
-
         if (bookId) {
             fetchBookOrder(bookId);
         }
 
         return () => {
             document.head.removeChild(daumPostcodeScript);
-            document.head.removeChild(jquery);
-            document.head.removeChild(iamport);
         };
     }, [searchParams]);
 
@@ -55,10 +56,6 @@ function BookSalesOrder() {
             setAddress(bookData.userAddress1);
             setDetailedAddress(bookData.userAddress2);
             setPostCode(bookData.userPostCode);
-
-
-            console.log('Fetched book data:', bookData);
-            console.log('Total price:', bookData.totalPrice);
         } catch (error) {
             console.error('주문 정보 요청 실패:', error);
         } finally {
@@ -83,6 +80,7 @@ function BookSalesOrder() {
 
     const handlePayment = async () => {
         setLoading(true);
+
         const { IMP } = window;
         if (!IMP) {
             console.error('IAMPORT가 로드되지 않았습니다.');
@@ -152,10 +150,55 @@ function BookSalesOrder() {
             } else {
                 setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
                 alert('결제 실패');
-            }
+              }
+            });
 
+        const bookId = searchParams.get('bookId');
+        try {
+            const getKoreanDate = () => {
+                const date = new Date();
+                const offset = 9 * 60; // 한국 시간은 UTC+9
+                const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+                return koreanDate;
+            };
+
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                throw new Error('No access token found');
+            }
+            const requestData = {
+                bookId: bookId,
+                orderDate: getKoreanDate(),
+                address1: address,
+                address2: detailedAddress,
+                postCode: postCode,
+            };
+            console.log(requestData);
+            const response = await axios.post(`/api/order`, requestData, {
+                params: { id: bookId },
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                withCredentials: true,
+            });
+            console.log("orderId : ", response.data.id);
+            setOrderId(response.data.id);
+        } catch (error) {
+            console.error("주문 오류: ", bookId, error);
+        } finally {
             setLoading(false);
-        });
+        }
+    };
+
+    useEffect(() => {
+        if (orderId) {
+            console.log("Updated orderId : ", orderId);
+        }
+    }, [orderId]);
+
+
+
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+        return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
     };
 
     if (loading) {
@@ -224,7 +267,6 @@ function BookSalesOrder() {
                 </label>
             </div>
 
-            {/* 배송지 입력 폼 */}
             {deliveryType === 'default' ? (
                 <div className={styles.addressInfo}>
                     <div>주소: {address}</div>
@@ -256,18 +298,6 @@ function BookSalesOrder() {
             )}
 
             <button className={styles.button} onClick={handlePayment}>결제하기</button>
-
-            {error && <div className={styles.error}>{error}</div>}
-            {paymentInfo && (
-                <div className={styles.paymentInfo}>
-                    <h3>결제 정보</h3>
-                    <div>상품명: {paymentInfo.product_name}</div>
-                    <div>결제 금액: {paymentInfo.amount.toLocaleString()}원</div>
-                    <div>이메일: {paymentInfo.buyer_email}</div>
-                    <div>주소: {paymentInfo.buyer_addr}</div>
-                    <div>우편번호: {paymentInfo.buyer_postcode}</div>
-                </div>
-            )}
         </div>
     );
 }
