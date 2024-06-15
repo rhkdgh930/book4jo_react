@@ -55,6 +55,12 @@
   font-size: 1.2em;
   line-height: 1.5; /* 줄 간격 조정 */
 }
+.zero {
+  margin: 5px 0;
+  font-size: 1.2em;
+  line-height: 1.5; /* 줄 간격 조정 */
+  color: red; /* 재고가 0일 때 글자색을 빨간색으로 변경 */
+}
 
 .bookDetails p {
   margin: 5px 0;

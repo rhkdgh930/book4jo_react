@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BookReview from "./BookReview";
@@ -18,21 +18,23 @@ const BookSalesDetail = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // const getSales = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     console.log("쿼리 파람 : " + queryParams.id);
-  //     const response = await axios.get("http://localhost:8080/bookSales", {
-  //       params: { id: queryParams.id },
-  //       "Content-Type": "application/json",
-  //       withCredentials: true,
-  //     });
-  //     console.log("요청 성공:", response.data);
-  //     setIsLoading(false);
-  //   } catch (error) {
-  //     console.error("요청 실패:", error);
-  //   }
-  // };
+  console.log(JSON.stringify(queryParams));
+  const count = async () => {
+    try {
+      const response = await axios.get("/api/getBookSales", {
+        params: { id: queryParams.id },
+        withCredentials: true,
+      });
+      console.log("Count data:", response.data);
+      //setQueryParams(response.data);
+    } catch (error) {
+      console.error("Error fetching count:", error);
+    }
+  };
+
+  useEffect(() => {
+    count(); // 페이지 로드 시 count 함수 호출
+  }, []); // queryParams.id가 변경될 때마다 count 함수 호출
 
   const addToCart = async () => {
     setLoading(true);
@@ -97,7 +99,10 @@ const BookSalesDetail = () => {
             <div className={styles.bookDetails}>
               <h3 className={styles.title}>{queryParams.title}</h3>
               <p className={styles.price}>가격: {queryParams.discount}원</p>
-              <p className={styles.stock}>재고: {queryParams.stock}권</p>
+              <p className={`${queryParams.salesInfoDto.stock === "0" ? styles.zero : styles.stock}`}>
+                재고: {queryParams.salesInfoDto.stock}권
+              </p>
+              <p className={styles.stock}>저자: {queryParams.author}</p>
               <div className={styles.buttons}>
                 <button onClick={addToCart} disabled={loading}>
                   {loading ? "추가 중..." : "장바구니 담기"}

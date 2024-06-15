@@ -9,14 +9,20 @@ const BookReview = ({ bookSales }) => {
   const [reviewList, setReviewList] = useState([]); // 빈 리뷰 목록 state
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {}, [reviewList]);
-
   useEffect(() => {
+    // 초기 렌더링 시 createReview 호출
     createReview();
-  }, []);
+
+    // 5초마다 createReview 호출을 위한 setInterval 설정
+    const interval = setInterval(() => {
+      createReview();
+    }, 5000);
+
+    // 컴포넌트가 언마운트될 때 clearInterval을 통해 interval 정리
+    return () => clearInterval(interval);
+  }, []); // 빈 배열을 전달하여 컴포넌트 마운트 시에만 useEffect가 실행되도록 설정
 
   const createReview = async () => {
-    setReviewList([]);
     try {
       setIsLoading(true);
       console.log(state);
@@ -36,8 +42,7 @@ const BookReview = ({ bookSales }) => {
 
   return (
     <div className="book_item">
-      <button onClick={createReview} />
-      {!isLoading && reviewList.length > 0 && (
+      {reviewList.length > 0 && (
         <div>
           <PaginationComponent
             items={reviewList}
