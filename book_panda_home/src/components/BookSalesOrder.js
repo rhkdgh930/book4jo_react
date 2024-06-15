@@ -88,12 +88,12 @@ function BookSalesOrder() {
             return;
         }
 
-        if (!book || book.totalPrice <= 0) {
-            console.error('Invalid total price:', book.totalPrice);
-            setError('Invalid total price.');
-            setLoading(false);
-            return;
-        }
+//        if (!book || book.totalPrice <= 0) {
+//            console.error('Invalid total price:', book.totalPrice);
+//            setError('Invalid total price.');
+//            setLoading(false);
+//            return;
+//        }
 
         IMP.init('imp14170881');
 
@@ -101,9 +101,9 @@ function BookSalesOrder() {
             pg: 'html5_inicis',
             pay_method: 'card',
             merchant_uid: `merchant_${new Date().getTime()}`,
-            name: book.productName,
+            name: book.title,
             amount: book.discount,
-            buyer_email: book.userEmail,
+            buyer_email: book.userName,
             buyer_name: book.name,
             buyer_tel: book.userPhoneNumber,
             buyer_addr: address,
@@ -117,8 +117,8 @@ function BookSalesOrder() {
                             impUid: rsp.imp_uid,
                             merchantUid: rsp.merchant_uid,
                             amount: rsp.paid_amount,
-                            buyerEmail: book.userEmail,
-                            buyerName: book.userName,
+                            buyerEmail: book.userName,
+                            buyerName: book.name,
                             buyerTel: book.userPhoneNumber,
                             buyerAddr: address,
                             buyerPostcode: postCode,
@@ -130,7 +130,7 @@ function BookSalesOrder() {
                         setPaymentInfo({
                             product_name: book.productName,
                             amount: rsp.paid_amount,
-                            buyer_email: book.userEmail,
+                            buyer_email: book.userName,
                             buyer_name: book.name,
                             buyer_tel: book.userPhoneNumber,
                             buyer_addr: address,
@@ -233,7 +233,7 @@ function BookSalesOrder() {
                 </tbody>
             </table>
             <div className={styles.orderDetail}>총 가격: {book && book.discount.toLocaleString()}원</div>
-            <div className={styles.orderDetail}>사용자 이름: {book && book.userName}</div>
+            <div className={styles.orderDetail}>이메일: {book && book.userName}</div>
             <div className={styles.orderDetail}>주소: {book && book.userAddress1} {book && book.userAddress2}</div>
 
             <div>

@@ -18,11 +18,15 @@ function CartOrder() {
 
     useEffect(() => {
         const daumPostcodeScript = document.createElement("script");
+
+        const jquery = document.createElement("script");
+        jquery.src = "https://code.jquery.com/jquery-1.12.4.min.js";
         const iamport = document.createElement("script");
         iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.2.0.js";
 
         daumPostcodeScript.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
         daumPostcodeScript.onload = () => setScriptLoaded(true);
+        document.head.appendChild(jquery);
         document.head.appendChild(iamport);
         document.head.appendChild(daumPostcodeScript);
 
@@ -83,12 +87,12 @@ function CartOrder() {
             return;
         }
 
-        if (!cart || cart.totalPrice <= 0) {
-            console.error('Invalid total price:', cart.totalPrice);
-            setError('Invalid total price.');
-            setLoading(false);
-            return;
-        }
+//        if (!cart || cart.totalPrice <= 0) {
+//            console.error('Invalid total price:', cart.totalPrice);
+//            setError('Invalid total price.');
+//            setLoading(false);
+//            return;
+//        }
 
         IMP.init('imp14170881');
 
