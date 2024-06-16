@@ -88,13 +88,6 @@ function BookSalesOrder() {
             return;
         }
 
-//        if (!book || book.totalPrice <= 0) {
-//            console.error('Invalid total price:', book.totalPrice);
-//            setError('Invalid total price.');
-//            setLoading(false);
-//            return;
-//        }
-
         IMP.init('imp14170881');
 
         IMP.request_pay({
@@ -113,6 +106,33 @@ function BookSalesOrder() {
                 try {
                     const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
                     if (rsp.paid_amount === data.amount) {
+                        const token = localStorage.getItem('accessToken');
+                        if (!token) {
+                            throw new Error('No access token found');
+                        }
+
+                        const bookId = searchParams.get('bookId');
+                        const getKoreanDate = () => {
+                            const date = new Date();
+                            const offset = 9 * 60; // 한국 시간은 UTC+9
+                            const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+                            return koreanDate;
+                        };
+
+                        const orderData = {
+                            bookId: bookId,
+                            orderDate: getKoreanDate(),
+                            address1: address,
+                            address2: detailedAddress,
+                            postCode: postCode,
+                        };
+
+                        const orderResponse = await axios.post(`/api/order`, orderData, {
+                            params: { id: bookId },
+                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                            withCredentials: true,
+                        });
+
                         const paymentData = {
                             impUid: rsp.imp_uid,
                             merchantUid: rsp.merchant_uid,
@@ -123,6 +143,7 @@ function BookSalesOrder() {
                             buyerAddr: address,
                             buyerPostcode: postCode,
                             status: rsp.status,
+                            orderId: orderResponse.data.id,
                         };
 
                         await axios.post('/api/payment/save', paymentData);
@@ -150,51 +171,10 @@ function BookSalesOrder() {
             } else {
                 setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
                 alert('결제 실패');
-              }
-            });
-
-        const bookId = searchParams.get('bookId');
-        try {
-            const getKoreanDate = () => {
-                const date = new Date();
-                const offset = 9 * 60; // 한국 시간은 UTC+9
-                const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
-                return koreanDate;
-            };
-
-            const token = localStorage.getItem('accessToken');
-            if (!token) {
-                throw new Error('No access token found');
             }
-            const requestData = {
-                bookId: bookId,
-                orderDate: getKoreanDate(),
-                address1: address,
-                address2: detailedAddress,
-                postCode: postCode,
-            };
-            console.log(requestData);
-            const response = await axios.post(`/api/order`, requestData, {
-                params: { id: bookId },
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                withCredentials: true,
-            });
-            console.log("orderId : ", response.data.id);
-            setOrderId(response.data.id);
-        } catch (error) {
-            console.error("주문 오류: ", bookId, error);
-        } finally {
             setLoading(false);
-        }
+        });
     };
-
-    useEffect(() => {
-        if (orderId) {
-            console.log("Updated orderId : ", orderId);
-        }
-    }, [orderId]);
-
-
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
