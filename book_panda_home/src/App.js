@@ -14,17 +14,18 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
-import FindPassword from "./pages/FindPassword"
+import FindPassword from "./pages/FindPassword";
 import { CategoryListContext } from "./context/CategoryListContext";
 import { useState } from "react";
 import EnrollBook from "./components/EnrollBook";
 import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
-import CategoryDetailPage from './pages/CategoryDetailPage';
-import Payment from "./components/Payment"
-import BookSalesOrder from "./components/BookSalesOrder"
-import CartOrder from "./components/CartOrder"
+import CategoryDetailPage from "./pages/CategoryDetailPage";
+import Payment from "./components/Payment";
+import BookSalesOrder from "./components/BookSalesOrder";
+import CartOrder from "./components/CartOrder";
+import SearchPage from "./pages/SearchPage";
 const privatePaths = ["/admin", "/profile", "/order"];
 const App = () => {
   const [categoryList, setCategoryList] = useState([]);
@@ -52,12 +53,13 @@ const App = () => {
             <Route path="category" element={<CategoryList />} />
             <Route path="shippingManagement" element={<ShippingManagement />} />
             <Route path="enrollBook" element={<EnrollBook />}></Route>
-
             <Route path="bookDetail" element={<BookDetail />}></Route>
             <Route path="search" element={<BookSearch />} />
             <Route path="sales" element={<BookSales />} />
             <Route path="salesDetail" element={<BookSalesDetail />} />
           </Route>
+          <Route path="/search" element={<SearchPage/>}></Route>
+          <Route path="bookSalesDetail" element={<BookSalesDetail />}></Route>
           <Route path="/category" element={<CategoryDetailPage />} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<Signup />} />
@@ -71,6 +73,6 @@ const App = () => {
       </div>
     </CategoryListContext.Provider>
   );
-}
+};
 
 export default App;

@@ -55,7 +55,7 @@ function BookDetail(props) {
         withCredentials: true,
       });
       console.log("요청 성공:", response.data);
-      navigate(`/admin/salesDetail`, { state: { ...queryParams, id: response.data.id } });
+      navigate(`/bookSalesDetail?id=${response.data.id}`);
     } catch (error) {
       console.error("요청 실패:", error);
     }
