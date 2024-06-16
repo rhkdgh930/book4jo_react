@@ -38,7 +38,7 @@ const BookSalesDetail = () => {
 
   useEffect(() => {
     count(); // 페이지 로드 시 count 함수 호출
-  }, []); // queryParams.id가 변경될 때마다 count 함수 호출
+  }, [queryParams]); // queryParams.id가 변경될 때마다 count 함수 호출
 
   const addToCart = async () => {
     setLoading(true);
