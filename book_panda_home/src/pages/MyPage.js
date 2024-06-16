@@ -119,7 +119,7 @@ const MyPage = () => {
     <form>
       <div className="select-page">
         <div className="select-page-button">
-          <Link to="/mypage">회원정보관리</Link>
+          <Link to="/mypage/check">회원정보관리</Link>
         </div>
         <div className="select-page-button">
           <Link to="/mypage/ordered">주문내역</Link>

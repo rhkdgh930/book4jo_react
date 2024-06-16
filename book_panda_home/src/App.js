@@ -14,6 +14,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
+import MypageCheck from "./pages/MypageCheck";
 import Resign from "./pages/Resign";
 import FindPassword from "./pages/FindPassword"
 import { CategoryListContext } from "./context/CategoryListContext";
@@ -60,7 +61,8 @@ const App = () => {
           <Route path="/category" element={<CategoryDetailPage/>} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage/user" element={<MyPage />} />
+          <Route path="/mypage/check" element={<MypageCheck />} />
           <Route path="/find-password" element={<FindPassword />} />
           <Route path="/resign" element={<Resign />} />
           <Route path="/cart" element={<Cart />} />

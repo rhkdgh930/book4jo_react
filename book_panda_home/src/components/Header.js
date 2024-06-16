@@ -50,7 +50,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
             </div>
           )}
           <div>
-            <Link to="/mypage">마이페이지</Link>
+            <Link to="/mypage/ordered">마이페이지</Link>
           </div>
           <div>
             <Link to="/cart">장바구니</Link>
