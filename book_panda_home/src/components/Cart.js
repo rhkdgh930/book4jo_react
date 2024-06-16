@@ -110,40 +110,36 @@ function Cart() {
         updatedItems.forEach(item => updateCartItemChecked(item.id, newAllChecked));
     };
 
-
-
-
     const handleRemoveItem = async (id) => {
-        if (window.confirm("해당 상품을 삭제하시겠습니까?")) {
-            try {
-                const token = localStorage.getItem("accessToken");
-                if (!token) {
-                    throw new Error("No access token found");
-                }
-
-                await axios.delete(`/api/cart/items/${id}`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    withCredentials: true,
-                });
-
-                setItems(items.filter((item) => item.id !== id));
-            } catch (error) {
-                console.error("Error deleting cart item", error);
-            }
+        try {
+          const token = localStorage.getItem("accessToken");
+          if (!token) {
+            throw new Error("No access token found");
+          }
+    
+          await axios.delete(`/api/cart/items/${id}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            withCredentials: true,
+          });
+    
+          setItems(items.filter((item) => item.id !== id));
+        } catch (error) {
+          console.error("Error deleting cart item", error);
         }
-    };
-
-    const handleRemoveSelected = async () => {
+      };
+    
+      const handleRemoveSelected = async () => {
         if (window.confirm("선택한 상품을 삭제하시겠습니까?")) {
-            const selectedItems = items.filter((item) => item.checked);
-            for (const item of selectedItems) {
-                await handleRemoveItem(item.id);
-            }
+          const selectedItems = items.filter((item) => item.checked);
+          for (const item of selectedItems) {
+            await handleRemoveItem(item.id);
+          }
         }
-    };
+      };
+    
 
     const handleOrder = async () => {
         setIsLoading(true);
