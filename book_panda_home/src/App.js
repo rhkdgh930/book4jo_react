@@ -25,6 +25,7 @@ import CategoryDetailPage from "./pages/CategoryDetailPage";
 import Payment from "./components/Payment";
 import BookSalesOrder from "./components/BookSalesOrder";
 import CartOrder from "./components/CartOrder";
+import SearchPage from "./pages/SearchPage";
 const privatePaths = ["/admin", "/profile", "/order"];
 const App = () => {
   const [categoryList, setCategoryList] = useState([]);
@@ -57,6 +58,7 @@ const App = () => {
             <Route path="sales" element={<BookSales />} />
             <Route path="salesDetail" element={<BookSalesDetail />} />
           </Route>
+          <Route path="/search" element={<SearchPage/>}></Route>
           <Route path="bookSalesDetail" element={<BookSalesDetail />}></Route>
           <Route path="/category" element={<CategoryDetailPage />} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />

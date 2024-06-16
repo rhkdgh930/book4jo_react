@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link,useNavigate  } from "react-router-dom";
 import styles from '../styles/SearchBar.module.css';
 import axios from 'axios';
 
@@ -13,16 +13,25 @@ function SearchBar() {
         setKeyword(e.target.value);
         setToggle(true);
     }
-
+    
     const clickClose = (e) => {
         setToggle(false);
     }
+
+    const navigate = useNavigate();
+
+    const search = ()=>{
+       
+        navigate('/search?keyword='+keyword);
+    }
+
 
     useEffect(() => {
         if (keyword) {
             axios.get("http://localhost:8080/bookSales/title?keyword=" + keyword)
                 .then((res) => {
                     setAutocompleteItem(res.data);
+                    console.log(res.data);
                 })
                 .catch((err) => {
                     console.log(err);
@@ -40,14 +49,16 @@ function SearchBar() {
                     <option>외국도서</option> */}
                 </select>
                 <input type='text' onChange={keywordHandler}></input>
-                <button type='submit'>검색</button>
+                <button type='submit' onClick={search}>검색</button>
             </div>
             <div className={toggle ? `${styles.autocompleteVisible}` : `${styles.autocompleteHidden}`}>
                 <div className={styles.itemContainer}>
                     {
                         autocompleteItem.map((bookTitle, i) =>
                             <div key={i} className={styles.autocompleteItem}>
+                                <Link to={`/bookSalesDetail?id=${bookTitle.id}`} style={{textDecoration:'none' , color:'black'}}>
                                 {bookTitle.title}
+                                </Link>
                             </div>
                         )
                     }

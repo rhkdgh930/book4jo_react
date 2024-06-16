@@ -40,15 +40,6 @@
     list-style: none;
 }
 
-.container ul li{
-
-    border: 1px solid black;
-    width:40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .container ul li a{
     text-decoration: none;
