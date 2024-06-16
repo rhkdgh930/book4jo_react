@@ -32,6 +32,7 @@ const BookSalesDetail = () => {
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching count:", error);
+      setIsLoading(false);
     }
   };
 
@@ -46,8 +47,8 @@ const BookSalesDetail = () => {
       if (!token) {
         throw new Error("No access token found");
       }
-      const response = await axios.post("/api/cart/items", null, {
-        params: { id: queryParams.id },
+      const idNumber = Number(id);
+      const response = await axios.post(`/api/cart/items/${idNumber}`, null, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

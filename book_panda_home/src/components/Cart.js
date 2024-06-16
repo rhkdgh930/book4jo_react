@@ -72,19 +72,46 @@ function Cart() {
         updateCartItemQuantity(id, quantity);
     };
 
+    const updateCartItemChecked = async (id, checked) => {
+        try {
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                throw new Error("No access token found");
+            }
+    
+            await axios.patch(`/api/cart/items/${id}/checked`, null, {
+                params: { checked },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            });
+        } catch (error) {
+            console.error("Error updating cart item checked state", error);
+        }
+    };
+
     const handleCheckChange = (id) => {
         const updatedItems = items.map((item) =>
             item.id === id ? { ...item, checked: !item.checked } : item
         );
         setItems(updatedItems);
         setAllChecked(updatedItems.every(item => item.checked));
+        updateCartItemChecked(id, !items.find(item => item.id === id).checked);
     };
 
     const handleSelectAllToggle = () => {
         const newAllChecked = !allChecked;
         setAllChecked(newAllChecked);
-        setItems(items.map((item) => ({ ...item, checked: newAllChecked })));
+        const updatedItems = items.map((item) => ({ ...item, checked: newAllChecked }));
+        setItems(updatedItems);
+
+        updatedItems.forEach(item => updateCartItemChecked(item.id, newAllChecked));
     };
+
+
+
 
     const handleRemoveItem = async (id) => {
         if (window.confirm("해당 상품을 삭제하시겠습니까?")) {
@@ -163,7 +190,7 @@ function Cart() {
             {items.length === 0 ? (
                 <div className={styles.emptyCart}>
                     <p>장바구니가 비어있습니다</p>
-                    <button onClick={handleGoBack}>쇼핑하러 가기</button>feature/order
+                    <button onClick={handleGoBack}>쇼핑하러 가기</button>
                 </div>
             ) : (
                 <>
