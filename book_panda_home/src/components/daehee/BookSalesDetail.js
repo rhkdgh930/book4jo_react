@@ -82,7 +82,8 @@ const BookSalesDetail = () => {
     //   });
     //   console.log(response.data.id);
     console.log("bookId : ", queryParams.id);
-    navigate(`/bookDetails/order?bookId=${queryParams.id}`);
+    //navigate(`/bookDetails/order?bookId=${queryParams.id}`); origin
+    navigate(`/bookDetails/order?bookId=${queryParams.bookSales.id}`);
     // } catch (error) {
     //   console.error("주문 오류: ", queryParams.id, error);
     // } finally {

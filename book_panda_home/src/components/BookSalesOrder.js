@@ -146,7 +146,7 @@ function BookSalesOrder() {
                             orderId: orderResponse.data.id,
                         };
 
-                        await axios.post('/api/payment/save', paymentData);
+                        await axios.post(`/api/payment/save`, paymentData);
 
                         setPaymentInfo({
                             product_name: book.productName,
@@ -161,11 +161,13 @@ function BookSalesOrder() {
                         alert('결제 성공');
                     } else {
                         setError('결제 검증 실패: 금액이 일치하지 않습니다.');
+                        await cancelPayment(rsp.imp_uid, rsp.merchant_uid, rsp.paid_amount); // 결제 취소
                         alert('결제 실패');
                     }
                 } catch (error) {
                     console.error('결제 검증 및 저장 중 오류 발생:', error);
                     setError('결제 검증 및 저장 중 오류가 발생했습니다.');
+                    await cancelPayment(rsp.imp_uid, rsp.merchant_uid, rsp.paid_amount); // 결제 취소
                     alert('결제 실패');
                 }
             } else {
@@ -174,6 +176,33 @@ function BookSalesOrder() {
             }
             setLoading(false);
         });
+    };
+
+    const cancelPayment = async (impUid, merchantUid, amount) => {
+        try {
+            const tokenResponse = await axios.post(`/api/payment/token`);
+            const { access_token } = tokenResponse.data;
+
+            const cancelData = {
+                reason: '결제 검증 실패 또는 오류 발생으로 인한 자동 취소',
+                imp_uid: impUid,
+                merchant_uid: merchantUid,
+                amount: amount,
+                access_token: access_token // 액세스 토큰 추가
+            };
+
+            console.log('결제 취소 요청 중...', cancelData);
+
+            await axios.post(`/api/payment/cancel`, cancelData, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
+
+            console.log('결제가 취소되었습니다.');
+        } catch (error) {
+            console.error('결제 취소 중 오류 발생:', error);
+            setError('결제 취소 중 오류가 발생했습니다.');
+        }
     };
 
     const formatDate = (dateString) => {
