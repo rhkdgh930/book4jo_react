@@ -177,7 +177,7 @@ function BookSalesOrder() {
 
     const cancelPayment = async (impUid, merchantUid, amount) => {
         try {
-            const token = await fetchToken(); // 토큰 요청 함수 호출
+            const token = await fetchToken();
 
             const cancelData = {
                 reason: '결제 검증 실패 또는 오류 발생으로 인한 자동 취소',
@@ -202,7 +202,7 @@ function BookSalesOrder() {
     };
 
     const fetchToken = async () => {
-        const MAX_RETRIES = 30; // 최대 재시도 횟수
+        const MAX_RETRIES = 50; // 최대 재시도 횟수
         let retryCount = 0;
 
         while (retryCount < MAX_RETRIES) {
