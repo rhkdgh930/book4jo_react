@@ -22,6 +22,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
 
   const onLogoutClick = async () => {
     try {
+      localStorage.removeItem('accessToken');
       await logout();
       setIsLoggedIn(false);
       navigate("/signin");
