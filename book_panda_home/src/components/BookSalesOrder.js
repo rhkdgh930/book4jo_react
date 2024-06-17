@@ -178,6 +178,7 @@ function BookSalesOrder() {
         });
     };
 
+
     const cancelPayment = async (impUid, merchantUid, amount) => {
         try {
             const tokenResponse = await axios.post(`/api/payment/token`);
@@ -204,6 +205,7 @@ function BookSalesOrder() {
             setError('결제 취소 중 오류가 발생했습니다.');
         }
     };
+
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };

@@ -1,0 +1,42 @@
+/* CartItem.module.css */
+.orderItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.itemImage {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+.itemDetails {
+    flex: 1;
+}
+
+.itemTitle {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.itemPrice {
+    font-size: 14px;
+    color: #666;
+}
+
+.addToCartButton {
+    background-color: white;
+    color: #555;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.addToCartButton:hover {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+}

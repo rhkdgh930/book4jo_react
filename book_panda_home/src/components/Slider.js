@@ -50,11 +50,21 @@ function Slider(){
     return(
         <div className={ styles.slide }>
             <div className={ styles.slide_container}>
-                <div className={styles.slide_item}>1</div>
-                <div className={styles.slide_item}>2</div>
-                <div className={styles.slide_item}>3</div>
-                <div className={styles.slide_item}>4</div>
-                <div className={styles.slide_item}>5</div>
+                <div className={styles.slide_item}>
+                    <img src={process.env.PUBLIC_URL+ '/human.png'}></img>
+                </div>
+                <div className={styles.slide_item}>
+                    <img src={process.env.PUBLIC_URL+ '/stolen.png'}/>
+                </div>
+                <div className={styles.slide_item}>
+                    <img src={process.env.PUBLIC_URL+'/brave.png'}/>
+                </div>
+                <div className={styles.slide_item}>
+                    <img src={process.env.PUBLIC_URL+'/almond.png'}/>
+                </div>
+                <div className={styles.slide_item}>
+                    <img src={process.env.PUBLIC_URL+'/gun.png'}/>
+                </div>
             </div>
         </div>
     )
