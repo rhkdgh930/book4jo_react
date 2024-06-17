@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link,useNavigate  } from "react-router-dom";
 import styles from '../styles/SearchBar.module.css';
 import axios from 'axios';
+import panda from "../assets/images/panda1.png"
 
 function SearchBar() {
 
@@ -41,6 +42,7 @@ function SearchBar() {
 
     return (
         <div className={styles.container}>
+            <div className={styles.logoimage}><Link to="/" id="logoLink"><img src={panda} alt="Panda Logo" /></Link></div>
             <div className={styles.logo}><Link to="/" id="logoLink">책판다</Link></div>
             <div className={styles.searchBar}>
                 <select>

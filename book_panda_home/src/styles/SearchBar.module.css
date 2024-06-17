@@ -25,6 +25,11 @@
     color: black; /* 링크 색상 */
     text-decoration: none; /* 링크 밑줄 제거 */
   }
+
+  .logoimage img {
+    width: 60px;
+    height: 60px;
+   }
   
   .searchBar {
     border: 3px solid var(--primary-color); /* 테두리 색상 변경 */
@@ -58,11 +63,12 @@
   
   .autocompleteVisible {
     position: absolute;
-    top: 45px; /* 검색창 아래에 나타나도록 조정 */
+    top: 52px; /* 검색창 아래에 나타나도록 조정 */
     z-index: 5;
     background-color: white;
     width: 535px;
     margin-top: 5px;
+    margin-left:173px;
     display: block;
     height: auto;
     border: 1px solid var(--primary-color);
@@ -71,11 +77,12 @@
   
   .autocompleteHidden {
     position: absolute;
-    top: 45px; /* 검색창 아래에 나타나도록 조정 */
+    top: 52px; /* 검색창 아래에 나타나도록 조정 */
     z-index: 5;
     background-color: white;
     width: 535px;
     margin-top: 5px;
+    margin-left: 173px;
     display: block;
     height: auto;
     border: 1px solid var(--primary-color);
@@ -96,7 +103,7 @@
     width: 100%;
     border: none;
     background-color: var(--primary-color);
-    color: var(--text-color);
+    color: white;
     padding: 10px;
     cursor: pointer;
   }
