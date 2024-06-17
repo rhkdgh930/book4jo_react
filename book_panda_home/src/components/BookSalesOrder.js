@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import OrderItem from './OrderItem';
-import Post from './Post';
 import styles from '../styles/order.module.css';
 import style from '../styles/CartItem.module.css';
 
 function BookSalesOrder() {
     const [searchParams] = useSearchParams();
     const [book, setBook] = useState(null);
-    const [orderId, setOrderId] = useState(null); // orderId 상태 추가
     const [loading, setLoading] = useState(true);
     const [address, setAddress] = useState('');
     const [detailedAddress, setDetailedAddress] = useState('');
@@ -41,6 +38,8 @@ function BookSalesOrder() {
         }
 
         return () => {
+            document.head.removeChild(jquery);
+            document.head.removeChild(iamport);
             document.head.removeChild(daumPostcodeScript);
         };
     }, [searchParams]);
@@ -58,6 +57,7 @@ function BookSalesOrder() {
             setPostCode(bookData.userPostCode);
         } catch (error) {
             console.error('주문 정보 요청 실패:', error);
+            setError('주문 정보를 불러오는 중 오류가 발생했습니다.');
         } finally {
             setLoading(false);
         }
@@ -96,8 +96,8 @@ function BookSalesOrder() {
             merchant_uid: `merchant_${new Date().getTime()}`,
             name: book.title,
             amount: book.discount,
-            buyer_email: book.userName,
-            buyer_name: book.name,
+            buyer_email: book.userEmail,
+            buyer_name: book.userName,
             buyer_tel: book.userPhoneNumber,
             buyer_addr: address,
             buyer_postcode: postCode,
@@ -106,11 +106,7 @@ function BookSalesOrder() {
                 try {
                     const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
                     if (rsp.paid_amount === data.amount) {
-                        const token = localStorage.getItem('accessToken');
-                        if (!token) {
-                            throw new Error('No access token found');
-                        }
-
+                        const token = await fetchToken(); // 토큰 요청 함수 호출
                         const bookId = searchParams.get('bookId');
                         const getKoreanDate = () => {
                             const date = new Date();
@@ -137,8 +133,8 @@ function BookSalesOrder() {
                             impUid: rsp.imp_uid,
                             merchantUid: rsp.merchant_uid,
                             amount: rsp.paid_amount,
-                            buyerEmail: book.userName,
-                            buyerName: book.name,
+                            buyerEmail: book.userEmail,
+                            buyerName: book.userName,
                             buyerTel: book.userPhoneNumber,
                             buyerAddr: address,
                             buyerPostcode: postCode,
@@ -151,8 +147,8 @@ function BookSalesOrder() {
                         setPaymentInfo({
                             product_name: book.productName,
                             amount: rsp.paid_amount,
-                            buyer_email: book.userName,
-                            buyer_name: book.name,
+                            buyer_email: book.userEmail,
+                            buyer_name: book.userName,
                             buyer_tel: book.userPhoneNumber,
                             buyer_addr: address,
                             buyer_postcode: postCode,
@@ -162,17 +158,17 @@ function BookSalesOrder() {
                     } else {
                         setError('결제 검증 실패: 금액이 일치하지 않습니다.');
                         await cancelPayment(rsp.imp_uid, rsp.merchant_uid, rsp.paid_amount); // 결제 취소
-                        alert('결제 실패');
+                        alert('결제가 실패하였습니다, 잠시 후 다시 시도해주세요.');
                     }
                 } catch (error) {
                     console.error('결제 검증 및 저장 중 오류 발생:', error);
                     setError('결제 검증 및 저장 중 오류가 발생했습니다.');
                     await cancelPayment(rsp.imp_uid, rsp.merchant_uid, rsp.paid_amount); // 결제 취소
-                    alert('결제 실패');
+                    alert('결제가 실패하였습니다, 잠시 후 다시 시도해주세요.');
                 }
             } else {
                 setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
-                alert('결제 실패');
+                alert('결제가 실패하였습니다, 잠시 후 다시 시도해주세요.');
             }
             setLoading(false);
         });
@@ -181,15 +177,14 @@ function BookSalesOrder() {
 
     const cancelPayment = async (impUid, merchantUid, amount) => {
         try {
-            const tokenResponse = await axios.post(`/api/payment/token`);
-            const { access_token } = tokenResponse.data;
+            const token = await fetchToken(); // 토큰 요청 함수 호출
 
             const cancelData = {
                 reason: '결제 검증 실패 또는 오류 발생으로 인한 자동 취소',
                 imp_uid: impUid,
                 merchant_uid: merchantUid,
                 amount: amount,
-                access_token: access_token // 액세스 토큰 추가
+                access_token: token
             };
 
             console.log('결제 취소 요청 중...', cancelData);
@@ -206,6 +201,24 @@ function BookSalesOrder() {
         }
     };
 
+    const fetchToken = async () => {
+        const MAX_RETRIES = 30; // 최대 재시도 횟수
+        let retryCount = 0;
+
+        while (retryCount < MAX_RETRIES) {
+            try {
+                const tokenResponse = await axios.post(`/api/payment/token`);
+                const { access_token } = tokenResponse.data;
+                return access_token;
+            } catch (error) {
+                console.error('토큰 요청 실패:', error);
+                retryCount++;
+                if (retryCount === MAX_RETRIES) {
+                    throw new Error('토큰을 받아오는 데 실패했습니다.');
+                }
+            }
+        }
+    };
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
@@ -289,26 +302,27 @@ function BookSalesOrder() {
                     <div className="address-input-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
                         <input
                             placeholder="주소를 검색해주세요."
-                            defaultValue={address}
+                            value={address}
                             onChange={(e) => setAddress(e.target.value)}
                         />
                         <button onClick={handlePostcode}>주소 검색</button>
                     </div>
                     <input
                         placeholder="상세 주소를 입력해주세요."
-                        defaultValue={detailedAddress}
+                        value={detailedAddress}
                         onChange={(e) => setDetailedAddress(e.target.value)}
                     />
                     <div className="custom-text">우편번호</div>
                     <input
                         placeholder="우편번호"
-                        defaultValue={postCode}
+                        value={postCode}
                         onChange={(e) => setPostCode(e.target.value)}
                     />
                 </div>
             )}
 
             <button className={styles.button} onClick={handlePayment}>결제하기</button>
+            {error && <div className={styles.error}>{error}</div>}
         </div>
     );
 }
