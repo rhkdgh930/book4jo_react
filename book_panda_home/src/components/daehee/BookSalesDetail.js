@@ -17,6 +17,7 @@ const BookSalesDetail = () => {
   const [queryParams, setQueryParams] = useState({});
   const [showNotification, setShowNotification] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userRole, setUserRole] = useState("USER");
 
   const count = async () => {
     try {
@@ -28,6 +29,8 @@ const BookSalesDetail = () => {
         withCredentials: true,
       });
       console.log("Count data:", response.data);
+      setUserRole(response.data.bookSales.user.roles[0]);
+      console.log("유저 권한 : " + userRole);
       setQueryParams(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -91,6 +94,14 @@ const BookSalesDetail = () => {
     // }
   };
 
+  const handlePriceUpdate = () => {
+    // 가격 업데이트 로직을 여기에 추가합니다.
+  };
+
+  const handleStockUpdate = () => {
+    // 재고 업데이트 로직을 여기에 추가합니다.
+  };
+
   return (
     <div className={styles.sales}>
       {isLoading && <div>로딩중</div>}
@@ -104,9 +115,21 @@ const BookSalesDetail = () => {
             <div className={styles.bookDetails}>
               <h3 className={styles.title}>{queryParams.bookSales.bookInfo.title}</h3>
               <p className={styles.price}>가격: {queryParams.bookSales.bookInfo.discount}원</p>
+              {userRole === "ADMIN" && (
+                <div>
+                  <input type="number" placeholder="가격 수정" />
+                  <button onClick={handlePriceUpdate}>가격 수정</button>
+                </div>
+              )}
               <p className={`${queryParams.bookSales.stock === "0" ? styles.zero : styles.stock}`}>
                 재고: {queryParams.bookSales.stock}권
               </p>
+              {userRole === "ADMIN" && (
+                <div>
+                  <input type="number" placeholder="수량 수정" />
+                  <button onClick={handleStockUpdate}>수량 수정</button>
+                </div>
+              )}
               <p className={styles.stock}>저자: {queryParams.bookSales.bookInfo.author}</p>
               <div className={styles.buttons}>
                 <button onClick={addToCart} disabled={loading}>

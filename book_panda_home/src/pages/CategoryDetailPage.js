@@ -75,7 +75,6 @@ function CategoryDetailPage() {
       </div>
 
       <Pagination
-        
         activePage={page}
         itemsCountPerPage={10}
         totalItemsCount={pageInfo.pages * 10}
