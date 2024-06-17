@@ -1,0 +1,130 @@
+/* OrderHistory.module.css */
+.orderHistoryContainer {
+    width: 1030px;
+    margin: 5rem auto;
+    display: flex;
+    /* Flexbox로 설정 */
+}
+
+.selectPage {
+    width: 20%;
+    background-color: #d3d3d3;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100vh;
+}
+
+.selectPageButton {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    margin-bottom: 15px;
+    background-color: #006769;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+}
+
+.selectPageButton:hover .dropdownContent {
+    display: block;
+}
+
+.dropdownContent {
+    display: none;
+    position: absolute;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    right: 0;
+}
+
+.dropdownContent a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdownContent a:hover {
+    background-color: #000000;
+}
+
+.orderHistory {
+    width: 75%;
+    padding: 30px;
+    background-color: #fafafa;
+    margin-top: 10px;
+    /* 위쪽 마진 추가 */
+}
+
+.order {
+    border-bottom: 1px solid #e1e1e1;
+    padding: 15px 0;
+}
+
+
+.orderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.orderDate {
+    font-weight: bold;
+}
+
+.orderDetailsLink {
+    color: #000000;
+    text-decoration: none;
+}
+
+.orderBody {
+    display: flex;
+    flex-direction: column;
+}
+
+.orderStatus {
+    font-size: 14px;
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+.deliveryDate {
+    font-size: 12px;
+    color: #999;
+}
+
+.orderItems {
+    display: flex;
+    flex-direction: column;
+}
+
+.orderActions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.trackOrderButton,
+.returnRequestButton,
+.contactSellerButton {
+    background-color: white;
+    color: #555;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.trackOrderButton:hover,
+.returnRequestButton:hover,
+.contactSellerButton:hover {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+}

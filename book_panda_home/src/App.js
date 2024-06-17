@@ -28,9 +28,9 @@ import SearchPage from "./pages/SearchPage";
 import MypageCheck from "./pages/MypageCheck";
 import Resign from "./pages/Resign";
 import BookSalesOrder from "./components/BookSalesOrder";
+import OrderHist from "./components/OrderHist";
 import CartOrder from "./components/CartOrder";
 import axios from 'axios';
-
 const privatePaths = ["/admin", "/profile", "/order"];
 
 const App = () => {
@@ -104,6 +104,7 @@ const App = () => {
               <Resign />
             </PrivateRoute>
           } />
+          <Route path="/mypage/ordered" element={<OrderHist />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/bookDetails/order" element={<BookSalesOrder />} />
           <Route path="/cart/order" element={<CartOrder />} />

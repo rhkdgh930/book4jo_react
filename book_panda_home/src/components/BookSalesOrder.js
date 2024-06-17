@@ -176,6 +176,14 @@ function BookSalesOrder() {
         });
     };
 
+    useEffect(() => {
+        if (orderId) {
+            console.log("Updated orderId : ", orderId);
+        }
+    }, [orderId]);
+
+
+
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
         return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
