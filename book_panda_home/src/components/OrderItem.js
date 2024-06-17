@@ -1,25 +1,33 @@
 import React from "react";
-import styles from '../styles/CartItem.module.css';
+import styles from '../styles/OrderItem.module.css';
 
 function OrderItem({ item }) {
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + '...';
+        } else {
+            return text;
+        }
+    };
+
+    console.log(item);
+
     return (
         <tr className={styles.orderItemRow}>
-            <td>
+            <td className={styles.item}>
                 <div className={styles.itemInfo}>
                     <img src={item.image} alt={item.title} className={styles.itemImage} />
                     <div>
-                        <div className={styles.itemTitle}>{item.title}</div>
-                        <div className={styles.itemPrice}>{item.price.toLocaleString()}원</div>
+                        <a href={`/bookSalesDetail?id=${item.bookId}`} className={styles.itemTitle}>{truncateText(item.title, 30)}</a>
                     </div>
                 </div>
             </td>
-            {/* <td>
+            <td className={styles.itemQuantity}>
                 {item.quantity.toLocaleString()} 개
             </td>
-            <td>
+            <td className={styles.itemPrice}>
                 {(item.price * item.quantity).toLocaleString()}원
-            </td> */
-            }
+            </td>
         </tr>
     );
 }

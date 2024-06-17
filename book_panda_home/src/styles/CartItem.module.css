@@ -6,12 +6,13 @@
 .itemImage {
     width: 50px;
     height: 50px;
-    margin-right: 10px;
+    margin-right: 15px;
 }
 
 .itemTitle {
     font-weight: bold;
     text-align: left;
+    margin-right: 15px;
 }
 
 .quantityContainer {
@@ -20,11 +21,14 @@
 }
 
 .quantityInput {
-    width: 40px;  /* 수정된 너비 */
-    height: 20px;  /* 수정된 높이 */
-    padding: 5px; 
+    width: 40px;
+    /* 수정된 너비 */
+    height: 20px;
+    /* 수정된 높이 */
+    padding: 5px;
     text-align: center;
-    border: 1px solid #ccc; /* 테두리 추가 */
+    border: 1px solid #ccc;
+    /* 테두리 추가 */
 }
 
 .quantityButton {
@@ -44,15 +48,17 @@
 }
 
 .quantityButton:hover {
-    color: #006769; /* 포인트 컬러의 어두운 버전 */
-    border-color: #006769; /* 포인트 컬러의 어두운 버전 */
+    color: #006769;
+    /* 포인트 컬러의 어두운 버전 */
+    border-color: #006769;
+    /* 포인트 컬러의 어두운 버전 */
 }
 
 .deleteButton {
     background-color: #ddd;
     border: none;
     padding: 5px 10px;
-    margin: 0; 
+    margin: 0;
     cursor: pointer;
 }
 
