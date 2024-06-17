@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/OrderHistory.module.css';
 import OrderItem from './OrderItem';
 
 function OrderHist() {
     const [orders, setOrders] = useState([]);
     const [orderItems, setOrderItems] = useState({});
+    const navigate = useNavigate(); // useNavigate 훅 사용
 
     useEffect(() => {
         fetchOrders();
@@ -43,7 +44,6 @@ function OrderHist() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            console.log(orderId);
             const response = await axios.get('/api/order/items', {
                 params: { orderId },
                 headers: {
@@ -73,15 +73,18 @@ function OrderHist() {
         // 결제 취소 로직 구현
     };
 
+    const handleOrderDetailsClick = (orderId) => {
+        navigate(`/order?orderId=${orderId}`);
+    };
+
     return (
         <div className={styles.orderHistoryContainer}>
             <div className={styles.selectPage}>
                 <div className={styles.selectPageButton}>
-                    <Link to="/mypage">마이페이지</Link>
-                    <div className={styles.dropdownContent}>
-                        <Link to="/mypage">회원정보관리</Link>
-                        <Link to="/mypage/ordered">주문내역</Link>
-                    </div>
+                    <Link to="/mypage">회원정보관리</Link>
+                </div>
+                <div className={styles.selectPageButton}>
+                    <Link to="/mypage/ordered">주문내역</Link>
                 </div>
             </div>
             <div className={styles.orderHistory}>
@@ -93,21 +96,18 @@ function OrderHist() {
                         <div key={order.id} className={styles.order}>
                             <div className={styles.orderHeader}>
                                 <span className={styles.orderDate}>{formatDate(order.orderDate)} 주문</span>
-                                <Link to={`/order?orderId=${order.id}`} className={styles.orderDetailsLink}>주문 상세보기</Link>
+                                <button
+                                    onClick={() => handleOrderDetailsClick(order.id)}
+                                    className={styles.trackOrderButton}
+                                >
+                                    주문 상세보기
+                                </button>
                             </div>
                             <div className={styles.orderBody}>
                                 <div className={styles.orderStatus}>
                                     배송중
                                 </div>
                                 <table className={styles.orderItems}>
-                                    {/* <thead>
-                                        <tr>
-                                            <th>상품 정보</th>
-                                            <th>수량</th>
-                                            <th>가격</th>
-                                            <th>장바구니</th>
-                                        </tr>
-                                    </thead> */}
                                     <tbody>
                                         {orderItems[order.id] ? (
                                             orderItems[order.id].map(item => (
@@ -121,6 +121,7 @@ function OrderHist() {
                                     </tbody>
                                 </table>
                                 <div className={styles.orderActions}>
+                                    {/* 결제 취소 버튼 등 추가 가능 */}
                                 </div>
                             </div>
                         </div>
