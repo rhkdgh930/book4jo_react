@@ -78,6 +78,14 @@ function BookSalesOrder() {
         }).open();
     };
 
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + '...';
+        } else {
+            return text;
+        }
+    };
+
     // const handlePayment = async () => {
     //     setLoading(true);
 
@@ -244,7 +252,7 @@ function BookSalesOrder() {
                             <td>
                                 <div className={style.itemInfo}>
                                     <img src={book.image} alt={book.title} className={style.itemImage} />
-                                    <span className={style.itemTitle}>{book.title}</span>
+                                    <span className={style.itemTitle}>{truncateText(book.title, 40)}</span>
                                 </div>
                             </td>
                             <td>{book.quantity.toLocaleString()}</td>

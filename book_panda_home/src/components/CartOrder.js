@@ -61,7 +61,8 @@ function CartOrder() {
             setDetailedAddress(cartData.userAddress2);
             setPostCode(cartData.userPostCode);
         } catch (error) {
-            console.error('주문 정보 요청 실패:', error);
+            alert('주문 정보 요청 실패:', error.response.data);
+            navigate("/cart");
         } finally {
             setLoading(false);
         }
@@ -80,6 +81,14 @@ function CartOrder() {
                 setPostCode(data.zonecode);
             },
         }).open();
+    };
+
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + '...';
+        } else {
+            return text;
+        }
     };
 
     // const handlePayment = async () => {
@@ -234,7 +243,7 @@ function CartOrder() {
                             <td>
                                 <div className={style.itemInfo}>
                                     <img src={item.image} alt={item.title} className={style.itemImage} />
-                                    <span className={style.itemTitle}>{item.title}</span>
+                                    <span className={style.itemTitle}>{truncateText(item.title, 40)}</span>
                                 </div>
                             </td>
                             <td>{item.quantity.toLocaleString()}</td>
