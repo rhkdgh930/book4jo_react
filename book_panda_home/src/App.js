@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import SearchBar from "./components/SearchBar";
@@ -6,7 +7,6 @@ import Main from "./pages/Main";
 import AdminPage from "./pages/AdminPage";
 import CategoryList from "./components/CategoryList";
 import ShippingManagement from "./components/ShippingManagement";
-//import Category from "./components/Category";
 import BookDetail from "./components/BookDetail";
 import Cart from "./components/Cart";
 import Order from "./components/Order";
@@ -14,16 +14,25 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
-import FindPassword from "./pages/FindPassword"
+import FindPassword from "./pages/FindPassword";
 import { CategoryListContext } from "./context/CategoryListContext";
-import { useState } from "react";
 import EnrollBook from "./components/EnrollBook";
 import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
 import CategoryDetailPage from './pages/CategoryDetailPage';
-import Payment from "./components/Payment"
+import Payment from "./components/Payment";
+import apiClient, { refreshToken } from "./components/TokenRefreshing";
+import PrivateRoute from "./components/PrivateRoute"; // PrivateRoute 가져오기
+import SearchPage from "./pages/SearchPage"; // SearchPage 가져오기
+import MypageCheck from "./pages/MypageCheck"; // MypageCheck 가져오기
+import Resign from "./pages/Resign"; // Resign 가져오기
+import BookSalesOrder from "./components/BookSalesOrder"; // BookSalesOrder 가져오기
+import CartOrder from "./components/CartOrder"; // CartOrder 가져오기
+import axios from 'axios'; // axios 가져오기
+
 const privatePaths = ["/admin", "/profile", "/order"];
+
 const App = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,7 +83,7 @@ const App = () => {
             <Route path="sales" element={<BookSales />} />
             <Route path="salesDetail" element={<BookSalesDetail />} />
           </Route>
-          <Route path="/search" element={<SearchPage/>}></Route>
+          <Route path="/search" element={<SearchPage />} />
           <Route path="bookSalesDetail" element={<BookSalesDetail />}></Route>
           <Route path="/category" element={<CategoryDetailPage />} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
