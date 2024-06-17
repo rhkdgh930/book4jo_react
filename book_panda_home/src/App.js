@@ -25,6 +25,7 @@ import CategoryDetailPage from './pages/CategoryDetailPage';
 import Payment from "./components/Payment"
 import BookSalesOrder from "./components/BookSalesOrder"
 import CartOrder from "./components/CartOrder"
+import OrderHist from "./components/OrderHist";
 const privatePaths = ["/admin", "/profile", "/order"];
 const App = () => {
   const [categoryList, setCategoryList] = useState([]);
@@ -63,6 +64,7 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/find-password" element={<FindPassword />} />
+          <Route path="/mypage/ordered" element={<OrderHist />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/bookDetails/order" element={<BookSalesOrder />} />
           <Route path="/cart/order" element={<CartOrder />} />

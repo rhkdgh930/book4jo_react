@@ -1,55 +1,132 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import styles from '../styles/OrderHist.module.css';
+import { Link } from 'react-router-dom';
+import styles from '../styles/OrderHistory.module.css';
+import OrderItem from './OrderItem';
 
 function OrderHist() {
     const [orders, setOrders] = useState([]);
+    const [orderItems, setOrderItems] = useState({});
 
     useEffect(() => {
         fetchOrders();
     }, []);
 
+    useEffect(() => {
+        if (orders.length > 0) {
+            orders.forEach(order => fetchOrderItems(order.id));
+        }
+    }, [orders]);
+
     const fetchOrders = async () => {
         try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                throw new Error('No access token found');
+            }
             const response = await axios.get('/api/orders', {
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
-                withCredentials: true
+                withCredentials: true,
             });
             setOrders(response.data);
         } catch (error) {
-            console.error('err :', error);
+            console.error('Error fetching orders:', error);
         }
     };
 
+    const fetchOrderItems = async (orderId) => {
+        try {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                throw new Error('No access token found');
+            }
+            console.log(orderId);
+            const response = await axios.get('/api/order/items', {
+                params: { orderId },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            });
+            setOrderItems(prevItems => ({
+                ...prevItems,
+                [orderId]: response.data
+            }));
+        } catch (error) {
+            console.error('주문 항목 요청 실패:', error);
+        }
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString || isNaN(Date.parse(dateString))) {
+            return '유효하지 않은 날짜';
+        }
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+        return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
+    };
+
+    const handleCancelPayment = async (orderId) => {
+        // 결제 취소 로직 구현
+    };
+
     return (
-        <div className={styles.orderHistContainer}>
-            <h2>주문 내역</h2>
-            {orders.length === 0 ? (
-                <div>주문한 내역이 없습니다.</div>
-            ) : (
-                <table className={styles.orderTable}>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>주문 날짜</th>
-                            <th>총액</th>
-                            <th>배송 상태</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {orders.map(order => (
-                            <tr key={order.id}>
-                                <td>{order.id}</td>
-                                <td>{new Date(order.orderDate).toLocaleDateString()}</td>
-                                <td>{order.totalPrice.toLocaleString()}원</td>
-                                <td>{order.status}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
+        <div className={styles.orderHistoryContainer}>
+            <div className={styles.selectPage}>
+                <div className={styles.selectPageButton}>
+                    <Link to="/mypage">마이페이지</Link>
+                    <div className={styles.dropdownContent}>
+                        <Link to="/mypage">회원정보관리</Link>
+                        <Link to="/mypage/ordered">주문내역</Link>
+                    </div>
+                </div>
+            </div>
+            <div className={styles.orderHistory}>
+                <h2>주문 내역</h2>
+                {orders.length === 0 ? (
+                    <div className={styles.noOrders}>주문한 내역이 없습니다.</div>
+                ) : (
+                    orders.map(order => (
+                        <div key={order.id} className={styles.order}>
+                            <div className={styles.orderHeader}>
+                                <span className={styles.orderDate}>{formatDate(order.orderDate)} 주문</span>
+                                <Link to={`/order?orderId=${order.id}`} className={styles.orderDetailsLink}>주문 상세보기</Link>
+                            </div>
+                            <div className={styles.orderBody}>
+                                <div className={styles.orderStatus}>
+                                    배송중
+                                </div>
+                                <table className={styles.orderItems}>
+                                    {/* <thead>
+                                        <tr>
+                                            <th>상품 정보</th>
+                                            <th>수량</th>
+                                            <th>가격</th>
+                                            <th>장바구니</th>
+                                        </tr>
+                                    </thead> */}
+                                    <tbody>
+                                        {orderItems[order.id] ? (
+                                            orderItems[order.id].map(item => (
+                                                <OrderItem key={item.id} item={item} />
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="4">주문 항목 불러오는 중...</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                                <div className={styles.orderActions}>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
         </div>
     );
 }

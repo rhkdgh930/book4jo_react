@@ -9,20 +9,21 @@ import style from '../styles/CartItem.module.css';
 function BookSalesOrder() {
     const [searchParams] = useSearchParams();
     const [book, setBook] = useState(null);
+    const [orderId, setOrderId] = useState(null); // orderId 상태 추가
     const [loading, setLoading] = useState(true);
-    const [address, setAddress] = useState(''); // 주소 상태 추가
+    const [address, setAddress] = useState('');
     const [detailedAddress, setDetailedAddress] = useState('');
     const [postCode, setPostCode] = useState('');
     const [scriptLoaded, setScriptLoaded] = useState(false);
     const [errors, setErrors] = useState({});
-    const [deliveryType, setDeliveryType] = useState('default'); // 배송지 타입 추가
+    const [deliveryType, setDeliveryType] = useState('default');
     const navigate = useNavigate();
 
     useEffect(() => {
         const bookId = searchParams.get('bookId');
         const daumPostcodeScript = document.createElement("script");
         daumPostcodeScript.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-        daumPostcodeScript.onload = () => setScriptLoaded(true); // 스크립트 로드 완료 시 상태 업데이트
+        daumPostcodeScript.onload = () => setScriptLoaded(true);
         document.head.appendChild(daumPostcodeScript);
         if (bookId) {
             fetchBookOrder(bookId);
@@ -41,9 +42,9 @@ function BookSalesOrder() {
             });
             const bookData = response.data;
             setBook(bookData);
-            setAddress(bookData.userAddress1); // 기본 주소 설정
-            setDetailedAddress(bookData.userAddress2); // 상세 주소 설정
-            setPostCode(bookData.userPostCode); // 우편번호 설정
+            setAddress(bookData.userAddress1);
+            setDetailedAddress(bookData.userAddress2);
+            setPostCode(bookData.userPostCode);
         } catch (error) {
             console.error('주문 정보 요청 실패:', error);
         } finally {
@@ -83,7 +84,7 @@ function BookSalesOrder() {
             }
             const requestData = {
                 bookId: bookId,
-                orderDate: getKoreanDate(), // 현재 날짜로 설정
+                orderDate: getKoreanDate(),
                 address1: address,
                 address2: detailedAddress,
                 postCode: postCode,
@@ -91,16 +92,25 @@ function BookSalesOrder() {
             console.log(requestData);
             const response = await axios.post(`/api/order`, requestData, {
                 params: { id: bookId },
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 withCredentials: true,
             });
-            console.log(response.data.id);
+            console.log("orderId : ", response.data.id);
+            setOrderId(response.data.id);
         } catch (error) {
             console.error("주문 오류: ", bookId, error);
         } finally {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (orderId) {
+            console.log("Updated orderId : ", orderId);
+        }
+    }, [orderId]);
+
+
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
@@ -173,7 +183,6 @@ function BookSalesOrder() {
                 </label>
             </div>
 
-            {/* 배송지 입력 폼 */}
             {deliveryType === 'default' ? (
                 <div className={styles.addressInfo}>
                     <div>주소: {address}</div>
