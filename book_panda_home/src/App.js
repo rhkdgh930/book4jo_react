@@ -14,42 +14,58 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
-import FindPassword from "./pages/FindPassword";
+import FindPassword from "./pages/FindPassword"
 import { CategoryListContext } from "./context/CategoryListContext";
 import { useState } from "react";
 import EnrollBook from "./components/EnrollBook";
 import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
-import CategoryDetailPage from "./pages/CategoryDetailPage";
-import Payment from "./components/Payment";
-import BookSalesOrder from "./components/BookSalesOrder";
-import CartOrder from "./components/CartOrder";
-import SearchPage from "./pages/SearchPage";
+import CategoryDetailPage from './pages/CategoryDetailPage';
+import Payment from "./components/Payment"
 const privatePaths = ["/admin", "/profile", "/order"];
 const App = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // 인증되지 않은 사용자가 들어가면 안되는 곳
-  // => 구매페이지, 프로필페이지, 관리자페이지
-  //
-  /*
-  const location = useLocation();
+
+  // 모든 Axios 요청에 대해 apiClient 인터셉터 설정
   useEffect(() => {
-    if (privatePaths.includes(location.pathname)) {
-      // user auth logic.... (api call);
-    }
-  }, [location.pathname]);
-  */
+    apiClient.interceptors.request.use(
+      config => config,
+      error => Promise.reject(error)
+    );
+
+    apiClient.interceptors.response.use(
+      response => response,
+      async error => {
+        const originalRequest = error.config;
+        if (error.response.status === 401 && !originalRequest._retry) {
+          originalRequest._retry = true;
+          const token = await refreshToken();
+          if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            originalRequest.headers['Authorization'] = `Bearer ${token}`;
+            return axios(originalRequest);
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
+  }, []);
+
   return (
     <CategoryListContext.Provider value={[categoryList, setCategoryList]}>
       <div className="App">
         <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-        <SearchBar></SearchBar>
-        <Nav></Nav>
+        <SearchBar />
+        <Nav />
         <Routes>
-          <Route path="/" element={<Main />}></Route>
-          <Route path="/admin" element={<AdminPage />}>
+          <Route path="/" element={<Main />} />
+          <Route path="/admin" element={
+            <PrivateRoute>
+              <AdminPage />
+            </PrivateRoute>
+          }>
             <Route path="category" element={<CategoryList />} />
             <Route path="shippingManagement" element={<ShippingManagement />} />
             <Route path="enrollBook" element={<EnrollBook />}></Route>
@@ -63,8 +79,22 @@ const App = () => {
           <Route path="/category" element={<CategoryDetailPage />} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/mypage" element={<MyPage />} />
+          <Route path="/mypage/user" element={
+            <PrivateRoute>
+              <MyPage />
+            </PrivateRoute>
+          } />
+          <Route path="/mypage/check" element={
+            <PrivateRoute>
+              <MypageCheck />
+            </PrivateRoute>
+          } />
           <Route path="/find-password" element={<FindPassword />} />
+          <Route path="/resign" element={
+            <PrivateRoute>
+              <Resign />
+            </PrivateRoute>
+          } />
           <Route path="/cart" element={<Cart />} />
           <Route path="/bookDetails/order" element={<BookSalesOrder />} />
           <Route path="/cart/order" element={<CartOrder />} />
@@ -73,6 +103,6 @@ const App = () => {
       </div>
     </CategoryListContext.Provider>
   );
-};
+}
 
 export default App;
