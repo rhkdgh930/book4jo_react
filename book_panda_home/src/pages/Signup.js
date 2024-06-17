@@ -107,7 +107,7 @@ const Signup = () => {
     const newErrors = {};
 
     if (!validatePassword(pw)) {
-      newErrors.pw = '비밀번호 형식이 올바르지 않습니다.';
+      newErrors.pw = '특수문자 + 알파벳 대소문자 + 숫자를 포함한 8~16자.';
     }
     if (pw !== confirmPw) {
       newErrors.confirmPw = '비밀번호가 일치하지 않습니다.';
@@ -177,7 +177,7 @@ const Signup = () => {
           </div>
           <div className="custom-text">비밀번호 &nbsp; <Red>*</Red> &nbsp; {errors.pw && <Error>{errors.pw}</Error>}</div>
           <Input
-            placeholder="특수문자, 영어 대, 소문자 숫자를 포함시켜 주세요"
+            placeholder="특수문자, 영어 대, 소문자 숫자를 포함시켜 8~16자를 입력해주세요"
             type="password"
             value={pw}
             onChange={onChangePW}
@@ -185,7 +185,7 @@ const Signup = () => {
           />
           <div className="custom-text">비밀번호 재확인 &nbsp; <Red>*</Red> &nbsp; {errors.confirmPw && <Error>{errors.confirmPw}</Error>}</div>
           <Input
-            placeholder="특수문자, 영어 대, 소문자 숫자를 포함시켜 주세요"
+            placeholder="특수문자, 영어 대, 소문자 숫자를 포함시켜 8~16자를 입력해주세요"
             type="password"
             value={confirmPw}
             onChange={onChangeConfirmPW}

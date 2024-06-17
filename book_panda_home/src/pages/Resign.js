@@ -34,18 +34,19 @@ const Resign = () => {
     }
 
     try {
-      const response = await axios({
-        method: 'delete',
-        url: 'http://localhost:8080/api/users/delete-user',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        data: { password },
-        withCredentials: true, // 쿠키를 함께 전송
-      });
+      const response = await axios.put('http://localhost:8080/api/users/delete-user',
+        { password },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true, // 쿠키를 함께 전송
+        }
+      );
 
       if (response.status === 200) {
         alert('유저 삭제가 완료되었습니다.');
+        localStorage.removeItem('accessToken');
         navigate('/');
       }
     } catch (error) {
@@ -58,7 +59,7 @@ const Resign = () => {
     <Wrapper>
       <Form>
         <Title>회원 탈퇴</Title>
-        <div className="custom-text">비밀번호 &nbsp; <Red>*</Red> &nbsp; {errors.password && <Error>{errors.password}</Error>}</div>
+        <div className="custom-text">비밀번호 &nbsp; {errors.password && <Error>{errors.password}</Error>}</div>
         <Input
           placeholder="비밀번호를 입력해주세요."
           type="password"
@@ -66,7 +67,7 @@ const Resign = () => {
           onChange={handlePasswordChange}
           error={errors.password}
         />
-        <div className="custom-text">유저 삭제를 동의합니다 &nbsp; <Red>*</Red> &nbsp; {errors.confirmText && <Error>{errors.confirmText}</Error>}</div>
+        <div className="custom-text">유저 삭제를 동의합니다 &nbsp; {errors.confirmText && <Error>{errors.confirmText}</Error>}</div>
         <Input
           placeholder="유저 삭제를 동의합니다를 입력해주세요."
           value={confirmText}
