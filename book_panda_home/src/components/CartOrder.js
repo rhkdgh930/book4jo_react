@@ -14,6 +14,7 @@ function CartOrder() {
     const [errors, setErrors] = useState({});
     const [error, setError] = useState(null);
     const [paymentInfo, setPaymentInfo] = useState(null);
+    const [deliveryType, setDeliveryType] = useState('default');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -53,7 +54,10 @@ function CartOrder() {
             });
             const cartData = response.data;
             setCart(cartData);
-            setAddress(cartData.userAddress);
+            console.log(cartData.userAddress1);
+            console.log(cartData.userAddress2);
+            console.log(cartData.userPostCode);
+            setAddress(cartData.userAddress1);
             setDetailedAddress(cartData.userAddress2);
             setPostCode(cartData.userPostCode);
         } catch (error) {
@@ -87,12 +91,12 @@ function CartOrder() {
             return;
         }
 
-//        if (!cart || cart.totalPrice <= 0) {
-//            console.error('Invalid total price:', cart.totalPrice);
-//            setError('Invalid total price.');
-//            setLoading(false);
-//            return;
-//        }
+        //        if (!cart || cart.totalPrice <= 0) {
+        //            console.error('Invalid total price:', cart.totalPrice);
+        //            setError('Invalid total price.');
+        //            setLoading(false);
+        //            return;
+        //        }
 
         IMP.init('imp14170881');
 
@@ -112,6 +116,30 @@ function CartOrder() {
                 try {
                     const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
                     if (rsp.paid_amount === data.amount) {
+                        const token = localStorage.getItem('accessToken');
+                        if (!token) {
+                            throw new Error('No access token found');
+                        }
+
+                        const getKoreanDate = () => {
+                            const date = new Date();
+                            const offset = 9 * 60; // 한국 시간은 UTC+9
+                            const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+                            return koreanDate;
+                        };
+
+                        const orderData = {
+                            orderDate: getKoreanDate(),
+                            address1: address,
+                            address2: detailedAddress,
+                            postCode: postCode,
+                        };
+
+                        const orderResponse = await axios.post(`/api/orders`, orderData, {
+                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                            withCredentials: true,
+                        });
+
                         const paymentData = {
                             impUid: rsp.imp_uid,
                             merchantUid: rsp.merchant_uid,
@@ -156,10 +184,6 @@ function CartOrder() {
         });
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
     return (
         <div className={styles.orderInfo}>
             <h2 className={styles.heading}>주문 정보</h2>
@@ -189,26 +213,70 @@ function CartOrder() {
             </table>
             <div className={styles.orderDetail}>총 가격: {cart && cart.totalPrice.toLocaleString()}원</div>
             <div className={styles.orderDetail}>사용자 이름: {cart && cart.userName}</div>
-            <div className={styles.orderDetail}>주소: {cart && cart.userAddress}</div>
             <div className={styles.orderDetail}>전화번호: {cart && cart.userPhoneNumber}</div>
 
-            <div className={styles.addressSection}>
-                <div className={styles.orderDetail}>
-                    기본 배송지:
+            <div>
+                <label>
                     <input
-                        type="text"
-                        value={address}
-                        readOnly
-                        onChange={(e) => setAddress(e.target.value)}
-                        className={styles.addressInput}
+                        type="radio"
+                        value="default"
+                        checked={deliveryType === 'default'}
+                        onChange={() => {
+                            setDeliveryType('default');
+                            setAddress(cart.userAddress1);
+                            setDetailedAddress(cart.userAddress2);
+                            setPostCode(cart.userPostCode);
+                        }}
                     />
-                </div>
+                    기본 배송지
+                </label>
+                <label>
+                    <input
+                        type="radio"
+                        value="new"
+                        checked={deliveryType === 'new'}
+                        onChange={() => {
+                            setDeliveryType('new');
+                            setAddress('');
+                            setDetailedAddress('');
+                            setPostCode('');
+                        }}
+                    />
+                    새 배송지
+                </label>
             </div>
 
-            <div className={styles.error}>{error && <p>{error}</p>}</div>
-            <button className={styles.button} onClick={handlePayment} disabled={loading}>
-                결제하기
-            </button>
+            {deliveryType === 'default' ? (
+                <div className={styles.addressInfo}>
+                    <div>주소: {address}</div>
+                    <div>상세 주소: {detailedAddress}</div>
+                    <div>우편번호: {postCode}</div>
+                </div>
+            ) : (
+                <div>
+                    <div className="address-input-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
+                        <input
+                            placeholder="주소를 검색해주세요."
+                            defaultValue={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                        />
+                        <button onClick={handlePostcode}>주소 검색</button>
+                    </div>
+                    <input
+                        placeholder="상세 주소를 입력해주세요."
+                        defaultValue={detailedAddress}
+                        onChange={(e) => setDetailedAddress(e.target.value)}
+                    />
+                    <div className="custom-text">우편번호</div>
+                    <input
+                        placeholder="우편번호"
+                        defaultValue={postCode}
+                        onChange={(e) => setPostCode(e.target.value)}
+                    />
+                </div>
+            )}
+
+            <button className={styles.button} onClick={handlePayment}>결제하기</button>
         </div>
     );
 }

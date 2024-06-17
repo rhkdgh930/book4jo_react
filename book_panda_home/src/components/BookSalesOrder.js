@@ -189,10 +189,6 @@ function BookSalesOrder() {
         return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
     return (
         <div className={styles.orderInfo}>
             <h2 className={styles.heading}>주문 정보</h2>
@@ -222,7 +218,7 @@ function BookSalesOrder() {
             </table>
             <div className={styles.orderDetail}>총 가격: {book && book.discount.toLocaleString()}원</div>
             <div className={styles.orderDetail}>이메일: {book && book.userName}</div>
-            <div className={styles.orderDetail}>주소: {book && book.userAddress1} {book && book.userAddress2}</div>
+            <div className={styles.orderDetail}>전화번호: {book && book.userPhoneNumber}</div>
 
             <div>
                 <label>
