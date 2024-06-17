@@ -23,13 +23,13 @@ import BookSalesDetail from "./components/daehee/BookSalesDetail";
 import CategoryDetailPage from './pages/CategoryDetailPage';
 import Payment from "./components/Payment";
 import apiClient, { refreshToken } from "./components/TokenRefreshing";
-import PrivateRoute from "./components/PrivateRoute"; // PrivateRoute 가져오기
-import SearchPage from "./pages/SearchPage"; // SearchPage 가져오기
-import MypageCheck from "./pages/MypageCheck"; // MypageCheck 가져오기
-import Resign from "./pages/Resign"; // Resign 가져오기
-import BookSalesOrder from "./components/BookSalesOrder"; // BookSalesOrder 가져오기
-import CartOrder from "./components/CartOrder"; // CartOrder 가져오기
-import axios from 'axios'; // axios 가져오기
+import PrivateRoute from "./components/PrivateRoute";
+import SearchPage from "./pages/SearchPage";
+import MypageCheck from "./pages/MypageCheck";
+import Resign from "./pages/Resign";
+import BookSalesOrder from "./components/BookSalesOrder";
+import CartOrder from "./components/CartOrder";
+import axios from 'axios';
 
 const privatePaths = ["/admin", "/profile", "/order"];
 
