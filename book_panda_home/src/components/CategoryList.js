@@ -88,12 +88,14 @@ function CategoryList() {
 
   return (
     <div>
+      <div className={styles.container}>
       {categoryList.map((category, i) => (
         <li key={i} className={styles.categoryList}>
           <input type="radio" value={category.id} name="categoryId" onChange={radioChangeHandler} />
           {category.name}
         </li>
       ))}
+      </div>
       <input type="text" onChange={inputChangeHandler} ref={inputRef} />
       <p>
         <input type="button" value="수정" onClick={updateCategory} />
