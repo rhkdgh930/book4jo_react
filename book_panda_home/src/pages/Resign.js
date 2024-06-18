@@ -58,6 +58,7 @@ const Resign = () => {
   return (
     <Wrapper>
       <Form>
+        <red>주의* 탈퇴하면 다시는 동일한 이메일을 사용하실수 없습니다.</red>
         <Title>회원 탈퇴</Title>
         <div className="custom-text">비밀번호 &nbsp; {errors.password && <Error>{errors.password}</Error>}</div>
         <Input

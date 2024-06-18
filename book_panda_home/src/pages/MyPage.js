@@ -9,6 +9,8 @@ const MyPage = () => {
     userEmail: "",
     name: "",
     address: "",
+    detailedAddress: "",
+    postCode: "",
     phoneNumber: "",
   });
 
@@ -20,6 +22,19 @@ const MyPage = () => {
 
   const [password, setPassword] = useState("");
   const [passwordEditMode, setPasswordEditMode] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    const daumPostcodeScript = document.createElement("script");
+    daumPostcodeScript.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    daumPostcodeScript.onload = () => setScriptLoaded(true);
+    document.head.appendChild(daumPostcodeScript);
+
+    return () => {
+      document.head.removeChild(daumPostcodeScript);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -62,15 +77,24 @@ const MyPage = () => {
         throw new Error("No access token found");
       }
 
-      const response = await axios.put(`/api/api/mypage/${field}`, null, {
+      let requestData = {};
+      if (field === "address") {
+        requestData = {
+          address: userInfo.address,
+          detailedAddress: userInfo.detailedAddress,
+          postCode: userInfo.postCode,
+        };
+      } else {
+        requestData[field] = userInfo[field];
+      }
+
+      const response = await axios.put(`/api/api/mypage/${field}`, requestData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        params: {
-          value: userInfo[field],
-        },
       });
+
       if (response.status === 200) {
         alert("업데이트 성공");
         setEditMode((prevState) => ({ ...prevState, [field]: false }));
@@ -88,15 +112,13 @@ const MyPage = () => {
         throw new Error("No access token found");
       }
 
-      const response = await axios.put("api/mypage/change-password", null, {
+      const response = await axios.put("api/mypage/change-password", { newPassword: password }, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        params: {
-          newPassword: password,
-        },
       });
+
       if (response.status === 200) {
         alert("비밀번호 변경 성공");
         setPasswordEditMode(false);
@@ -105,6 +127,24 @@ const MyPage = () => {
       console.error("비밀번호 변경 실패:", error);
       alert("비밀번호 변경 실패");
     }
+  };
+
+  const handlePostcode = (e) => {
+    e.preventDefault();
+    if (!scriptLoaded) {
+      setErrors({ ...errors, address: '주소 검색 스크립트가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.' });
+      return;
+    }
+
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        setUserInfo((prevState) => ({
+          ...prevState,
+          address: data.address + (data.buildingName ? `, ${data.buildingName}` : ""),
+          postCode: data.zonecode,
+        }));
+      },
+    }).open();
   };
 
   const toggleEditMode = (field) => {
@@ -174,15 +214,34 @@ const MyPage = () => {
           <div className="info-item">
             <label className="label">주소: </label>
             {editMode.address ? (
-              <input
-                className="mypage-input"
-                type="text"
-                name="address"
-                value={userInfo.address}
-                onChange={handleChange}
-              />
+              <div>
+                <input
+                  className="mypage-input"
+                  type="text"
+                  name="address"
+                  value={userInfo.address}
+                  readOnly
+                />
+                <input
+                  className="mypage-input"
+                  type="text"
+                  name="detailedAddress"
+                  value={userInfo.detailedAddress}
+                  onChange={handleChange}
+                />
+                <input
+                  className="mypage-input"
+                  type="text"
+                  name="postCode"
+                  value={userInfo.postCode}
+                  readOnly
+                />
+                <ButtonB onClick={handlePostcode}>주소 검색</ButtonB>
+              </div>
             ) : (
-              <span className="span">{userInfo.address}</span>
+              <span className="span">
+                {userInfo.address} {userInfo.detailedAddress} ({userInfo.postCode})
+              </span>
             )}
           </div>
           <button
