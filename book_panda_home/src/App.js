@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import Header from "./components/Header";
 import SearchBar from "./components/SearchBar";
@@ -10,7 +11,6 @@ import ShippingManagement from "./components/ShippingManagement";
 import BookDetail from "./components/BookDetail";
 import Cart from "./components/Cart";
 import Order from "./components/Order";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import MyPage from "./pages/MyPage";
@@ -22,44 +22,30 @@ import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
 import CategoryDetailPage from './pages/CategoryDetailPage';
 import Payment from "./components/Payment";
-import apiClient, { refreshToken } from "./components/TokenRefreshing";
 import PrivateRoute from "./components/PrivateRoute";
 import SearchPage from "./pages/SearchPage";
 import MypageCheck from "./pages/MypageCheck";
 import Resign from "./pages/Resign";
 import BookSalesOrder from "./components/BookSalesOrder";
 import CartOrder from "./components/CartOrder";
-import axios from 'axios';
-
-const privatePaths = ["/admin", "/profile", "/order"];
+import apiClient, { setupInterceptors } from "./components/TokenRefreshing";
 
 const App = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // 모든 Axios 요청에 대해 apiClient 인터셉터 설정
   useEffect(() => {
-    apiClient.interceptors.request.use(
-      config => config,
-      error => Promise.reject(error)
-    );
+      console.log("인터셉터 함수 호출");
+      setupInterceptors();
 
-    apiClient.interceptors.response.use(
-      response => response,
-      async error => {
-        const originalRequest = error.config;
-        if (error.response.status === 401 && !originalRequest._retry) {
-          originalRequest._retry = true;
-          const token = await refreshToken();
-          if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            originalRequest.headers['Authorization'] = `Bearer ${token}`;
-            return axios(originalRequest);
-          }
-        }
-        return Promise.reject(error);
-      }
-    );
+      // API 요청 테스트
+      apiClient.get('/api/test')
+        .then(response => {
+          console.log("API 요청 성공", response);
+        })
+        .catch(error => {
+          console.error("API 요청 실패", error);
+        });
   }, []);
 
   return (
@@ -70,11 +56,7 @@ const App = () => {
         <Nav />
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route path="/admin" element={
-            <PrivateRoute>
-              <AdminPage />
-            </PrivateRoute>
-          }>
+          <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>}>
             <Route path="category" element={<CategoryList />} />
             <Route path="shippingManagement" element={<ShippingManagement />} />
             <Route path="enrollBook" element={<EnrollBook />}></Route>
@@ -88,22 +70,10 @@ const App = () => {
           <Route path="/category" element={<CategoryDetailPage />} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/mypage/user" element={
-            <PrivateRoute>
-              <MyPage />
-            </PrivateRoute>
-          } />
-          <Route path="/mypage/check" element={
-            <PrivateRoute>
-              <MypageCheck />
-            </PrivateRoute>
-          } />
+          <Route path="/mypage/user" element={<PrivateRoute><MyPage /></PrivateRoute>} />
+          <Route path="/mypage/check" element={<PrivateRoute><MypageCheck /></PrivateRoute>} />
           <Route path="/find-password" element={<FindPassword />} />
-          <Route path="/resign" element={
-            <PrivateRoute>
-              <Resign />
-            </PrivateRoute>
-          } />
+          <Route path="/resign" element={<PrivateRoute><Resign /></PrivateRoute>} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/bookDetails/order" element={<BookSalesOrder />} />
           <Route path="/cart/order" element={<CartOrder />} />
