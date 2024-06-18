@@ -50,13 +50,13 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     <div className={styles.top}>
       <div className={styles.topContainer}>
         <div className={styles.leftCategoryContainer}>
-          <div><Link to="/">HOME</Link></div>
+          <div><Link to="/" className={styles.home}>HOME</Link></div>
         </div>
         <div className={styles.rightCategoryContainer}>
           {isLoggedIn ? (
-            <div className={styles.link} onClick={onLogoutClick}>
+            <Link onClick={onLogoutClick} className={styles.link}>
               로그아웃
-            </div>
+            </Link>
           ) : (
             <div>
               <Link to="/signin" className={styles.link}>
@@ -65,10 +65,10 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
             </div>
           )}
           <div>
-            <Link to={isUser ? "/mypage/ordered" : "/admin"}>마이페이지</Link>
+            <Link to={isUser ? "/mypage/ordered" : "/admin"} className={styles.link} >마이페이지</Link>
           </div>
           <div>
-            <Link to="/cart">장바구니</Link>
+            <Link to="/cart" className={styles.link}>장바구니</Link>
           </div>
         </div>
       </div>

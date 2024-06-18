@@ -6,7 +6,7 @@
   
   .top {
     background-color: var(--primary-color);
-    height: 35px;
+    height: 45px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -48,14 +48,27 @@
   }
   
   .link {
+    width: 65px;
     cursor: pointer;
     text-decoration: none;
+    font-weight: bolder;
+    font-size: 13px;
+  }
+
+  .link:hover {
+    color: #008000;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+  }
+
+  .home:hover {
+    color: #008000;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
   }
   
   /* #logoutLink {
     color: var(--text-color) !important;
   }
-  
+
   #logoutLink:hover {
     color: var(--text-color) !important;
   } */
