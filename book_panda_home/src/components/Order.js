@@ -9,6 +9,7 @@ function Order() {
     const [orderItems, setOrderItems] = useState([]);
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [shipping, setShipping] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,6 +19,7 @@ function Order() {
         if (orderId) {
             fetchOrder(orderId);
             fetchOrderItems(orderId);
+            fetchShipping(orderId);
         }
     }, [searchParams]);
 
@@ -60,8 +62,21 @@ function Order() {
         }
     };
 
-    const handlePayment = () => {
-        // 결제 처리 로직
+    const fetchShipping = async (orderId) => {
+        try {
+            const response = await axios.get(`/api/shipping`, {
+                params: { orderId },
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                withCredentials: true,
+            });
+            console.log(response.data);
+            setShipping(response.data);
+            console.log(shipping);
+        } catch (error) {
+            console.error(error.data);
+        }
     };
 
     const handleCancelOrder = async () => {
@@ -109,8 +124,8 @@ function Order() {
                     <div className={styles.orderDetail}>주문 번호: {order.id}</div>
                     <div className={styles.orderDetail}>주문 날짜: {formatDate(order.orderDate)}</div>
                     <div className={styles.orderDetail}>총 가격: {order.totalPrice.toLocaleString()}원</div>
-                    <div className={styles.orderDetail}>사용자 이름: {order.userName}</div>
-                    <div className={styles.orderDetail}>주소: {order.address1} {order.address2}</div>
+                    <div className={styles.orderDetail}>받는 사람: {shipping.shippingUserName}</div>
+                    <div className={styles.orderDetail}>주소: {shipping.address1} {shipping.address2}</div>
                     <div></div>
                     <button className={styles.button} onClick={handleCancelOrder}>주문 취소</button>
                 </>

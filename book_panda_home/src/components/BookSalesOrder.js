@@ -90,113 +90,8 @@ function BookSalesOrder() {
         }
     };
 
-    // const handlePayment = async () => {
-    //     setLoading(true);
-
-    //     const { IMP } = window;
-    //     if (!IMP) {
-    //         console.error('IAMPORT가 로드되지 않았습니다.');
-    //         setLoading(false);
-    //         return;
-    //     }
-
-    //     IMP.init('imp14170881');
-
-    //     IMP.request_pay({
-    //         pg: 'html5_inicis',
-    //         pay_method: 'card',
-    //         merchant_uid: `merchant_${new Date().getTime()}`,
-    //         name: book.title,
-    //         amount: book.discount,
-    //         buyer_email: book.userName,
-    //         buyer_name: book.name,
-    //         buyer_tel: book.userPhoneNumber,
-    //         buyer_addr: address,
-    //         buyer_postcode: postCode,
-    //     }, async (rsp) => {
-    //         if (rsp.success) {
-    //             try {
-    //                 const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
-    //                 if (rsp.paid_amount === data.amount) {
-    //                     const token = localStorage.getItem('accessToken');
-    //                     if (!token) {
-    //                         throw new Error('No access token found');
-    //                     }
-
-    //                     const bookId = searchParams.get('bookId');
-    //                     const getKoreanDate = () => {
-    //                         const date = new Date();
-    //                         const offset = 9 * 60; // 한국 시간은 UTC+9
-    //                         const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
-    //                         return koreanDate;
-    //                     };
-
-    //                     const orderData = {
-    //                         bookId: bookId,
-    //                         orderDate: getKoreanDate(),
-    //                         address1: address,
-    //                         address2: detailedAddress,
-    //                         postCode: postCode,
-    //                     };
-
-    //                     const orderResponse = await axios.post(`/api/order`, orderData, {
-    //                         params: { id: bookId },
-    //                         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-    //                         withCredentials: true,
-    //                     });
-
-    //                     const paymentData = {
-    //                         impUid: rsp.imp_uid,
-    //                         merchantUid: rsp.merchant_uid,
-    //                         amount: rsp.paid_amount,
-    //                         buyerEmail: book.userName,
-    //                         buyerName: book.name,
-    //                         buyerTel: book.userPhoneNumber,
-    //                         buyerAddr: address,
-    //                         buyerPostcode: postCode,
-    //                         status: rsp.status,
-    //                         orderId: orderResponse.data.id,
-    //                     };
-
-    //                     await axios.post('/api/payment/save', paymentData);
-
-    //                     setPaymentInfo({
-    //                         product_name: book.productName,
-    //                         amount: rsp.paid_amount,
-    //                         buyer_email: book.userName,
-    //                         buyer_name: book.name,
-    //                         buyer_tel: book.userPhoneNumber,
-    //                         buyer_addr: address,
-    //                         buyer_postcode: postCode,
-    //                     });
-    //                     setError(null);
-    //                     alert('결제 성공');
-    //                     navigate(`/order/orderId=${orderResponse.id}`);
-    //                 } else {
-    //                     setError('결제 검증 실패: 금액이 일치하지 않습니다.');
-    //                     alert('결제 실패');
-    //                 }
-    //             } catch (error) {
-    //                 console.error('결제 검증 및 저장 중 오류 발생:', error);
-    //                 setError('결제 검증 및 저장 중 오류가 발생했습니다.');
-    //                 alert(error.response.data + '결제 실패');
-    //             }
-    //         } else {
-    //             setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
-    //             alert('결제 실패');
-    //         }
-    //         setLoading(false);
-    //     });
-    // };
-
-    // useEffect(() => {
-    //     if (orderId) {
-    //         console.log("Updated orderId : ", orderId);
-    //     }
-    // });
-
     const fetchToken = async () => {
-        const MAX_RETRIES = 50; // 최대 재시도 횟수
+        const MAX_RETRIES = 100; // 최대 재시도 횟수
         let retryCount = 0;
 
         while (retryCount < MAX_RETRIES) {
@@ -214,6 +109,39 @@ function BookSalesOrder() {
         }
     };
 
+    const cancelPayment = async (impUid, merchantUid, amount) => {
+        try {
+            const token = await fetchToken();
+
+            const cancelData = {
+                reason: '결제 검증 실패 또는 오류 발생으로 인한 자동 취소',
+                imp_uid: impUid,
+                merchant_uid: merchantUid,
+                amount: amount,
+                access_token: token
+            };
+
+            console.log('결제 취소 요청 중...', cancelData);
+
+            await axios.post(`/api/payment/cancel`, cancelData, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            });
+
+            console.log('결제가 취소되었습니다.');
+        } catch (error) {
+            console.error('결제 취소 중 오류 발생:', error);
+            setError('결제 취소 중 오류가 발생했습니다.');
+        }
+    };
+
+    const getKoreanDate = () => {
+        const date = new Date();
+        const offset = 9 * 60; // 한국 시간은 UTC+9
+        const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+        return koreanDate;
+    };
+
     const handlePayment = async () => {
         setLoading(true);
 
@@ -222,41 +150,105 @@ function BookSalesOrder() {
             throw new Error('No access token found');
         }
 
-        const bookId = searchParams.get('bookId');
-        const getKoreanDate = () => {
-            const date = new Date();
-            const offset = 9 * 60; // 한국 시간은 UTC+9
-            const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
-            return koreanDate;
-        };
-
-        const orderData = {
-            bookId: bookId,
-            orderDate: getKoreanDate(),
-            address1: address,
-            address2: detailedAddress,
-            postCode: postCode,
-            shippingName: userName,
-            usePhoneNumber: phoneNumber,
-        };
-
-        try {
-            const orderResponse = await axios.post(`/api/order`, orderData, {
-                params: { id: bookId },
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                withCredentials: true,
-            });
-            alert("주문 성공!");
-            navigate(`/order?orderId=${orderResponse.data.id}`);
-        } catch (error) {
-            alert(error.response.data);
-            navigate(-1);
+        const { IMP } = window;
+        if (!IMP) {
+            console.error('IAMPORT가 로드되지 않았습니다.');
+            setLoading(false);
+            return;
         }
-    }
 
-    const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
-        return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
+        IMP.init('imp14170881');
+
+        IMP.request_pay({
+            pg: 'html5_inicis',
+            pay_method: 'card',
+            merchant_uid: `merchant_${new Date().getTime()}`,
+            name: book.title,
+            amount: book.discount,
+            buyer_email: book.userEmail,
+            buyer_name: book.userName,
+            buyer_tel: book.userPhoneNumber,
+            buyer_addr: address,
+            buyer_postcode: postCode,
+        }, async (rsp) => {
+            if (rsp.success) {
+                try {
+                    const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
+                    if (rsp.paid_amount === data.amount) {
+                        const token1 = await fetchToken(); // 토큰 요청 함수 호출
+                        const bookId = searchParams.get('bookId');
+                        const orderData = {
+                            orderDate: getKoreanDate(),
+                        };
+
+                        const shippingData = {
+                            address1: address,
+                            address2: detailedAddress,
+                            payDoneDate: getKoreanDate(),
+                            postCode: postCode,
+                            shippingUserName: userName,
+                            phoneNumber: phoneNumber,
+                        };
+
+                        const orderResponse = await axios.post(`/api/order`, orderData, {
+                            params: { id: bookId },
+                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                            withCredentials: true,
+                        });
+
+                        const shippingResponse = await axios.post(`/api/shipping`, shippingData, {
+                            params: { orderId: orderResponse.data.id },
+                            headers: { "Content-Type": "application/json" },
+                            withCredentials: true,
+                        });
+
+                        const paymentData = {
+                            impUid: rsp.imp_uid,
+                            merchantUid: rsp.merchant_uid,
+                            amount: rsp.paid_amount,
+                            buyerEmail: book.userEmail,
+                            buyerName: book.userName,
+                            buyerTel: book.userPhoneNumber,
+                            buyerAddr: address,
+                            buyerPostcode: postCode,
+                            status: rsp.status,
+                            orderId: orderResponse.data.id,
+                        };
+
+                        await axios.post(`/api/payment/save`, paymentData, {
+                            headers: { "Content-Type": "application/json" },
+                            withCredentials: true,
+                        });
+
+                        setPaymentInfo({
+                            product_name: book.productName,
+                            amount: rsp.paid_amount,
+                            buyer_email: book.userEmail,
+                            buyer_name: book.userName,
+                            buyer_tel: book.userPhoneNumber,
+                            buyer_addr: address,
+                            buyer_postcode: postCode,
+                        });
+                        setError(null);
+                        alert('결제 성공');
+                        navigate(`/order?orderId=${orderResponse.data.id}`);
+                    } else {
+                        setError('결제 검증 실패: 금액이 일치하지 않습니다.');
+                        // await cancelPayment(rsp.imp_uid, rsp.merchant_uid, rsp.paid_amount); // 결제 취소
+                        alert('결제가 실패하였습니다, 잠시 후 다시 시도해주세요.');
+                    }
+                } catch (error) {
+                    console.error('결제 검증 및 저장 중 오류 발생:', error);
+                    setError('결제 검증 및 저장 중 오류가 발생했습니다.');
+                    await cancelPayment(rsp.imp_uid, rsp.merchant_uid, rsp.paid_amount); // 결제 취소
+                    alert('결제가 실패하였습니다, 잠시 후 다시 시도해주세요.');
+                }
+            } else {
+                setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
+                alert('결제가 실패하였습니다, 잠시 후 다시 시도해주세요.');
+            }
+            setLoading(false);
+        });
     };
 
     return (

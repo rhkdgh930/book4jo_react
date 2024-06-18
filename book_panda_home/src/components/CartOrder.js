@@ -107,15 +107,26 @@ function CartOrder() {
 
         const orderData = {
             orderDate: getKoreanDate(),
+        };
+
+        const shippingData = {
             address1: address,
             address2: detailedAddress,
+            payDoneDate: getKoreanDate(),
             postCode: postCode,
+            shippingUserName: userName,
             phoneNumber: phoneNumber,
-            shippingName: userName,
         };
+
         try {
             const orderResponse = await axios.post(`/api/orders`, orderData, {
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                withCredentials: true,
+            });
+
+            const shippingResponse = await axios.post(`/api/shipping`, shippingData, {
+                params: { orderId: orderResponse.data.id },
+                headers: { "Content-Type": "application/json" },
                 withCredentials: true,
             });
         } catch (error) {
