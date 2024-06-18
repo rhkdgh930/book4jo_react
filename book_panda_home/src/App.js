@@ -109,6 +109,7 @@ const App = () => {
           <Route path="/bookDetails/order" element={<BookSalesOrder />} />
           <Route path="/cart/order" element={<CartOrder />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/order" element={<Order />} />
         </Routes>
       </div>
     </CategoryListContext.Provider>

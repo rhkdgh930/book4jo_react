@@ -10,8 +10,11 @@ function CartOrder() {
     const [address, setAddress] = useState('');
     const [detailedAddress, setDetailedAddress] = useState('');
     const [postCode, setPostCode] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [userName, setUserName] = useState('');
     const [scriptLoaded, setScriptLoaded] = useState(false);
     const [errors, setErrors] = useState({});
+
     const [error, setError] = useState(null);
     const [paymentInfo, setPaymentInfo] = useState(null);
     const navigate = useNavigate();
@@ -53,11 +56,14 @@ function CartOrder() {
             });
             const cartData = response.data;
             setCart(cartData);
-            setAddress(cartData.userAddress);
+            setAddress(cartData.userAddress1);
             setDetailedAddress(cartData.userAddress2);
             setPostCode(cartData.userPostCode);
+            setPhoneNumber(cartData.userPhoneNumber);
+            setUserName(cartData.userName);
         } catch (error) {
-            console.error('주문 정보 요청 실패:', error);
+            console.error('주문 정보 요청 실패:', error.response.data);
+            navigate("/cart");
         } finally {
             setLoading(false);
         }
@@ -78,86 +84,45 @@ function CartOrder() {
         }).open();
     };
 
-    const handlePayment = async () => {
-        setLoading(true);
-        const { IMP } = window;
-        if (!IMP) {
-            console.error('IAMPORT가 로드되지 않았습니다.');
-            setLoading(false);
-            return;
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + '...';
+        } else {
+            return text;
         }
-
-//        if (!cart || cart.totalPrice <= 0) {
-//            console.error('Invalid total price:', cart.totalPrice);
-//            setError('Invalid total price.');
-//            setLoading(false);
-//            return;
-//        }
-
-        IMP.init('imp14170881');
-
-        IMP.request_pay({
-            pg: 'html5_inicis',
-            pay_method: 'card',
-            merchant_uid: `merchant_${new Date().getTime()}`,
-            name: cart.cartItems.map(item => item.title).join(', '),
-            amount: cart.totalPrice,
-            buyer_email: cart.userEmail,
-            buyer_name: cart.userName,
-            buyer_tel: cart.userPhoneNumber,
-            buyer_addr: address,
-            buyer_postcode: postCode,
-        }, async (rsp) => {
-            if (rsp.success) {
-                try {
-                    const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
-                    if (rsp.paid_amount === data.amount) {
-                        const paymentData = {
-                            impUid: rsp.imp_uid,
-                            merchantUid: rsp.merchant_uid,
-                            amount: rsp.paid_amount,
-                            buyerEmail: cart.userEmail,
-                            buyerName: cart.userName,
-                            buyerTel: cart.userPhoneNumber,
-                            buyerAddr: address,
-                            buyerPostcode: postCode,
-                            status: rsp.status,
-                        };
-
-                        await axios.post('/api/payment/save', paymentData);
-
-                        setPaymentInfo({
-                            product_name: cart.cartItems.map(item => item.title).join(', '),
-                            amount: rsp.paid_amount,
-                            buyer_email: cart.userEmail,
-                            buyer_name: cart.userName,
-                            buyer_tel: cart.userPhoneNumber,
-                            buyer_addr: address,
-                            buyer_postcode: postCode,
-                            status: rsp.status
-                        });
-                        setError(null);
-                        alert('결제 성공');
-                    } else {
-                        setError('결제 검증 실패: 금액이 일치하지 않습니다.');
-                        alert('결제 실패');
-                    }
-                } catch (error) {
-                    console.error('결제 검증 및 저장 중 오류 발생:', error);
-                    setError('결제 검증 및 저장 중 오류가 발생했습니다.');
-                    alert('결제 실패');
-                }
-            } else {
-                setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
-                alert('결제 실패');
-            }
-
-            setLoading(false);
-        });
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
+    const handlePayment = async () => {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+            throw new Error('No access token found');
+        }
+
+        const getKoreanDate = () => {
+            const date = new Date();
+            const offset = 9 * 60; // 한국 시간은 UTC+9
+            const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+            return koreanDate;
+        };
+
+        const orderData = {
+            orderDate: getKoreanDate(),
+            address1: address,
+            address2: detailedAddress,
+            postCode: postCode,
+            phoneNumber: phoneNumber,
+            shippingName: userName,
+        };
+        try {
+            const orderResponse = await axios.post(`/api/orders`, orderData, {
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                withCredentials: true,
+            });
+        } catch (error) {
+            alert(error.response.data);
+            navigate(-1);
+        }
+
     }
 
     return (
@@ -178,7 +143,7 @@ function CartOrder() {
                             <td>
                                 <div className={style.itemInfo}>
                                     <img src={item.image} alt={item.title} className={style.itemImage} />
-                                    <span className={style.itemTitle}>{item.title}</span>
+                                    <span className={style.itemTitle}>{truncateText(item.title, 40)}</span>
                                 </div>
                             </td>
                             <td>{item.quantity.toLocaleString()}</td>
@@ -188,27 +153,72 @@ function CartOrder() {
                 </tbody>
             </table>
             <div className={styles.orderDetail}>총 가격: {cart && cart.totalPrice.toLocaleString()}원</div>
-            <div className={styles.orderDetail}>사용자 이름: {cart && cart.userName}</div>
-            <div className={styles.orderDetail}>주소: {cart && cart.userAddress}</div>
-            <div className={styles.orderDetail}>전화번호: {cart && cart.userPhoneNumber}</div>
 
-            <div className={styles.addressSection}>
-                <div className={styles.orderDetail}>
-                    기본 배송지:
-                    <input
-                        type="text"
-                        value={address}
-                        readOnly
-                        onChange={(e) => setAddress(e.target.value)}
-                        className={styles.addressInput}
-                    />
-                </div>
-            </div>
+            <h3 className={styles.subheading}>배송지 정보 입력</h3>
+            <table className={styles.addressTable}>
+                <tbody>
+                    <tr>
+                        <th>받으시는 분</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>주소</th>
+                        <td>
+                            <div className={styles.addressInputWrapper}>
+                                <input
+                                    type="text"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    placeholder="주소를 입력해주세요."
+                                    readOnly
+                                />
+                                <button onClick={handlePostcode}>주소 검색</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>상세 주소</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={detailedAddress}
+                                onChange={(e) => setDetailedAddress(e.target.value)}
+                                placeholder="상세 주소를 입력해주세요."
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>우편번호</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={postCode}
+                                onChange={(e) => setPostCode(e.target.value)}
+                                placeholder="우편번호를 입력해주세요."
+                                readOnly
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>휴대전화번호</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div className={styles.error}>{error && <p>{error}</p>}</div>
-            <button className={styles.button} onClick={handlePayment} disabled={loading}>
-                결제하기
-            </button>
+            <button className={styles.button} onClick={handlePayment}>결제하기</button>
         </div>
     );
 }

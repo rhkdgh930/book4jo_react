@@ -78,7 +78,7 @@ function Cart() {
             if (!token) {
                 throw new Error("No access token found");
             }
-    
+
             await axios.patch(`/api/cart/items/${id}/checked`, null, {
                 params: { checked },
                 headers: {
@@ -112,58 +112,38 @@ function Cart() {
 
     const handleRemoveItem = async (id) => {
         try {
-          const token = localStorage.getItem("accessToken");
-          if (!token) {
-            throw new Error("No access token found");
-          }
-    
-          await axios.delete(`/api/cart/items/${id}`, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            withCredentials: true,
-          });
-    
-          setItems(items.filter((item) => item.id !== id));
+            const token = localStorage.getItem("accessToken");
+            if (!token) {
+                throw new Error("No access token found");
+            }
+
+            await axios.delete(`/api/cart/items/${id}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            });
+
+            setItems(items.filter((item) => item.id !== id));
         } catch (error) {
-          console.error("Error deleting cart item", error);
+            console.error("Error deleting cart item", error);
         }
-      };
-    
-      const handleRemoveSelected = async () => {
+    };
+
+    const handleRemoveSelected = async () => {
         if (window.confirm("선택한 상품을 삭제하시겠습니까?")) {
-          const selectedItems = items.filter((item) => item.checked);
-          for (const item of selectedItems) {
-            await handleRemoveItem(item.id);
-          }
+            const selectedItems = items.filter((item) => item.checked);
+            for (const item of selectedItems) {
+                await handleRemoveItem(item.id);
+            }
         }
-      };
-    
+    };
+
 
     const handleOrder = async () => {
         setIsLoading(true);
         try {
-            // const token = localStorage.getItem("accessToken");
-            // if (!token) {
-            //     throw new Error("No access token found");
-            // }
-
-            // const selectedItems = items.filter((item) => item.checked).map((item) => ({
-            //     id: item.id,
-            //     quantity: item.quantity,
-            // }));
-
-            // if (selectedItems.length === 0) {
-            //     alert("선택한 상품이 없습니다.");
-            //     setIsLoading(false);
-            //     return;
-            // }
-
-            // const requestData = {
-            //     orderDate: new Date(),
-            //     items: selectedItems,
-            // };
 
             navigate(`/cart/order`);
         } catch (error) {
