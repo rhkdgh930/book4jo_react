@@ -84,15 +84,9 @@ const BookSalesDetail = () => {
     //     withCredentials: true,
     //   });
     //   console.log(response.data.id);
-<<<<<<< HEAD
-    console.log("bookId : ", queryParams.id);
-    //navigate(`/bookDetails/order?bookId=${queryParams.id}`); origin
-    navigate(`/bookDetails/order?bookId=${queryParams.bookSales.id}`);
-=======
     const idNumber = Number(id);
     console.log("bookId : ", idNumber);
     navigate(`/bookDetails/order?bookId=${idNumber}`);
->>>>>>> feature/order
     // } catch (error) {
     //   console.error("주문 오류: ", queryParams.id, error);
     // } finally {
