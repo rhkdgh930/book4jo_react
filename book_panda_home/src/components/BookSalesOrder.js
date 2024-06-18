@@ -14,6 +14,8 @@ function BookSalesOrder() {
     const [address, setAddress] = useState('');
     const [detailedAddress, setDetailedAddress] = useState('');
     const [postCode, setPostCode] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [userName, setUserName] = useState('');
     const [scriptLoaded, setScriptLoaded] = useState(false);
     const [errors, setErrors] = useState({});
     const [deliveryType, setDeliveryType] = useState('default');
@@ -56,6 +58,8 @@ function BookSalesOrder() {
             setAddress(bookData.userAddress1);
             setDetailedAddress(bookData.userAddress2);
             setPostCode(bookData.userPostCode);
+            setUserName(bookData.userName);
+            setPhoneNumber(bookData.userPhoneNumber);
         } catch (error) {
             console.error('주문 정보 요청 실패:', error);
         } finally {
@@ -213,6 +217,8 @@ function BookSalesOrder() {
             address1: address,
             address2: detailedAddress,
             postCode: postCode,
+            shippingName: userName,
+            usePhoneNumber: phoneNumber,
         };
 
         try {
@@ -262,69 +268,70 @@ function BookSalesOrder() {
                 </tbody>
             </table>
             <div className={styles.orderDetail}>총 가격: {book && book.discount.toLocaleString()}원</div>
-            <div className={styles.orderDetail}>이메일: {book && book.userName}</div>
-            <div className={styles.orderDetail}>전화번호: {book && book.userPhoneNumber}</div>
 
-            <div>
-                <label>
-                    <input
-                        type="radio"
-                        value="default"
-                        checked={deliveryType === 'default'}
-                        onChange={() => {
-                            setDeliveryType('default');
-                            setAddress(book.userAddress1);
-                            setDetailedAddress(book.userAddress2);
-                            setPostCode(book.userPostCode);
-                        }}
-                    />
-                    기본 배송지
-                </label>
-                <label>
-                    <input
-                        type="radio"
-                        value="new"
-                        checked={deliveryType === 'new'}
-                        onChange={() => {
-                            setDeliveryType('new');
-                            setAddress('');
-                            setDetailedAddress('');
-                            setPostCode('');
-                        }}
-                    />
-                    새 배송지
-                </label>
-            </div>
-
-            {deliveryType === 'default' ? (
-                <div className={styles.addressInfo}>
-                    <div>주소: {address}</div>
-                    <div>상세 주소: {detailedAddress}</div>
-                    <div>우편번호: {postCode}</div>
-                </div>
-            ) : (
-                <div>
-                    <div className="address-input-wrapper" style={{ display: 'flex', alignItems: 'center' }}>
-                        <input
-                            placeholder="주소를 검색해주세요."
-                            defaultValue={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                        />
-                        <button onClick={handlePostcode}>주소 검색</button>
-                    </div>
-                    <input
-                        placeholder="상세 주소를 입력해주세요."
-                        defaultValue={detailedAddress}
-                        onChange={(e) => setDetailedAddress(e.target.value)}
-                    />
-                    <div className="custom-text">우편번호</div>
-                    <input
-                        placeholder="우편번호"
-                        defaultValue={postCode}
-                        onChange={(e) => setPostCode(e.target.value)}
-                    />
-                </div>
-            )}
+            <h3 className={styles.subheading}>배송지 정보 입력</h3>
+            <table className={styles.addressTable}>
+                <tbody>
+                    <tr>
+                        <th>받으시는 분</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>주소</th>
+                        <td>
+                            <div className={styles.addressInputWrapper}>
+                                <input
+                                    type="text"
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    placeholder="주소를 입력해주세요."
+                                    readOnly
+                                />
+                                <button onClick={handlePostcode}>주소 검색</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>상세 주소</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={detailedAddress}
+                                onChange={(e) => setDetailedAddress(e.target.value)}
+                                placeholder="상세 주소를 입력해주세요."
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>우편번호</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={postCode}
+                                onChange={(e) => setPostCode(e.target.value)}
+                                placeholder="우편번호를 입력해주세요."
+                                readOnly
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>휴대전화번호</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
             <button className={styles.button} onClick={handlePayment}>결제하기</button>
         </div>
