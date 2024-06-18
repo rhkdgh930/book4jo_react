@@ -92,7 +92,7 @@ function BookSalesOrder() {
     };
 
     const fetchToken = async () => {
-        const MAX_RETRIES = 200; // 최대 재시도 횟수
+        const MAX_RETRIES = 250; // 최대 재시도 횟수
         let retryCount = 0;
 
         while (retryCount < MAX_RETRIES) {

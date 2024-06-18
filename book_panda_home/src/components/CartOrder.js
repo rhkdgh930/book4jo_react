@@ -97,7 +97,7 @@ function CartOrder() {
     };
 
     const fetchToken = async () => {
-        const MAX_RETRIES = 200;
+        const MAX_RETRIES = 250;
         let retryCount = 0;
 
         while (retryCount < MAX_RETRIES) {
