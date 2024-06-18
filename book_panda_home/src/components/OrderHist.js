@@ -104,9 +104,7 @@ function OrderHist() {
                                 </button>
                             </div>
                             <div className={styles.orderBody}>
-                                <div className={styles.orderStatus}>
-                                    배송중
-                                </div>
+                                <div className={styles.orderStatus}>{order.statusLabel}</div>
                                 <table className={styles.orderItems}>
                                     <tbody>
                                         {orderItems[order.id] ? (

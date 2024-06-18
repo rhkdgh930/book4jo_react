@@ -18,6 +18,7 @@
 }
 
 .subheading {
+  margin-top: 50px;
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
@@ -43,18 +44,44 @@
 }
 
 .orderDetail {
-  font-size: 16px;
+  font-size: 20px;
   margin-bottom: 10px;
-  color: #666;
+  font-weight: bold;
 }
 
-.address-input-wrapper {
+.addressTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.addressTable th,
+.addressTable td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.addressTable th {
+  background-color: #f4f4f4;
+  color: #333;
+  width: 150px;
+}
+
+.addressTable td input {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.addressInputWrapper {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
 }
 
-.address-input-wrapper input {
+.addressInputWrapper input {
   flex: 1;
   padding: 10px;
   border: 1px solid #ddd;
@@ -63,28 +90,31 @@
   font-size: 14px;
 }
 
-.address-input-wrapper button {
+.addressInputWrapper button {
   padding: 10px 15px;
-  border: none;
-  background-color: #007bff;
-  color: #fff;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: black;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
 }
 
-.address-input-wrapper button:hover {
-  background-color: #0056b3;
+.addressInputWrapper button:hover {
+  background-color: #f4f4f4;
 }
 
-.custom-text {
+.customText {
   font-size: 14px;
   margin-bottom: 5px;
   color: #333;
 }
 
 .button {
-  width: 100%;
+  display: block;
+  margin: 15px auto;
+  margin-top: 15px;
+  width: 20%;
   padding: 15px;
   border: none;
   background-color: #006769;
@@ -96,4 +126,15 @@
 
 .button:hover {
   background-color: #006600;
+}
+
+.deliveryTimeOptions {
+  border: 1px solid #ffd700;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+.addressTable th:before {
+  content: "* ";
+  color: red;
 }
