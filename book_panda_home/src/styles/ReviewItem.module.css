@@ -1,0 +1,37 @@
+.item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  background-color: #006769;
+}
+
+.item:hover {
+  transform: scale(1.02);
+}
+
+.email {
+  font-size: 1.2em;
+  color: #d7fdd0;
+  margin-bottom: 8px;
+}
+
+.content {
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.rate {
+  font-size: 1em;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.text {
+  font-size: 0.9em;
+  color: #555;
+  margin-top: 4px;
+}
