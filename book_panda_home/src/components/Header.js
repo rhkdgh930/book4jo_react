@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../styles/Header.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -6,6 +6,7 @@ import { logout } from "../apis/auth.js";
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   const navigate = useNavigate();
+  const [isUser, setIsUser] = useState(true);
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -19,6 +20,19 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
 
     checkAuthStatus();
   }, [setIsLoggedIn]);
+
+  useEffect(() => {
+    const checkUserRole = async () => {
+      try {
+        const response = await axios.get("/api/api/users/is-user", { withCredentials: true });
+        setIsUser(response.data);
+      } catch (error) {
+        console.error("실패:", error);
+      }
+    };
+
+    checkUserRole();
+  }, []);
 
   const onLogoutClick = async () => {
     try {
@@ -51,7 +65,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
             </div>
           )}
           <div>
-            <Link to="/mypage/ordered">마이페이지</Link>
+            <Link to={isUser ? "/mypage/ordered" : "/admin"}>마이페이지</Link>
           </div>
           <div>
             <Link to="/cart">장바구니</Link>
