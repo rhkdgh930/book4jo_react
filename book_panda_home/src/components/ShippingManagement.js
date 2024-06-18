@@ -34,6 +34,13 @@ function ShippingManagement() {
         setOrders(updatedOrders);
     };
 
+    const getKoreanDate = () => {
+        const date = new Date();
+        const offset = 9 * 60; // 한국 시간은 UTC+9
+        const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+        return koreanDate;
+    };
+
     const updateOrderStatus = async (orderId) => {
         const newStatus = statusChanges[orderId];
         console.log(newStatus);
@@ -41,6 +48,8 @@ function ShippingManagement() {
             try {
                 await axios.put(`/api/order?orderId=${orderId}`, { statusLabel: newStatus });
                 fetchOrders();
+
+                await axios.put(`/api/shipping?orderId=${orderId}`, { statusLabel: newStatus, date: getKoreanDate() });
             } catch (error) {
                 console.error('Failed to update order status:', error);
             }

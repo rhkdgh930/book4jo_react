@@ -74,6 +74,7 @@ const Resign = () => {
           onChange={handleConfirmTextChange}
           error={errors.confirmText}
         />
+        <Red>주의* 탈퇴하면 다시는 동일한 이메일을 사용하실수 없습니다.</Red>
         <Button onClick={handleDeleteUser}>삭제하기</Button>
         {errors.message && <Error>{errors.message}</Error>}
       </Form>
