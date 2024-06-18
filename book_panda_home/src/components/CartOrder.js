@@ -14,30 +14,34 @@ function CartOrder() {
     const [userName, setUserName] = useState('');
     const [scriptLoaded, setScriptLoaded] = useState(false);
     const [errors, setErrors] = useState({});
-
     const [error, setError] = useState(null);
     const [paymentInfo, setPaymentInfo] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const daumPostcodeScript = document.createElement("script");
+        const loadScripts = async () => {
+            const daumPostcodeScript = document.createElement('script');
 
-        const jquery = document.createElement("script");
-        jquery.src = "https://code.jquery.com/jquery-1.12.4.min.js";
-        const iamport = document.createElement("script");
-        iamport.src = "https://cdn.iamport.kr/js/iamport.payment-1.2.0.js";
+            const jquery = document.createElement("script");
+            jquery.src = 'https://code.jquery.com/jquery-1.12.4.min.js';
 
-        daumPostcodeScript.src = "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
-        daumPostcodeScript.onload = () => setScriptLoaded(true);
-        document.head.appendChild(jquery);
-        document.head.appendChild(iamport);
-        document.head.appendChild(daumPostcodeScript);
+            const iamport = document.createElement("script");
+            iamport.src = 'https://cdn.iamport.kr/js/iamport.payment-1.2.0.js';
 
-        fetchCartOrder(); // 주문 정보와 함께 주소 정보도 가져오도록 호출
+            daumPostcodeScript.src = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+            daumPostcodeScript.onload = () => setScriptLoaded(true);
+
+            document.head.appendChild(jquery);
+            document.head.appendChild(iamport);
+            document.head.appendChild(daumPostcodeScript);
+        };
+
+        loadScripts();
+        fetchCartOrder();
 
         return () => {
-            document.head.removeChild(daumPostcodeScript);
-            document.head.removeChild(iamport);
+            const scripts = document.querySelectorAll('script[src*="daumcdn"], script[src*="iamport"], script[src*="jquery"]');
+            scripts.forEach(script => script.remove());
         };
     }, []);
 
@@ -49,7 +53,7 @@ function CartOrder() {
             }
             const response = await axios.get('/api/cart/order', {
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
                 withCredentials: true,
@@ -63,7 +67,7 @@ function CartOrder() {
             setUserName(cartData.userName);
         } catch (error) {
             console.error('주문 정보 요청 실패:', error.response.data);
-            navigate("/cart");
+            navigate('/cart');
         } finally {
             setLoading(false);
         }
@@ -78,7 +82,7 @@ function CartOrder() {
 
         new window.daum.Postcode({
             oncomplete: function (data) {
-                setAddress(data.address + (data.buildingName ? `, ${data.buildingName}` : ""));
+                setAddress(data.address + (data.buildingName ? `, ${data.buildingName}` : ''));
                 setPostCode(data.zonecode);
             },
         }).open();
@@ -92,38 +96,183 @@ function CartOrder() {
         }
     };
 
-    const handlePayment = async () => {
-        const token = localStorage.getItem('accessToken');
-        if (!token) {
-            throw new Error('No access token found');
+    const fetchToken = async () => {
+        const MAX_RETRIES = 200;
+        let retryCount = 0;
+
+        while (retryCount < MAX_RETRIES) {
+            try {
+                const tokenResponse = await axios.post(`/api/payment/token`);
+                const { access_token } = tokenResponse.data;
+                return access_token;
+            } catch (error) {
+                console.error('토큰 요청 실패:', error);
+                retryCount++;
+                if (retryCount === MAX_RETRIES) {
+                    throw new Error('토큰을 받아오는 데 실패했습니다.');
+                }
+            }
         }
+    };
 
-        const getKoreanDate = () => {
-            const date = new Date();
-            const offset = 9 * 60; // 한국 시간은 UTC+9
-            const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
-            return koreanDate;
-        };
-
-        const orderData = {
-            orderDate: getKoreanDate(),
-            address1: address,
-            address2: detailedAddress,
-            postCode: postCode,
-            phoneNumber: phoneNumber,
-            shippingName: userName,
-        };
+    const cancelPayment = async (impUid, merchantUid, amount) => {
         try {
-            const orderResponse = await axios.post(`/api/orders`, orderData, {
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            const token = await fetchToken();
+
+            const cancelData = {
+                reason: '결제 검증 실패 또는 오류 발생으로 인한 자동 취소',
+                imp_uid: impUid,
+                merchant_uid: merchantUid,
+                amount: amount,
+                access_token: token,
+            };
+
+            console.log('결제 취소 요청 중...', cancelData);
+
+            await axios.post(`/api/payment/cancel`, cancelData, {
+                headers: { 'Content-Type': 'application/json' },
                 withCredentials: true,
             });
+
+            console.log('결제가 취소되었습니다.');
         } catch (error) {
-            alert(error.response.data);
-            navigate(-1);
+            console.error('결제 취소 중 오류 발생:', error);
+            setError('결제 취소 중 오류가 발생했습니다.');
+        }
+    };
+
+    const handlePayment = async () => {
+        setLoading(true);
+
+        const { IMP } = window;
+        if (!IMP) {
+            console.error('IAMPORT가 로드되지 않았습니다.');
+            setLoading(false);
+            return;
         }
 
-    }
+        IMP.init('imp14170881');
+
+        IMP.request_pay({
+            pg: 'html5_inicis',
+            pay_method: 'card',
+            merchant_uid: `merchant_${new Date().getTime()}`,
+            name: cart.cartItems.map(item => item.title).join(', '),
+            amount: cart.totalPrice,
+            buyer_email: cart.userEmail,
+            buyer_name: cart.userName,
+            buyer_tel: cart.userPhoneNumber,
+            buyer_addr: address,
+            buyer_postcode: postCode,
+        }, async (rsp) => {
+            if (rsp.success) {
+                try {
+//                    const token = localStorage.getItem('accessToken');
+//                    if (!token) {
+//                        throw new Error('No access token found');
+//                    }
+
+//                    const getKoreanDate = () => {
+//                        const date = new Date();
+//                        const offset = 9 * 60; // 한국 시간은 UTC+9
+//                        const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+//                        return koreanDate;
+//                    };
+
+//                    const orderData = {
+//                        orderDate: getKoreanDate(),
+//                        address1: address,
+//                        address2: detailedAddress,
+//                        postCode: postCode,
+//                        shippingName: userName,
+//                        userPhoneNumber: phoneNumber,
+//                    };
+
+//                    const orderResponse = await axios.post(`/api/orders`, orderData, {
+//                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+//                        withCredentials: true,
+//                    });
+
+                    const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
+                    if (rsp.paid_amount === data.amount) {
+
+                        const payment_token = await fetchToken(); // 토큰 요청 함수 호출
+                        //----------------------------------------------------
+                        const token = localStorage.getItem('accessToken');
+                        if (!token) {
+                            throw new Error('No access token found');
+                        }
+                        const getKoreanDate = () => {
+                            const date = new Date();
+                            const offset = 9 * 60; // 한국 시간은 UTC+9
+                            const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+                            return koreanDate;
+                        };
+
+                        const orderData = {
+                            orderDate: getKoreanDate(),
+                            address1: address,
+                            address2: detailedAddress,
+                            postCode: postCode,
+                            shippingName: userName,
+                            userPhoneNumber: phoneNumber,
+                        };
+
+                        const orderResponse = await axios.post(`/api/orders`, orderData, {
+                            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+                            withCredentials: true,
+                        });
+
+
+                        const paymentData = {
+                            impUid: rsp.imp_uid,
+                            merchantUid: rsp.merchant_uid,
+                            amount: rsp.paid_amount,
+                            buyerEmail: cart.userEmail,
+                            buyerName: cart.userName,
+                            buyerTel: cart.userPhoneNumber,
+                            buyerAddr: address,
+                            buyerPostcode: postCode,
+                            status: rsp.status,
+                            orderId: orderResponse.data.id,
+                        };
+
+                        await axios.post(`/api/payment/save`, paymentData, {
+                            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${payment_token}` },
+                            withCredentials: true,
+                        });
+
+                        setPaymentInfo({
+                            product_name: cart.cartItems.map(item => item.title).join(', '),
+                            amount: rsp.paid_amount,
+                            buyer_email: cart.userEmail,
+                            buyer_name: cart.userName,
+                            buyer_tel: cart.userPhoneNumber,
+                            buyer_addr: address,
+                            buyer_postcode: postCode,
+                            status: rsp.status,
+                        });
+                        setError(null);
+                        alert('결제 성공');
+                        navigate(`/order?orderId=${orderResponse.data.id}`);
+                    } else {
+                        setError('결제 검증 실패: 금액이 일치하지 않습니다.');
+                        await cancelPayment(rsp.imp_uid, rsp.merchant_uid, rsp.paid_amount);
+                        alert('결제가 실패하였습니다, 잠시 후 다시 시도해주세요.');
+                    }
+                } catch (error) {
+                    console.error('결제 검증 및 저장 중 오류 발생:', error);
+                    setError('결제 검증 및 저장 중 오류가 발생했습니다.');
+                    await cancelPayment(rsp.imp_uid, rsp.merchant_uid, rsp.paid_amount);
+                    alert('결제가 실패하였습니다, 잠시 후 다시 시도해주세요.');
+                }
+            } else {
+                setError(`결제에 실패하였습니다: ${rsp.error_msg}`);
+                alert('결제가 실패하였습니다, 잠시 후 다시 시도해주세요.');
+            }
+            setLoading(false);
+        });
+    };
 
     return (
         <div className={styles.orderInfo}>
@@ -218,7 +367,10 @@ function CartOrder() {
                 </tbody>
             </table>
 
-            <button className={styles.button} onClick={handlePayment}>결제하기</button>
+            <button className={styles.button} onClick={handlePayment} disabled={loading}>
+                {loading ? '처리 중...' : '결제하기'}
+            </button>
+            {error && <div className={styles.error}>{error}</div>}
         </div>
     );
 }
