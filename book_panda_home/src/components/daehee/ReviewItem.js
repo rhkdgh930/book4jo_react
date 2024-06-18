@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import style from "../../styles/ReviewItem.module.css";
 
 const ReviewItem = ({ review }) => {
   return (
-    <div className="book_item">
-      <h2>{review.userResponseDto.userEmail}</h2>
-      <h2>{review.rate}점!</h2>
-      <h3>{review.content}</h3>
+    <div className={style.item}>
+      <h3 className={style.email}>{review.userResponseDto.userEmail}</h3>
+      <div className={style.content}>
+        <p className={style.rate}>{review.rate}점!</p>
+        <p className={style.text}>{review.content}</p>
+      </div>
     </div>
   );
 };
