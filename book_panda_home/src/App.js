@@ -38,17 +38,17 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-      console.log("인터셉터 함수 호출");
-      setupInterceptors();
+    console.log("인터셉터 함수 호출");
+    setupInterceptors();
 
-      // API 요청 테스트
-      apiClient.get('/api/test')
-        .then(response => {
-          console.log("API 요청 성공", response);
-        })
-        .catch(error => {
-          console.error("API 요청 실패", error);
-        });
+    // API 요청 테스트
+    apiClient.get('/api/test')
+      .then(response => {
+        console.log("API 요청 성공", response);
+      })
+      .catch(error => {
+        console.error("API 요청 실패", error);
+      });
   }, []);
 
   return (
@@ -82,6 +82,7 @@ const App = () => {
           <Route path="/cart/order" element={<CartOrder />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/order" element={<Order />} />
+          <Route path="/mypage/ordered" element={<OrderHist />} />
         </Routes>
       </div>
     </CategoryListContext.Provider>

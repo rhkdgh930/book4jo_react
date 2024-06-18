@@ -82,14 +82,15 @@ function Order() {
     const handleCancelOrder = async () => {
         try {
             const orderId = order.id;
-            await axios.delete(`/api/cancel`, {
+            console.log(orderId);
+            const response = await axios.post('/api/order/cancel', null, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
                 },
                 withCredentials: true,
             });
-            console.log("주문이 취소되었습니다.");
+            alert("주문이 취소되었습니다.");
             navigate(-1);
         } catch (error) {
             console.error('주문 취소 실패:', error);
