@@ -1,8 +1,8 @@
-import axios from "axios";
+import api from '../api'; // 공통 axios 인스턴스 import
 
 export const login = async (credentials) => {
   try {
-    const response = await axios.post("/api/api/users/sign-in", credentials, { withCredentials: true });
+    const response = await api.post('api/users/sign-in', credentials);
     return response.data;
   } catch (error) {
     console.error("Login error:", error.response ? error.response.data : error.message);
@@ -12,7 +12,7 @@ export const login = async (credentials) => {
 
 export const logout = async () => {
   try {
-    await axios.post("/api/api/users/logout", {}, { withCredentials: true });
+    await api.post('api/users/logout');
   } catch (error) {
     console.error("Logout error:", error.response ? error.response.data : error.message);
     throw error;

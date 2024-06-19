@@ -1,69 +1,96 @@
-
-.books{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    
+.container {
+  width: 1030px;
+  margin: auto;
 }
 
-.priceTag{
-    color:#c54a72;
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.container{
-    width: 1030px;
-    margin: auto;
+.selectOrder {
+  display: inline-block;
+  margin: 20px auto;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  transition: box-shadow 0.3s ease;
 }
 
-
-.image{
-    width: 100%;
+.selectOrder:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-
-
-.bookContainer{
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-   
+.books {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
 }
 
-
-.pagination ul{
-    display: flex;
-    justify-content: center;
+.bookLink {
+  text-decoration: none;
+  color: black;
 }
 
-.container ul{
-    display: flex;
-    justify-content: center;
-    list-style: none;
+.bookContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-
-.container ul li a{
-    text-decoration: none;
-    color: black;
+.bookContainer:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.explain{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+.imageArea {
+  width: 150px; /* 이미지 크기 조절 */
+  height: 225px; /* 이미지 크기 조절 */
+  overflow: hidden;
 }
 
-.contentContainer{
-    padding: 50px;
+.image {
+  width: 100%;
+  height: auto;
 }
 
-.contentContainer p{
-    text-overflow: ellipsis;
-    
+.explain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 10px;
 }
 
+.title {
+  height: 50px; /* 높이 조절 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px; /* 글꼴 크기 조절 */
+}
 
-.imageArea{
-    width: 200px;
-    height: 350px;
+.author {
+  height: 30px; /* 높이 조절 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px; /* 글꼴 크기 조절 */
+}
+
+.priceContainer {
+  height: 20px; /* 높이 조절 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.priceTag {
+  color: #c54a72;
+  font-size: 16px; /* 글꼴 크기 조절 */
 }

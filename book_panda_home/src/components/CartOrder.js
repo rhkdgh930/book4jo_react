@@ -66,7 +66,7 @@ function CartOrder() {
             setPhoneNumber(cartData.userPhoneNumber);
             setUserName(cartData.userName);
         } catch (error) {
-            console.error('주문 정보 요청 실패:', error.response.data);
+            alert("주문 상품을 한 개 이상 골라주세요!");
             navigate('/cart');
         } finally {
             setLoading(false);
@@ -189,25 +189,25 @@ function CartOrder() {
                             orderDate: getKoreanDate(),
                         };
 
-	                    const shippingData = {
-           		            address1: address,
-            		        address2: detailedAddress,
-           		            payDoneDate: getKoreanDate(),
-            		        postCode: postCode,
-            		        shippingUserName: userName,
-            		        phoneNumber: phoneNumber,
-        		        };
+                        const shippingData = {
+                            address1: address,
+                            address2: detailedAddress,
+                            payDoneDate: getKoreanDate(),
+                            postCode: postCode,
+                            shippingUserName: userName,
+                            phoneNumber: phoneNumber,
+                        };
 
                         const orderResponse = await axios.post(`/api/orders`, orderData, {
                             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                             withCredentials: true,
                         });
 
-	                    const shippingResponse = await axios.post(`/api/shipping`, shippingData, {
-                		    params: { orderId: orderResponse.data.id },
-                		    headers: { "Content-Type": "application/json" },
-                		    withCredentials: true,
-            		    });
+                        const shippingResponse = await axios.post(`/api/shipping`, shippingData, {
+                            params: { orderId: orderResponse.data.id },
+                            headers: { "Content-Type": "application/json" },
+                            withCredentials: true,
+                        });
 
                         const paymentData = {
                             impUid: rsp.imp_uid,

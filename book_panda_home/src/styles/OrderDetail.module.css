@@ -1,0 +1,122 @@
+.orderInfo {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    font-family: 'Arial, sans-serif';
+}
+
+.heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #333;
+}
+
+.subheading {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.orderTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.orderTable th,
+.orderTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+.orderTable th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.infoTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.infoTable th,
+.infoTable td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.infoTable th {
+    background-color: #f4f4f4;
+    color: #333;
+    width: 150px;
+}
+
+.addressInputWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.addressInputWrapper input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.addressInputWrapper button {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: black;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.addressInputWrapper button:hover {
+    background-color: #f4f4f4;
+}
+
+.totalPrice {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.button {
+    display: block;
+    margin: 15px auto;
+    width: 200px;
+    padding: 10px;
+    border: none;
+    background-color: #006769;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.button:hover {
+    background-color: #004c4c;
+}
+
+.errorMessage {
+    text-align: center;
+    color: red;
+    font-size: 18px;
+    margin-top: 20px;
+}

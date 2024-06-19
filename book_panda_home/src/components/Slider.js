@@ -51,19 +51,19 @@ function Slider(){
         <div className={ styles.slide }>
             <div className={ styles.slide_container}>
                 <div className={styles.slide_item}>
-                    <img src={process.env.PUBLIC_URL+ '/human.png'}></img>
+                    <img src={process.env.PUBLIC_URL+ '/human.png'} alt='human'></img>
                 </div>
                 <div className={styles.slide_item}>
-                    <img src={process.env.PUBLIC_URL+ '/stolen.png'}/>
+                    <img src={process.env.PUBLIC_URL+ '/stolen.png'} alt='stolen'/>
                 </div>
                 <div className={styles.slide_item}>
-                    <img src={process.env.PUBLIC_URL+'/brave.png'}/>
+                    <img src={process.env.PUBLIC_URL+'/focus.png'} alt='focus'/>
                 </div>
                 <div className={styles.slide_item}>
-                    <img src={process.env.PUBLIC_URL+'/almond.png'}/>
+                    <img src={process.env.PUBLIC_URL+'/almond.png'} alt='almond'/>
                 </div>
                 <div className={styles.slide_item}>
-                    <img src={process.env.PUBLIC_URL+'/gun.png'}/>
+                    <img src={process.env.PUBLIC_URL+'/gun.png'} alt='gun'/>
                 </div>
             </div>
         </div>

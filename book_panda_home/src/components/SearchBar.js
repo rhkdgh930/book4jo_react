@@ -4,19 +4,21 @@ import styles from '../styles/SearchBar.module.css';
 import axios from 'axios';
 import panda from "../assets/images/panda1.png"
 
-function SearchBar() {
+function SearchBar(props) {
 
     const [autocompleteItem, setAutocompleteItem] = useState([]);
     const [keyword, setKeyword] = useState("");
-    const [toggle, setToggle] = useState(false);
+    // const [toggle, setToggle] = useState(false);
 
     const keywordHandler = (e) => {
         setKeyword(e.target.value);
-        setToggle(true);
+        props.setToggle(true);
+        // setToggle(true);
     }
     
     const clickClose = (e) => {
-        setToggle(false);
+        props.setToggle(false);
+        // setToggle(false);
     }
 
     const navigate = useNavigate();
@@ -53,7 +55,7 @@ function SearchBar() {
                 <input type='text' onChange={keywordHandler}></input>
                 <button type='submit' onClick={search}>검색</button>
             </div>
-            <div className={toggle ? `${styles.autocompleteVisible}` : `${styles.autocompleteHidden}`}>
+            <div className={props.toggleValue ? `${styles.autocompleteVisible}` : `${styles.autocompleteHidden}`} style={{float:'inherit'}}>
                 <div className={styles.itemContainer}>
                     {
                         autocompleteItem.map((bookTitle, i) =>
