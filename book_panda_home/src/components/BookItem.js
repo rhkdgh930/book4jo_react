@@ -9,7 +9,7 @@ function BookItem(props) {
             case 2:
                 return "silver";
             default:
-                return "gray";
+                return "bronze";
         }
     };
 
