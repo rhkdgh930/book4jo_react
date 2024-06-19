@@ -30,15 +30,17 @@ function Nav() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.categoryButton} onMouseOver={() => toggleMenu(true)} onMouseOut={() => toggleMenu(false)}>
+      <div className={styles.categoryButton} >
+        <span onMouseOver={() => toggleMenu(true)} onMouseOut={() => toggleMenu(false)} style={{marginLeft:'10px'}}>
         카테고리
+        </span>
       </div>
       <div
         className={toggle ? `${styles.categoryVisible}` : `${styles.categoryHidden}`}
         onMouseOver={() => toggleMenu(true)}
         onMouseOut={() => toggleMenu(false)}
       >
-        <div className={styles.categoryTitle}>국내도서</div>
+        <div className={styles.categoryTitle}><span style={{marginLeft:'5px'}}>국내도서</span></div>
         <div className={styles.categoryContainer}>
           {categoryList.map((category, i) => (
             <Link to={`/category?id=${category.id}`} className={styles.link} key={i}>

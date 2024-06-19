@@ -36,7 +36,7 @@ const privatePaths = ["/admin", "/profile", "/order"];
 const App = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const [toggleAutoComplete,setToggleAutoComplete] = useState(false);
   useEffect(() => {
     console.log("인터셉터 함수 호출");
     setupInterceptors();
@@ -53,9 +53,9 @@ const App = () => {
 
   return (
     <CategoryListContext.Provider value={[categoryList, setCategoryList]}>
-      <div className="App">
+      <div className="App" onClick={()=>setToggleAutoComplete(false)}>
         <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-        <SearchBar />
+        <SearchBar toggleValue={toggleAutoComplete} setToggle={setToggleAutoComplete}/>
         <Nav />
         <Routes>
           <Route path="/" element={<Main />} />
