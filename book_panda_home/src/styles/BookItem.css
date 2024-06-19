@@ -27,36 +27,45 @@
     background-color: #c0c0c0;
 }
 
-.gray .rank {
+.bronze .rank {
     background-color: #C28B69;
 }
 
 .book-item {
+    width: 160px;
+    height: 370px;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 10px;
     margin: 10px;
+    border: 1px solid #e0e0e0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.book-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .book-item-img-box {
     position: relative;
-    width: 180px;
-    height: 270px;
+    width: 160px;
+    height: 240px;
 }
 
 .book-item img {
     width: 100%;
-    height: 100%;
     object-fit: cover;
 }
 
-.book-item h6 {
+.book-title {
     margin-top: 10px;
     transition: text-decoration 0.3s ease;
     font-size: 16px;
 }
 
-.book-item h6:hover {
+.book-title:hover {
     text-decoration: underline;
 }

@@ -21,7 +21,7 @@
      position: relative;
      min-width: 1030px;
      transition-property: left; /* 어떤 css 프로퍼티를 transition할지 지정 */
-     transition-duration: 2s;
+     transition-duration: 1.2s;
      left:0;
  }
  

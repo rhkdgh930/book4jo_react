@@ -60,16 +60,15 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>}>
-            <Route path="category" element={<CategoryList />} />
-            <Route path="shippingManagement" element={<ShippingManagement />} />
-            <Route path="enrollBook" element={<EnrollBook />}></Route>
-            <Route path="bookDetail" element={<BookDetail />}></Route>
-            <Route path="search" element={<BookSearch />} />
+            <Route path="category" element={<PrivateRoute><CategoryList /></PrivateRoute>} />
+            <Route path="shippingManagement" element={<PrivateRoute><ShippingManagement /></PrivateRoute>} />
+            <Route path="enrollBook" element={<PrivateRoute><EnrollBook /></PrivateRoute>} />
+            <Route path="bookDetail" element={<PrivateRoute><BookDetail /></PrivateRoute>} />
             <Route path="sales" element={<BookSales />} />
             <Route path="salesDetail" element={<BookSalesDetail />} />
           </Route>
           <Route path="/search" element={<SearchPage />} />
-          <Route path="bookSalesDetail" element={<BookSalesDetail />}></Route>
+          <Route path="/bookSalesDetail" element={<BookSalesDetail />} />
           <Route path="/category" element={<CategoryDetailPage />} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<Signup />} />
@@ -77,11 +76,11 @@ const App = () => {
           <Route path="/mypage/check" element={<PrivateRoute><MypageCheck /></PrivateRoute>} />
           <Route path="/find-password" element={<FindPassword />} />
           <Route path="/resign" element={<PrivateRoute><Resign /></PrivateRoute>} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/bookDetails/order" element={<BookSalesOrder />} />
-          <Route path="/cart/order" element={<CartOrder />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/order" element={<Order />} />
+          <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
+          <Route path="/bookDetails/order" element={<PrivateRoute><BookSalesOrder /></PrivateRoute>} />
+          <Route path="/cart/order" element={<PrivateRoute><CartOrder /></PrivateRoute>} />
+          <Route path="/payment" element={<PrivateRoute><Payment /></PrivateRoute>} />
+          <Route path="/order" element={<PrivateRoute><Order /></PrivateRoute>} />
         </Routes>
       </div>
     </CategoryListContext.Provider>
