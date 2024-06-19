@@ -192,7 +192,7 @@ const BookSalesDetail = () => {
               </div>
             </div>
           </div>
-          <p className={styles.description}>{queryParams.description}</p>
+          <p className={styles.description}>{queryParams.bookSales.bookInfo.description}</p>
           <div>
             <BookReview bookSales={queryParams} />
             <PostBookReview bookSalesInfo={queryParams} />
