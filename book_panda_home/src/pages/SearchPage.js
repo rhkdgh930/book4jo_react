@@ -51,7 +51,7 @@ function SearchPage(){
         ))}
         
     <Pagination
-       className={styles.pagination}
+
         activePage={page}
         itemsCountPerPage={10}
         totalItemsCount={pageInfo.pages * 10}

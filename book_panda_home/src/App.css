@@ -19,15 +19,30 @@ color: black; /* 명시적으로 설정 */
 .pagination{
     display: flex;
     justify-content: center;
+   
+    
 }
 
-.pagination li{
+.pagination>li{
     list-style-type: none;
     color: black;
     text-decoration: none;
+    
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .active{
-    background-color: aquamarine;
+    background-color: #6EE5A3;
+    
     border-radius: 50%;
 }
+
+.pagination a{
+    color: black;
+}
+

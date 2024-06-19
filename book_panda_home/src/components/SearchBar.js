@@ -55,7 +55,7 @@ function SearchBar(props) {
                 <input type='text' onChange={keywordHandler}></input>
                 <button type='submit' onClick={search}>검색</button>
             </div>
-            <div className={props.toggleValue ? `${styles.autocompleteVisible}` : `${styles.autocompleteHidden}`}>
+            <div className={props.toggleValue ? `${styles.autocompleteVisible}` : `${styles.autocompleteHidden}`} style={{float:'inherit'}}>
                 <div className={styles.itemContainer}>
                     {
                         autocompleteItem.map((bookTitle, i) =>
