@@ -21,7 +21,6 @@ import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
 import CategoryDetailPage from './pages/CategoryDetailPage';
-import Payment from "./components/Payment";
 import PrivateRoute from "./components/PrivateRoute";
 import SearchPage from "./pages/SearchPage";
 import MypageCheck from "./pages/MypageCheck";
@@ -79,7 +78,6 @@ const App = () => {
           <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
           <Route path="/bookDetails/order" element={<PrivateRoute><BookSalesOrder /></PrivateRoute>} />
           <Route path="/cart/order" element={<PrivateRoute><CartOrder /></PrivateRoute>} />
-          <Route path="/payment" element={<PrivateRoute><Payment /></PrivateRoute>} />
           <Route path="/order" element={<PrivateRoute><Order /></PrivateRoute>} />
         </Routes>
       </div>
