@@ -30,10 +30,10 @@ function Nav() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.categoryButton} >
-        <span onMouseOver={() => toggleMenu(true)} onMouseOut={() => toggleMenu(false)} style={{marginLeft:'10px'}}>
+      <div className={styles.categoryButton} style={{width:'100px', marginLeft:'10px'}} onMouseOver={() => toggleMenu(true)} onMouseOut={() => toggleMenu(false)}   >
+        
         카테고리
-        </span>
+        
       </div>
       <div
         className={toggle ? `${styles.categoryVisible}` : `${styles.categoryHidden}`}
