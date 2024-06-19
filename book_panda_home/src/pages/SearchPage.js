@@ -1,5 +1,5 @@
 import { useEffect,useState} from "react";
-import axios from "axios";
+import api from "../api";
 import Pagination from "react-js-pagination";
 import { useSearchParams, Link } from "react-router-dom";
 import styles from "../styles/SearchPage.module.css";
@@ -16,9 +16,9 @@ function SearchPage(){
     const [page, setPage] = useState(1);
 
     useEffect(() => {
-        axios
+        api
           .get(
-            "/api/bookSales/search?keyword=" + searchParams.get("keyword") + "&page=" + (page - 1) + "&size=10")
+            "/bookSales/search?keyword=" + searchParams.get("keyword") + "&page=" + (page - 1) + "&size=10")
           .then((res) => {
             setPageInfo(res.data);
           });

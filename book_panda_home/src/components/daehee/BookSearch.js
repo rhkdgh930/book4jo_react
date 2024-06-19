@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api";
 import BookItem from "./BookItem";
 import Pagination from "react-js-pagination";
 import PaginationComponent from "../PaginationComponent";
@@ -43,7 +43,7 @@ function BookSearch() {
   const getBook = async () => {
     try {
       console.log(queryParams);
-      const response = await axios.post("/api/book", queryParams, {
+      const response = await api.post("/book", queryParams, {
         "Content-Type": "application/json",
         withCredentials: true,
       });

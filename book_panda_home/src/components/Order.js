@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
 import styles from '../styles/OrderDetail.module.css';
@@ -25,7 +25,7 @@ function Order() {
 
     const fetchOrder = async (orderId) => {
         try {
-            const response = await axios.get('/api/order', {
+            const response = await api.get('/order', {
                 params: { orderId },
                 withCredentials: true,
             });
@@ -51,7 +51,7 @@ function Order() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            const response = await axios.get('/api/order/items', {
+            const response = await api.get('/order/items', {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
@@ -60,7 +60,7 @@ function Order() {
                 withCredentials: true,
             });
 
-            await axios.put(`/api/shipping?orderId=${orderId}`, { statusLabel: "주문 취소", date: getKoreanDate() });
+            await api.put(`/shipping?orderId=${orderId}`, { statusLabel: "주문 취소", date: getKoreanDate() });
 
             console.log("주문 항목 요청 성공:", response.data);
             const orderItems = Array.isArray(response.data) ? response.data.map(item => ({
@@ -74,7 +74,7 @@ function Order() {
 
     const fetchShipping = async (orderId) => {
         try {
-            const response = await axios.get(`/api/shipping`, {
+            const response = await api.get(`/shipping`, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
@@ -93,7 +93,7 @@ function Order() {
         try {
             const orderId = order.id;
             console.log(orderId);
-            const response = await axios.post('/api/order/cancel', null, {
+            const response = await api.post('/order/cancel', null, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",

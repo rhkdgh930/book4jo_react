@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../api";
 import { Form, Input, Inputs, Title, Wrapper, Button, ButtonB, CustomLink, Error, Red } from '../components/Common';
 import "../styles/MyPage.css";
 import { Link } from "react-router-dom";
@@ -44,7 +44,7 @@ const MyPage = () => {
           throw new Error("No access token found");
         }
 
-        const response = await axios.get("/api/api/mypage", {
+        const response = await api.get("/mypage", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -88,7 +88,7 @@ const MyPage = () => {
         requestData[field] = userInfo[field];
       }
 
-      const response = await axios.put(`/api/api/mypage/${field}`, requestData, {
+      const response = await api.put(`/mypage/${field}`, requestData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -112,7 +112,7 @@ const MyPage = () => {
         throw new Error("No access token found");
       }
 
-      const response = await axios.put("api/mypage/change-password", { newPassword: password }, {
+      const response = await api.put("/mypage/change-password", { newPassword: password }, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

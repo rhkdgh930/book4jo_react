@@ -1,6 +1,6 @@
 import styles from "../styles/CategoryDetailPage.module.css";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import { useSearchParams, Link } from "react-router-dom";
 import Pagination from "react-js-pagination";
 
@@ -16,16 +16,16 @@ function CategoryDetailPage() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    axios
-      .get("/api/api/category/" + searchParams.get("id"))
+    api
+      .get("/category/" + searchParams.get("id"))
       .then((res) => {
         setCategoryName(res.data.name);
       })
       .catch(() => {});
 
-    axios
+    api
       .get(
-        "/api/bookSales?categoryId=" + searchParams.get("id") + "&page=" + (page - 1) + "&size=10" + "&order=" + order
+        "/bookSales?categoryId=" + searchParams.get("id") + "&page=" + (page - 1) + "&size=10" + "&order=" + order
       )
       .then((res) => {
         setBookSalesList(res.data);

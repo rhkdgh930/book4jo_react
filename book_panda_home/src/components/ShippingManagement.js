@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Link } from 'react-router-dom';
 import styles from '../styles/ShippingManagement.module.css';
 
@@ -15,7 +15,7 @@ function ShippingManagement() {
 
     const fetchOrders = async () => {
         try {
-            const response = await axios.get('/api/orders');
+            const response = await api.get('/orders');
             console.log(response.data);
             setOrders(response.data);
         } catch (error) {
@@ -46,10 +46,10 @@ function ShippingManagement() {
         console.log(newStatus);
         if (newStatus) {
             try {
-                await axios.put(`/api/order?orderId=${orderId}`, { statusLabel: newStatus });
+                await api.put(`/order?orderId=${orderId}`, { statusLabel: newStatus });
                 fetchOrders();
 
-                await axios.put(`/api/shipping?orderId=${orderId}`, { statusLabel: newStatus, date: getKoreanDate() });
+                await api.put(`/shipping?orderId=${orderId}`, { statusLabel: newStatus, date: getKoreanDate() });
             } catch (error) {
                 console.error('Failed to update order status:', error);
             }

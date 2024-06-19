@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import styles from "../styles/Payment.module.css";
 
 const Payment = () => {
@@ -72,7 +72,7 @@ const Payment = () => {
       async (rsp) => {
         if (rsp.success) {
           try {
-            const { data } = await axios.post("/api/api/payment/verify/" + rsp.imp_uid);
+            const { data } = await api.post("/payment/verify/" + rsp.imp_uid);
             if (rsp.paid_amount === data.amount) {
               const paymentData = {
                 impUid: rsp.imp_uid,
@@ -87,7 +87,7 @@ const Payment = () => {
                 //orderId: 1 // 이 부분은 실제 주문 ID로 대체
               };
 
-              await axios.post("/api/api/payment/save", paymentData);
+              await api.post("/payment/save", paymentData);
 
               setPaymentInfo({
                 product_name: productName,

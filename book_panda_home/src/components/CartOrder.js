@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/order.module.css';
 import style from '../styles/CartItem.module.css';
@@ -51,7 +51,7 @@ function CartOrder() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            const response = await axios.get('/api/cart/order', {
+            const response = await api.get('/cart/order', {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ function CartOrder() {
 
         while (retryCount < MAX_RETRIES) {
             try {
-                const tokenResponse = await axios.post(`/api/payment/token`);
+                const tokenResponse = await api.post(`/payment/token`);
                 const { access_token } = tokenResponse.data;
                 return access_token;
             } catch (error) {
@@ -129,7 +129,7 @@ function CartOrder() {
 
             console.log('결제 취소 요청 중...', cancelData);
 
-            await axios.post(`/api/payment/cancel`, cancelData, {
+            await api.post(`/payment/cancel`, cancelData, {
                 headers: { 'Content-Type': 'application/json' },
                 withCredentials: true,
             });
@@ -175,7 +175,7 @@ function CartOrder() {
             if (rsp.success) {
                 try {
 
-                    const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
+                    const { data } = await api.post('/payment/verify/' + rsp.imp_uid);
                     if (rsp.paid_amount === data.amount) {
                         const payment_token = await fetchToken(); // 토큰 요청 함수 호출
                         //----------------------------------------------------
@@ -197,12 +197,12 @@ function CartOrder() {
                             phoneNumber: phoneNumber,
                         };
 
-                        const orderResponse = await axios.post(`/api/orders`, orderData, {
+                        const orderResponse = await api.post(`/orders`, orderData, {
                             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
                             withCredentials: true,
                         });
 
-                        const shippingResponse = await axios.post(`/api/shipping`, shippingData, {
+                        const shippingResponse = await api.post(`/shipping`, shippingData, {
                             params: { orderId: orderResponse.data.id },
                             headers: { "Content-Type": "application/json" },
                             withCredentials: true,
@@ -221,7 +221,7 @@ function CartOrder() {
                             orderId: orderResponse.data.id,
                         };
 
-                        await axios.post(`/api/payment/save`, paymentData, {
+                        await api.post(`/payment/save`, paymentData, {
                             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${payment_token}` },
                             withCredentials: true,
                         });

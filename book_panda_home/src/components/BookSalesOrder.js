@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import styles from '../styles/order.module.css';
 import style from '../styles/CartItem.module.css';
@@ -49,7 +49,7 @@ function BookSalesOrder() {
 
     const fetchBookOrder = async (bookId) => {
         try {
-            const response = await axios.get('/api/bookSales/order', {
+            const response = await api.get('/bookSales/order', {
                 params: { bookId },
                 withCredentials: true,
             });
@@ -97,7 +97,7 @@ function BookSalesOrder() {
 
         while (retryCount < MAX_RETRIES) {
             try {
-                const tokenResponse = await axios.post(`/api/payment/token`);
+                const tokenResponse = await api.post(`/payment/token`);
                 const { access_token } = tokenResponse.data;
                 return access_token;
             } catch (error) {
@@ -124,7 +124,7 @@ function BookSalesOrder() {
 
             console.log('결제 취소 요청 중...', cancelData);
 
-            await axios.post(`/api/payment/cancel`, cancelData, {
+            await api.post(`/payment/cancel`, cancelData, {
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                 withCredentials: true,
             });
@@ -169,7 +169,7 @@ function BookSalesOrder() {
         }, async (rsp) => {
             if (rsp.success) {
                 try {
-                    const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
+                    const { data } = await api.post('/payment/verify/' + rsp.imp_uid);
                     if (rsp.paid_amount === data.amount) {
                         const payment_token = await fetchToken(); // 토큰 요청 함수 호출
                         const token = localStorage.getItem('accessToken');
@@ -191,13 +191,13 @@ function BookSalesOrder() {
                             phoneNumber: phoneNumber,
                         };
 
-                        const orderResponse = await axios.post(`/api/order`, orderData, {
+                        const orderResponse = await api.post(`/order`, orderData, {
                             params: { id: bookId },
                             headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                             withCredentials: true,
                         });
 
-	                    const shippingResponse = await axios.post(`/api/shipping`, shippingData, {
+	                    const shippingResponse = await api.post(`/shipping`, shippingData, {
                             params: { orderId: orderResponse.data.id },
                             headers: { "Content-Type": "application/json" },
                             withCredentials: true,
@@ -216,7 +216,7 @@ function BookSalesOrder() {
                             orderId: orderResponse.data.id,
                         };
 
-                        await axios.post(`/api/payment/save`, paymentData, {
+                        await api.post(`/payment/save`, paymentData, {
                             headers: { "Content-Type": "application/json", Authorization: `Bearer ${payment_token}` },
                             withCredentials: true,
                         });

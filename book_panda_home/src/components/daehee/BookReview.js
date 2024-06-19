@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../api";
 import { useLocation, useNavigate } from "react-router-dom";
 import ReviewItem from "./ReviewItem";
 import PaginationComponent from "../PaginationComponent";
@@ -27,7 +27,7 @@ const BookReview = ({ bookSales }) => {
       setIsLoading(true);
       console.log(bookSales.bookSales.id);
 
-      const response = await axios.get(`/api/reviews?id=${bookSales.bookSales.id}`, {
+      const response = await api.get(`/reviews?id=${bookSales.bookSales.id}`, {
         "Content-Type": "application/json",
         withCredentials: true,
       });

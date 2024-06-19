@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Form, Input, Inputs, Title, Wrapper, Button, ButtonB, CustomLink, Error } from '../components/Common';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,7 +29,7 @@ const FindPassword = () => {
         return;
       }
       try {
-        const response = await axios.post('http://localhost:8080/api/users/sign-up/send-email', {
+        const response = await api.post('/users/sign-up/send-email', {
           userEmail: email
         });
         setErrors({ ...errors, message: response.data });
@@ -49,7 +49,7 @@ const FindPassword = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8080/api/users/sign-up/verify-code', {
+      const response = await api.post('/users/sign-up/verify-code', {
         userEmail: email,
         authCode: code
       });
@@ -79,7 +79,7 @@ const FindPassword = () => {
     }
 
     try {
-      await axios.post('http://localhost:8080/api/users/change-password', {
+      await api.post('/api/users/change-password', {
         userEmail: email,
         newPassword: newPassword
       });

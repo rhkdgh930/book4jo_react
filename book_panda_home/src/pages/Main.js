@@ -1,7 +1,7 @@
 import Slider from '../components/Slider';
 import styles from '../styles/Main.module.css';
 import NewArrival from '../components/NewArrival';
-import axios from 'axios';
+import api from '../api';
 import { useEffect,useState } from 'react';
 
 import BookList from "../components/BookList";
@@ -14,7 +14,7 @@ function Main(){
 
     useEffect(()=>{
 
-         axios.get("/api/bookSales/order/id")
+         api.get("/bookSales/order/id")
         .then((res)=>{
             console.log(res.data);
             setRecentBookList(res.data);
@@ -23,7 +23,7 @@ function Main(){
 
         });
         
-        axios.get("/api/bookSales/order/visitCount")
+        api.get("/bookSales/order/visitCount")
         .then((res)=>{
             setMostVisitBookList(res.data);
         })
@@ -32,7 +32,7 @@ function Main(){
         });
 
 
-        axios.get("/api/bookSales/order/sellCount")
+        api.get("/bookSales/order/sellCount")
         .then((res)=>{
             setMostSellBookList(res.data);
         })
