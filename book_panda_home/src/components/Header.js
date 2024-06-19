@@ -21,19 +21,6 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     checkAuthStatus();
   }, [setIsLoggedIn]);
 
-  useEffect(() => {
-    const checkUserRole = async () => {
-      try {
-        const response = await axios.get("/api/api/users/is-user", { withCredentials: true });
-        setIsUser(response.data);
-      } catch (error) {
-        console.error("실패:", error);
-      }
-    };
-
-    checkUserRole();
-  }, []);
-
   const onLogoutClick = async () => {
     try {
       localStorage.removeItem('accessToken');
@@ -46,30 +33,41 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     }
   };
 
+  const handleMyPageClick = async () => {
+    try {
+      const response = await axios.post("http://localhost:8080/api/users/is-user", {}, { withCredentials: true });
+      console.log(response.data); // 추가된 로그: 서버에서 반환된 데이터 확인
+      if (response.data === true) {
+        navigate("/mypage/ordered");
+      } else {
+        navigate("/admin");
+      }
+    } catch (error) {
+      console.error("마이페이지 이동 실패:", error);
+    }
+  };
+
+
   return (
     <div className={styles.top}>
       <div className={styles.topContainer}>
         <div className={styles.leftCategoryContainer}>
-          <div><Link to="/">HOME</Link></div>
+          <div><Link to="/" className={styles.home}>HOME</Link></div>
         </div>
         <div className={styles.rightCategoryContainer}>
           {isLoggedIn ? (
-            <div className={styles.link} onClick={onLogoutClick}>
+            <Link onClick={onLogoutClick} className={styles.link}>
               로그아웃
-            </div>
+            </Link>
           ) : (
-            <div>
-              <Link to="/signin" className={styles.link}>
-                로그인
-              </Link>
-            </div>
+            <Link to="/signin" className={styles.link}>
+              로그인
+            </Link>
           )}
-          <div>
-            <Link to={isUser ? "/mypage/ordered" : "/admin"}>마이페이지</Link>
-          </div>
-          <div>
-            <Link to="/cart">장바구니</Link>
-          </div>
+          <Link onClick={handleMyPageClick} className={styles.link}>
+            마이페이지
+          </Link>
+          <Link to="/cart" className={styles.link}>장바구니</Link>
         </div>
       </div>
     </div>

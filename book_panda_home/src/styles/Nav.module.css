@@ -1,7 +1,7 @@
 
 
 hr{
-    background: #33afe9;
+    background: #006769;
     height: 1px;
     border: 0;
 }
@@ -27,22 +27,23 @@ hr{
     visibility: hidden;
 }
 
-.categoryVisible{
+.categoryVisible {
     border: 1px solid black;
     height: 300px;
     z-index: 5;
     position: absolute;
     width: 100%;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     visibility: visible;
 }
 
-
-.categoryTitle{
+.categoryTitle {
     color: white;
     background-color: #006769;
     margin: 5px;
 }
+
 
 .categoryContainer{
     display: grid;
@@ -58,8 +59,13 @@ hr{
 .categoryList{
     list-style-type: none;
     margin: 10px;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
+.categoryList:hover{
+    color: #008000;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+}
 
 
 .link{

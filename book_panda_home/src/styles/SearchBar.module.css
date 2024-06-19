@@ -10,7 +10,7 @@
     justify-content: center;
     align-items: center;
     width: 1030px;
-    margin: 40px auto; /* 상단 간격 추가 */
+    margin: 40px auto;
     min-width: 1030px;
     position: relative;
   }
@@ -18,12 +18,12 @@
   .logo {
     font-size: 32px;
     font-weight: bold;
-    margin-right: 20px; /* 로고와 검색창 사이 간격 */
+    margin-right: 20px;
   }
 
   #logoLink {
-    color: black; /* 링크 색상 */
-    text-decoration: none; /* 링크 밑줄 제거 */
+    color: black;
+    text-decoration: none;
   }
 
   .logoimage img {
@@ -32,7 +32,7 @@
    }
   
   .searchBar {
-    border: 3px solid var(--primary-color); /* 테두리 색상 변경 */
+    border: 3px solid var(--primary-color);
     border-radius: 12px;
     display: flex;
     width: 535px;
@@ -58,7 +58,8 @@
     width: 10%;
     border: none;
     color: white;
-    background-color: var(--primary-color); /* 버튼 배경 색상 변경 */
+    background-color: var(--primary-color);
+    cursor: pointer;
   }
   
   .autocompleteVisible {
@@ -88,17 +89,17 @@
     border: 1px solid var(--primary-color);
     visibility: hidden;
   }
-  
+
   .autocompleteItem {
     padding: 10px;
     cursor: pointer;
   }
-  
+
   .autocompleteItem:hover {
-    background-color: var(--hover-color);
+    background-color: #E0E9CB;
     color: var(--text-color);
   }
-  
+
   .itemContainer > button {
     width: 100%;
     border: none;
@@ -107,8 +108,7 @@
     padding: 10px;
     cursor: pointer;
   }
-  
+
   .itemContainer > button:hover {
     background-color: var(--hover-color);
   }
-  
