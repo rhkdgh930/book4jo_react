@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
-import styles from '../styles/order.module.css';
+import styles from '../styles/OrderDetail.module.css';
 
 function Order() {
     const [searchParams] = useSearchParams();
@@ -38,6 +38,13 @@ function Order() {
         }
     };
 
+    const getKoreanDate = () => {
+        const date = new Date();
+        const offset = 9 * 60; // 한국 시간은 UTC+9
+        const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+        return koreanDate;
+    };
+
     const fetchOrderItems = async (orderId) => {
         try {
             const token = localStorage.getItem('accessToken');
@@ -52,6 +59,9 @@ function Order() {
                 },
                 withCredentials: true,
             });
+
+            await axios.put(`/api/shipping?orderId=${orderId}`, { statusLabel: "주문 취소", date: getKoreanDate() });
+
             console.log("주문 항목 요청 성공:", response.data);
             const orderItems = Array.isArray(response.data) ? response.data.map(item => ({
                 ...item
@@ -90,6 +100,7 @@ function Order() {
                 },
                 withCredentials: true,
             });
+
             alert("주문이 취소되었습니다.");
             navigate(-1);
         } catch (error) {
@@ -101,6 +112,8 @@ function Order() {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
         return new Intl.DateTimeFormat('ko-KR', options).format(new Date(dateString));
     };
+
+    const canCancelOrder = shipping.statusLabel === '주문 완료';
 
     return (
         <div className={styles.orderInfo}>
@@ -122,13 +135,47 @@ function Order() {
                             ))}
                         </tbody>
                     </table>
-                    <div className={styles.orderDetail}>주문 번호: {order.id}</div>
-                    <div className={styles.orderDetail}>주문 날짜: {formatDate(order.orderDate)}</div>
-                    <div className={styles.orderDetail}>총 가격: {order.totalPrice.toLocaleString()}원</div>
-                    <div className={styles.orderDetail}>받는 사람: {shipping.shippingUserName}</div>
-                    <div className={styles.orderDetail}>주소: {shipping.address1} {shipping.address2}</div>
-                    <div></div>
-                    <button className={styles.button} onClick={handleCancelOrder}>주문 취소</button>
+                    <h3 className={styles.subheading}>주문 상세</h3>
+                    <table className={styles.infoTable}>
+                        <tbody>
+                            <tr>
+                                <th>주문 번호</th>
+                                <td>{order.id}</td>
+                            </tr>
+                            <tr>
+                                <th>주문 날짜</th>
+                                <td>{formatDate(order.orderDate)}</td>
+                            </tr>
+                            <tr>
+                                <th>총 가격</th>
+                                <td>{order.totalPrice.toLocaleString()}원</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 className={styles.subheading}>배송 정보</h3>
+                    <table className={styles.infoTable}>
+                        <tbody>
+                            <tr>
+                                <th>배송 상태</th>
+                                <td>{shipping.statusLabel}</td>
+                            </tr>
+                            <tr>
+                                <th>받는 사람</th>
+                                <td>{shipping.shippingUserName}</td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td>{shipping.address1} {shipping.address2}</td>
+                            </tr>
+                            <tr>
+                                <th>전화번호</th>
+                                <td>{shipping.phoneNumber}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {canCancelOrder && (
+                        <button className={styles.button} onClick={handleCancelOrder}>주문 취소</button>
+                    )}
                 </>
             ) : (
                 <div className={styles.errorMessage}>주문 정보를 불러올 수 없습니다.</div>
