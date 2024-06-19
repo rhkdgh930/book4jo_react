@@ -79,10 +79,64 @@ function Order() {
         }
     };
 
+    const fetchToken = async () => {
+        const MAX_RETRIES = 10; // 최대 재시도 횟수
+        const RETRY_DELAY = 1000; // 지연 시간 (밀리초 단위)
+        let retryCount = 0;
+
+        while (retryCount < MAX_RETRIES) {
+            try {
+                const tokenResponse = await axios.post(`/api/payment/token`);
+                const { access_token } = tokenResponse.data;
+                return access_token;
+            } catch (error) {
+                console.error('토큰 요청 실패:', error);
+                retryCount++;
+                if (retryCount === MAX_RETRIES) {
+                    throw new Error('토큰을 받아오는 데 실패했습니다.');
+                }
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
+            }
+        }
+    };
+
+//    const handleCancelOrder = async () => {
+//        try {
+//            const orderId = order.id;
+//            console.log(orderId);
+//
+//            const response = await axios.post('/api/order/cancel', null, {
+//                params: { orderId },
+//                headers: {
+//                    "Content-Type": "application/json",
+//                },
+//                withCredentials: true,
+//            });
+//
+//            const payment_token = await fetchToken();
+//
+//            const response2 = await axios.post(`/api/payment/cancelPayment`, null, {
+//                params: { orderId },
+//                headers: {
+//                    "Content-Type": "application/json",
+//                    Authorization: `Bearer ${payment_token}`,
+//                },
+//                withCredentials: true,
+//            });
+//
+//            alert("주문이 취소되었습니다.");
+//            navigate(-1);
+//        } catch (error) {
+//            console.error('주문 취소 실패:', error);
+//        }
+//    };
+
     const handleCancelOrder = async () => {
         try {
+            setLoading(true);
             const orderId = order.id;
             console.log(orderId);
+
             const response = await axios.post('/api/order/cancel', null, {
                 params: { orderId },
                 headers: {
@@ -90,12 +144,36 @@ function Order() {
                 },
                 withCredentials: true,
             });
-            alert("주문이 취소되었습니다.");
-            navigate(-1);
+
+            if (response.status === 200) {
+                const payment_token = await fetchToken();
+
+                const response2 = await axios.post(`/api/payment/cancelPayment`, null, {
+                    params: { orderId },
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${payment_token}`,
+                    },
+                    withCredentials: true,
+                });
+
+                if (response2.status === 200) {
+                    alert("주문과 결제가 성공적으로 취소되었습니다.");
+                    navigate(-1);
+                } else {
+                    alert("결제 취소 실패: " + response2.data.error);
+                }
+            } else {
+                alert("주문 취소 실패: " + response.data.error);
+            }
         } catch (error) {
-            console.error('주문 취소 실패:', error);
+            console.error('주문 및 결제 취소 실패:', error);
+            alert('주문 및 결제 취소에 실패했습니다.');
+        } finally {
+            setLoading(false);
         }
     };
+
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
@@ -128,7 +206,9 @@ function Order() {
                     <div className={styles.orderDetail}>받는 사람: {shipping.shippingUserName}</div>
                     <div className={styles.orderDetail}>주소: {shipping.address1} {shipping.address2}</div>
                     <div></div>
-                    <button className={styles.button} onClick={handleCancelOrder}>주문 취소</button>
+                    <button className={styles.button} onClick={handleCancelOrder} disabled={loading}>
+                    {loading ? '취소 중...' : '주문 취소'}
+                    </button>
                 </>
             ) : (
                 <div className={styles.errorMessage}>주문 정보를 불러올 수 없습니다.</div>
