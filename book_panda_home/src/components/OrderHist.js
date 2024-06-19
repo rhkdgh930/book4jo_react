@@ -81,7 +81,7 @@ function OrderHist() {
         <div className={styles.orderHistoryContainer}>
             <div className={styles.selectPage}>
                 <div className={styles.selectPageButton}>
-                    <Link to="/mypage/check">회원정보관리</Link>
+                    <Link to="/mypage/checked">회원정보관리</Link>
                 </div>
                 <div className={styles.selectPageButton}>
                     <Link to="/mypage/ordered">주문내역</Link>

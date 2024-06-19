@@ -33,6 +33,9 @@ const styles = {
         textAlign: "center",
         zIndex: 1001,
     },
+    button: {
+        margin: "0 5px",
+    },
 };
 
 export default Notification;
