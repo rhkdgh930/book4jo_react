@@ -1,0 +1,29 @@
+.rating {
+  display: flex;
+  direction: rtl;
+  justify-content: center;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  width: 32px; /* Adjusted to a smaller size */
+  height: 32px; /* Adjusted to a smaller size */
+  background: url("../assets/images/starOff.png") no-repeat center center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.rating input:checked ~ label,
+.rating input:checked ~ label ~ label {
+  background: url("../assets/images/starOn.png") no-repeat center center;
+  background-size: contain;
+}
+
+.rating label:hover,
+.rating label:hover ~ label {
+  background: url("../assets/images/starOn.png") no-repeat center center;
+  background-size: contain;
+}
