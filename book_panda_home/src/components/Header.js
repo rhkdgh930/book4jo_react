@@ -21,19 +21,6 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
     checkAuthStatus();
   }, [setIsLoggedIn]);
 
-  useEffect(() => {
-    const checkUserRole = async () => {
-      try {
-        const response = await axios.get("/api/api/users/is-user", { withCredentials: true });
-        setIsUser(response.data);
-      } catch (error) {
-        console.error("실패:", error);
-      }
-    };
-
-    checkUserRole();
-  }, []);
-
   const onLogoutClick = async () => {
     try {
       localStorage.removeItem('accessToken');
@@ -45,6 +32,21 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
       alert("로그아웃에 실패했습니다. 다시 시도해주세요.");
     }
   };
+
+  const handleMyPageClick = async () => {
+    try {
+      const response = await axios.post("http://localhost:8080/api/users/is-user", {}, { withCredentials: true });
+      console.log(response.data); // 추가된 로그: 서버에서 반환된 데이터 확인
+      if (response.data === true) {
+        navigate("/mypage/ordered");
+      } else {
+        navigate("/admin");
+      }
+    } catch (error) {
+      console.error("마이페이지 이동 실패:", error);
+    }
+  };
+
 
   return (
     <div className={styles.top}>
@@ -58,18 +60,14 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
               로그아웃
             </Link>
           ) : (
-            <div>
-              <Link to="/signin" className={styles.link}>
-                로그인
-              </Link>
-            </div>
+            <Link to="/signin" className={styles.link}>
+              로그인
+            </Link>
           )}
-          <div>
-            <Link to={isUser ? "/mypage/ordered" : "/admin"} className={styles.link} >마이페이지</Link>
-          </div>
-          <div>
-            <Link to="/cart" className={styles.link}>장바구니</Link>
-          </div>
+          <Link onClick={handleMyPageClick} className={styles.link}>
+            마이페이지
+          </Link>
+          <Link to="/cart" className={styles.link}>장바구니</Link>
         </div>
       </div>
     </div>
