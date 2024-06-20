@@ -5,8 +5,8 @@ const Notification = ({message, onClose, onNavigate}) => {
         <div style={styles.overlay}>
             <div style={styles.modal}>
                 <p>{message}</p>
-                <button onClick={onClose}>확인</button>
-                <button onClick={onNavigate}>장바구니로 이동</button>
+                <button style={styles.button} onClick={onClose}>확인</button>
+                <button style={styles.button} onClick={onNavigate}>장바구니로 이동</button>
             </div>
         </div>
     )

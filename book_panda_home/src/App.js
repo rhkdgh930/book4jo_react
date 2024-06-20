@@ -59,25 +59,14 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>}>
-<<<<<<< HEAD
-            <Route path="category" element={<CategoryList />} />
-            <Route path="shippingManagement" element={<ShippingManagement />} />
-            <Route path="enrollBook" element={<EnrollBook />}></Route>
-            <Route path="bookDetail" element={<BookDetail />}></Route>
-=======
             <Route path="category" element={<PrivateRoute><CategoryList /></PrivateRoute>} />
             <Route path="shippingManagement" element={<PrivateRoute><ShippingManagement /></PrivateRoute>} />
             <Route path="enrollBook" element={<PrivateRoute><EnrollBook /></PrivateRoute>} />
             <Route path="bookDetail" element={<PrivateRoute><BookDetail /></PrivateRoute>} />
->>>>>>> 33deab9c4e24f86d69c92e9d4f2ecc47a537c4db
             <Route path="sales" element={<BookSales />} />
           </Route>
           <Route path="/search" element={<SearchPage />} />
-<<<<<<< HEAD
-          <Route path="/bookSalesDetail" element={<BookSalesDetail />}></Route>
-=======
           <Route path="/bookSalesDetail" element={<BookSalesDetail />} />
->>>>>>> 33deab9c4e24f86d69c92e9d4f2ecc47a537c4db
           <Route path="/category" element={<CategoryDetailPage />} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<Signup />} />
@@ -88,6 +77,7 @@ const App = () => {
           <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
           <Route path="/bookDetails/order" element={<PrivateRoute><BookSalesOrder /></PrivateRoute>} />
           <Route path="/cart/order" element={<PrivateRoute><CartOrder /></PrivateRoute>} />
+          {/* <Route path="/payment" element={<PrivateRoute><Payment /></PrivateRoute>} /> */}
           <Route path="/order" element={<PrivateRoute><Order /></PrivateRoute>} />
         </Routes>
       </div>

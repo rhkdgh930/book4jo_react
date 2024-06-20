@@ -18,7 +18,6 @@ const BookSalesDetail = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userRole, setUserRole] = useState("");
-
   const [newPrice, setNewPrice] = useState(0);
 
   const count = async () => {
@@ -63,10 +62,8 @@ const BookSalesDetail = () => {
       const idNumber = Number(id);
       const response = await axios.post(`/api/cart/items/${idNumber}`, null, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-        withCredentials: true,
       });
       setShowNotification(true);
     } catch (error) {

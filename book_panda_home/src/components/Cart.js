@@ -3,13 +3,13 @@ import CartItem from "./CartItem";
 import styles from "../styles/Cart.module.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../api"
 
 function Cart() {
     const [items, setItems] = useState([]);
     const [allChecked, setAllChecked] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
-    const [cartId, setCartId] = useState('');
 
     useEffect(() => {
         fetchCartItems();
@@ -32,10 +32,11 @@ function Cart() {
             const cartItems = Array.isArray(response.data)
                 ? response.data.map((item) => ({
                     ...item,
-                    checked: true,
+                    checked: item.checked !== undefined ? item.checked : false,
                 }))
                 : [];
             setItems(cartItems);
+            setAllChecked(cartItems.every(item => item.checked));
         } catch (error) {
             console.error("Error fetching cart items", error);
         }
