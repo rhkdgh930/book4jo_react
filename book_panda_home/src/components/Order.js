@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
-import styles from '../styles/order.module.css';
+import styles from '../styles/OrderDetail.module.css';
 
 function Order() {
     const [searchParams] = useSearchParams();
@@ -10,11 +10,11 @@ function Order() {
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
     const [shipping, setShipping] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         const orderId = searchParams.get('orderId');
+        console.log("search : ", orderId);
 
         if (orderId) {
             fetchOrder(orderId);
@@ -29,6 +29,7 @@ function Order() {
                 params: { orderId },
                 withCredentials: true,
             });
+            console.log("주문 정보 요청 성공:", response.data);
             setOrder(response.data);
         } catch (error) {
             console.error("주문 정보 요청 실패:", error);
@@ -51,7 +52,10 @@ function Order() {
                 },
                 withCredentials: true,
             });
-            const orderItems = Array.isArray(response.data) ? response.data.map(item => ({ ...item })) : [];
+            console.log("주문 항목 요청 성공:", response.data);
+            const orderItems = Array.isArray(response.data) ? response.data.map(item => ({
+                ...item
+            })) : [];
             setOrderItems(orderItems);
         } catch (error) {
             console.error('주문 항목 요청 실패:', error);
@@ -67,15 +71,17 @@ function Order() {
                 },
                 withCredentials: true,
             });
+            console.log(response.data);
             setShipping(response.data);
+            console.log(shipping);
         } catch (error) {
-            console.error('배송 정보 요청 실패:', error);
+            console.error(error.data);
         }
     };
 
     const fetchToken = async () => {
         const MAX_RETRIES = 10; // 최대 재시도 횟수
-        const RETRY_DELAY = 1000; // 지연 시간
+        const RETRY_DELAY = 1000; // 지연 시간 (밀리초 단위)
         let retryCount = 0;
 
         while (retryCount < MAX_RETRIES) {
@@ -94,10 +100,42 @@ function Order() {
         }
     };
 
+    //    const handleCancelOrder = async () => {
+    //        try {
+    //            const orderId = order.id;
+    //            console.log(orderId);
+    //
+    //            const response = await axios.post('/api/order/cancel', null, {
+    //                params: { orderId },
+    //                headers: {
+    //                    "Content-Type": "application/json",
+    //                },
+    //                withCredentials: true,
+    //            });
+    //
+    //            const payment_token = await fetchToken();
+    //
+    //            const response2 = await axios.post(`/api/payment/cancelPayment`, null, {
+    //                params: { orderId },
+    //                headers: {
+    //                    "Content-Type": "application/json",
+    //                    Authorization: `Bearer ${payment_token}`,
+    //                },
+    //                withCredentials: true,
+    //            });
+    //
+    //            alert("주문이 취소되었습니다.");
+    //            navigate(-1);
+    //        } catch (error) {
+    //            console.error('주문 취소 실패:', error);
+    //        }
+    //    };
+
     const handleCancelOrder = async () => {
         try {
-            setIsLoading(true);
+            setLoading(true);
             const orderId = order.id;
+            console.log(orderId);
 
             const response = await axios.post('/api/order/cancel', null, {
                 params: { orderId },
@@ -108,8 +146,23 @@ function Order() {
             });
 
             if (response.status === 200) {
+                const payment_token = await fetchToken();
 
-                await handlePaymentCancel(orderId);
+                const response2 = await axios.post(`/api/payment/cancelPayment`, null, {
+                    params: { orderId },
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${payment_token}`,
+                    },
+                    withCredentials: true,
+                });
+
+                if (response2.status === 200) {
+                    alert("주문이 성공적으로 취소되었습니다.");
+                    navigate(-1);
+                } else {
+                    alert("결제 취소 실패: " + response2.data.error);
+                }
             } else {
                 alert("주문 취소 실패: " + response.data.error);
             }
@@ -117,34 +170,10 @@ function Order() {
             console.error('주문 및 결제 취소 실패:', error);
             alert('주문 및 결제 취소에 실패했습니다.');
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
-    const handlePaymentCancel = async (orderId) => {
-        try {
-            const payment_token = await fetchToken();
-
-            const response = await axios.post(`/api/payment/cancelPayment`, null, {
-                params: { orderId },
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${payment_token}`,
-                },
-                withCredentials: true,
-            });
-
-            if (response.status === 200) {
-                alert("주문이 성공적으로 취소되었습니다.");
-                navigate('/');
-            } else {
-                alert("결제 취소 실패: " + response.data.error);
-            }
-        } catch (error) {
-            console.error('결제 취소 실패:', error);
-            alert('결제 취소에 실패했습니다.');
-        }
-    };
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
@@ -171,15 +200,51 @@ function Order() {
                             ))}
                         </tbody>
                     </table>
-                    <div className={styles.orderDetail}>주문 번호: {order.id}</div>
-                    <div className={styles.orderDetail}>주문 날짜: {formatDate(order.orderDate)}</div>
-                    <div className={styles.orderDetail}>총 가격: {order.totalPrice.toLocaleString()}원</div>
-                    <div className={styles.orderDetail}>받는 사람: {shipping.shippingUserName}</div>
-                    <div className={styles.orderDetail}>주소: {shipping.address1} {shipping.address2}</div>
-                    <div></div>
-                    <button className={styles.button} onClick={handleCancelOrder} disabled={isLoading}>
-                        {isLoading ? '취소 중...' : '주문 취소'}
-                    </button>
+                    <h3 className={styles.subheading}>주문 상세</h3>
+                    <table className={styles.infoTable}>
+                        <tbody>
+                            <tr>
+                                <th>주문 번호</th>
+                                <td>{order.id}</td>
+                            </tr>
+                            <tr>
+                                <th>주문 날짜</th>
+                                <td>{formatDate(order.orderDate)}</td>
+                            </tr>
+                            <tr>
+                                <th>총 가격</th>
+                                <td>{order.totalPrice.toLocaleString()}원</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 className={styles.subheading}>배송 정보</h3>
+                    <table className={styles.infoTable}>
+                        <tbody>
+                            <tr>
+                                <th>배송 상태</th>
+                                <td>{shipping.statusLabel}</td>
+                            </tr>
+                            <tr>
+                                <th>받는 사람</th>
+                                <td>{shipping.shippingUserName}</td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td>{shipping.address1} {shipping.address2}</td>
+                            </tr>
+                            <tr>
+                                <th>전화번호</th>
+                                <td>{shipping.phoneNumber}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {order.statusLabel !== '주문 취소' ? (
+                        <button className={styles.button} onClick={handleCancelOrder}>
+                            주문 취소
+                        </button>
+                    ) : (
+                        <div className={styles.cancelledMessage}>취소된 주문입니다.</div>
+                    )}
                 </>
             ) : (
                 <div className={styles.errorMessage}>주문 정보를 불러올 수 없습니다.</div>
