@@ -1,11 +1,16 @@
-import api from '../api';
+import axios from 'axios';
+
+// Axios 인스턴스 생성
+const apiClient = axios.create({
+  baseURL: 'http://34.22.77.154/api'
+});
 
 // 토큰 갱신 함수
 export const refreshToken = async () => {
   console.log("리프레시 토큰 요청 중");
 
   try {
-    const response = await api.post('http://localhost:8080/api/users/refresh-token', {}, { withCredentials: true });
+    const response = await axios.post('users/refresh-token', {}, { withCredentials: true });
     const { accessToken, refreshToken: newRefreshToken } = response.data;
 
     console.log("토큰 리프레시 성공", accessToken);
@@ -41,7 +46,7 @@ const isTokenExpired = (token) => {
 export const setupInterceptors = () => {
   console.log("인터셉터 설정 시작");
 
-  api.interceptors.request.use(async (config) => {
+  apiClient.interceptors.request.use(async (config) => {
     console.log("인터셉터 콘피그", config);
     let token = localStorage.getItem('accessToken');
 
@@ -61,7 +66,7 @@ export const setupInterceptors = () => {
     return Promise.reject(error);
   });
 
-  api.interceptors.response.use(
+  apiClient.interceptors.response.use(
     response => {
       console.log("인터셉터 리스폰스", response);
       return response;
@@ -73,9 +78,9 @@ export const setupInterceptors = () => {
         originalRequest._retry = true;
         const token = await refreshToken();
         if (token) {
-          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           originalRequest.headers['Authorization'] = `Bearer ${token}`;
-          return api(originalRequest);
+          return axios(originalRequest);
         }
       }
       return Promise.reject(error);
@@ -85,4 +90,4 @@ export const setupInterceptors = () => {
   console.log("인터셉터 설정 완료");
 };
 
-export default api;
+export default apiClient;

@@ -50,14 +50,14 @@
 }
 
 .littleInfos {
-  height: 300px;
+  height: 250px;
   border-radius: 4px;
-  margin-bottom: 20px;
+  margin-bottom: 100px;
 }
 
 .title {
-  height: 180px;
-  font-size: 2em;
+  height: 230px;
+  font-size: 1.5em;
   color: var(--text-color);
   font-weight: bold;
 }
@@ -87,13 +87,13 @@
 .price,
 .stock,
 .author {
-  margin: 5px 0;
+  margin-bottom: 60px;
   font-size: 1.5em; /* 크기 조정 */
   line-height: 1.5;
 }
 
 .zero {
-  margin: 5px 0;
+  margin-bottom: 25px;
   font-size: 1.2em;
   line-height: 1.5;
   color: red;
@@ -121,6 +121,7 @@
   font-size: 1em;
   text-align: center;
   transition: background-color 0.3s ease;
+  margin-right: 10px;
 }
 
 .buttons button:hover {
