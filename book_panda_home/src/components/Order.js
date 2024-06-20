@@ -159,7 +159,7 @@ function Order() {
 
                 if (response2.status === 200) {
                     alert("주문과 결제가 성공적으로 취소되었습니다.");
-                    navigate(-1);
+                    navigate('/');
                 } else {
                     alert("결제 취소 실패: " + response2.data.error);
                 }
