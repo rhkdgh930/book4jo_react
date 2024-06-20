@@ -7,7 +7,7 @@ import Pagination from "react-js-pagination";
 function CategoryDetailPage() {
   const [categoryName, setCategoryName] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
-  //const [bookSalesList, setBookSalesList] = useState([]);
+  const [bookSalesList, setBookSalesList] = useState([]);
   const [pageInfo, setPageInfo] = useState({
     pages: 0,
     books: [],
@@ -28,7 +28,7 @@ function CategoryDetailPage() {
         "/api/bookSales?categoryId=" + searchParams.get("id") + "&page=" + (page - 1) + "&size=10" + "&order=" + order
       )
       .then((res) => {
-        //setBookSalesList(res.data);
+        setBookSalesList(res.data);
         setPageInfo(res.data);
         console.log(res.data);
       });
@@ -48,7 +48,7 @@ function CategoryDetailPage() {
     <div className={styles.container}>
       <h1>{categoryName}</h1>
 
-      <select name="order" onChange={handleOrderStat}>
+      <select name="order" onChange={handleOrderStat} className={styles.selectOrder}>
         <option value="">등록순</option>
         <option value="sellCount">판매량순</option>
         <option value="visitCount">조회순</option>
@@ -74,7 +74,7 @@ function CategoryDetailPage() {
         ))}
       </div>
 
-      <Pagination
+      <Pagination className={styles.paging}
         activePage={page}
         itemsCountPerPage={10}
         totalItemsCount={pageInfo.pages * 10}

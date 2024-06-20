@@ -97,7 +97,8 @@ function CartOrder() {
     };
 
     const fetchToken = async () => {
-        const MAX_RETRIES = 250;
+        const MAX_RETRIES = 10; // 최대 재시도 횟수
+        const RETRY_DELAY = 1000; // 지연 시간 (밀리초 단위)
         let retryCount = 0;
 
         while (retryCount < MAX_RETRIES) {
@@ -111,6 +112,7 @@ function CartOrder() {
                 if (retryCount === MAX_RETRIES) {
                     throw new Error('토큰을 받아오는 데 실패했습니다.');
                 }
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
             }
         }
     };
@@ -174,7 +176,6 @@ function CartOrder() {
         }, async (rsp) => {
             if (rsp.success) {
                 try {
-
                     const { data } = await axios.post('/api/payment/verify/' + rsp.imp_uid);
                     if (rsp.paid_amount === data.amount) {
                         const payment_token = await fetchToken(); // 토큰 요청 함수 호출

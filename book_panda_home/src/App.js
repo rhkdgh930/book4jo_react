@@ -21,7 +21,6 @@ import BookSearch from "./components/daehee/BookSearch";
 import BookSales from "./components/daehee/BookSales";
 import BookSalesDetail from "./components/daehee/BookSalesDetail";
 import CategoryDetailPage from './pages/CategoryDetailPage';
-import Payment from "./components/Payment";
 import PrivateRoute from "./components/PrivateRoute";
 import SearchPage from "./pages/SearchPage";
 import MypageCheck from "./pages/MypageCheck";
@@ -38,17 +37,17 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [toggleAutoComplete,setToggleAutoComplete] = useState(false);
   useEffect(() => {
-    console.log("인터셉터 함수 호출");
-    setupInterceptors();
+      console.log("인터셉터 함수 호출");
+      setupInterceptors();
 
-    // API 요청 테스트
-    apiClient.get('/api/test')
-      .then(response => {
-        console.log("API 요청 성공", response);
-      })
-      .catch(error => {
-        console.error("API 요청 실패", error);
-      });
+      // API 요청 테스트
+      apiClient.get('/api/test')
+        .then(response => {
+          console.log("API 요청 성공", response);
+        })
+        .catch(error => {
+          console.error("API 요청 실패", error);
+        });
   }, []);
 
   return (
@@ -60,14 +59,25 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>}>
+<<<<<<< HEAD
             <Route path="category" element={<CategoryList />} />
             <Route path="shippingManagement" element={<ShippingManagement />} />
             <Route path="enrollBook" element={<EnrollBook />}></Route>
             <Route path="bookDetail" element={<BookDetail />}></Route>
+=======
+            <Route path="category" element={<PrivateRoute><CategoryList /></PrivateRoute>} />
+            <Route path="shippingManagement" element={<PrivateRoute><ShippingManagement /></PrivateRoute>} />
+            <Route path="enrollBook" element={<PrivateRoute><EnrollBook /></PrivateRoute>} />
+            <Route path="bookDetail" element={<PrivateRoute><BookDetail /></PrivateRoute>} />
+>>>>>>> 33deab9c4e24f86d69c92e9d4f2ecc47a537c4db
             <Route path="sales" element={<BookSales />} />
           </Route>
           <Route path="/search" element={<SearchPage />} />
+<<<<<<< HEAD
           <Route path="/bookSalesDetail" element={<BookSalesDetail />}></Route>
+=======
+          <Route path="/bookSalesDetail" element={<BookSalesDetail />} />
+>>>>>>> 33deab9c4e24f86d69c92e9d4f2ecc47a537c4db
           <Route path="/category" element={<CategoryDetailPage />} />
           <Route path="/signin" element={<Signin setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<Signup />} />
@@ -75,12 +85,10 @@ const App = () => {
           <Route path="/mypage/check" element={<PrivateRoute><MypageCheck /></PrivateRoute>} />
           <Route path="/find-password" element={<FindPassword />} />
           <Route path="/resign" element={<PrivateRoute><Resign /></PrivateRoute>} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/bookDetails/order" element={<BookSalesOrder />} />
-          <Route path="/cart/order" element={<CartOrder />} />
-          <Route path="/payment" element={<Payment />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/mypage/ordered" element={<OrderHist />} />
+          <Route path="/cart" element={<PrivateRoute><Cart /></PrivateRoute>} />
+          <Route path="/bookDetails/order" element={<PrivateRoute><BookSalesOrder /></PrivateRoute>} />
+          <Route path="/cart/order" element={<PrivateRoute><CartOrder /></PrivateRoute>} />
+          <Route path="/order" element={<PrivateRoute><Order /></PrivateRoute>} />
         </Routes>
       </div>
     </CategoryListContext.Provider>

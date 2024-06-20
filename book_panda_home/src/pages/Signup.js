@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Inputs, Title, Wrapper, Button, ButtonB, CustomLink, Error, Red } from '../components/Common';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from '../hooks/useForm';
+import { useInput } from '../hooks/useInput';
 import { signUp } from '../apis/signUp';
 import axios from 'axios';
 
 const Signup = () => {
-  const [email, onChangeEmail] = useForm();
-  const [pw, onChangePW] = useForm();
-  const [confirmPw, onChangeConfirmPW] = useForm();
-  const [name, onChangeName] = useForm();
+  const [email, onChangeEmail] = useInput();
+  const [pw, onChangePW] = useInput();
+  const [confirmPw, onChangeConfirmPW] = useInput();
+  const [name, onChangeName] = useInput();
   const [address, setAddress] = useState('');
   const [detailedAddress, setDetailedAddress] = useState('');
   const [postCode, setPostCode] = useState('');
-  const [phoneNumber, onChangePhoneNumber] = useForm();
+  const [phoneNumber, onChangePhoneNumber] = useInput();
   const [code, setCode] = useState('');
   const [errors, setErrors] = useState({});
   const [timer, setTimer] = useState(null);
@@ -50,7 +50,7 @@ const Signup = () => {
   const sendEmail = async (e) => {
     e.preventDefault();
     if (!validateEmail(email)) {
-      setErrors({ ...errors, email: '유효한 이메일 주소를 입력해주세요.' });
+      setErrors({ ...errors, email: '유효한 이메일 주소를 입력해주세요' });
       return;
     }
     try {
@@ -61,14 +61,14 @@ const Signup = () => {
       setTimeLeft(300); // 5분 = 300초
     } catch (error) {
       console.error("코드 전송에 실패 :", error);
-      setErrors({ ...errors, message: '코드 전송에 실패했습니다.' });
+      setErrors({ ...errors, message: '코드 전송에 실패했습니다' });
     }
   };
 
   const verifyCode = async (e) => {
     e.preventDefault();
     if (!code) {
-      setErrors({ ...errors, code: '인증번호를 입력해주세요.' });
+      setErrors({ ...errors, code: '인증번호를 입력해주세요' });
       return;
     }
     try {
@@ -79,14 +79,14 @@ const Signup = () => {
       setErrors({ ...errors, message: response.data });
     } catch (error) {
       console.error("코드 인증 실패 :", error);
-      setErrors({ ...errors, message: '코드 인증 실패.' });
+      setErrors({ ...errors, message: '코드 인증 실패' });
     }
   };
 
   const handlePostcode = (e) => {
     e.preventDefault();
     if (!scriptLoaded) {
-      setErrors({ ...errors, address: '주소 검색 스크립트가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.' });
+      setErrors({ ...errors, address: '주소 검색 스크립트가 로드되지 않았습니다. 잠시 후 다시 시도해주세요' });
       return;
     }
 
@@ -107,13 +107,13 @@ const Signup = () => {
     const newErrors = {};
 
     if (!validatePassword(pw)) {
-      newErrors.pw = '특수문자 + 알파벳 대소문자 + 숫자를 포함한 8~16자.';
+      newErrors.pw = '특수문자 + 알파벳 대소문자 + 숫자를 포함한 8~16자';
     }
     if (pw !== confirmPw) {
-      newErrors.confirmPw = '비밀번호가 일치하지 않습니다.';
+      newErrors.confirmPw = '비밀번호가 일치하지 않습니다';
     }
     if (!validateName(name)) {
-      newErrors.name = '이름을 입력해주세요.';
+      newErrors.name = '이름을 입력해주세요';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -123,11 +123,11 @@ const Signup = () => {
 
     try {
       await signUp(email, pw, name, address, detailedAddress, postCode, phoneNumber);
-      alert('회원가입에 성공했습니다.');
+      alert('회원가입에 성공했습니다');
       router('/signin');
     } catch (error) {
       console.error("회원가입 실패 :", error);
-      setErrors({ ...errors, message: '회원가입 실패.' });
+      setErrors({ ...errors, message: '회원가입 실패' });
     }
   };
 
