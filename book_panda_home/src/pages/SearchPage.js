@@ -1,57 +1,51 @@
-import { useEffect,useState} from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import api from "../api";
 import Pagination from "react-js-pagination";
 import { useSearchParams, Link } from "react-router-dom";
 import styles from "../styles/SearchPage.module.css";
 
+function SearchPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [pageInfo, setPageInfo] = useState({
+    pages: 0,
+    books: [],
+  });
+  const [page, setPage] = useState(1);
 
-function SearchPage(){
+  useEffect(() => {
+    api
+      .get("/bookSales/search?keyword=" + searchParams.get("keyword") + "&page=" + (page - 1) + "&size=10")
+      .then((res) => {
+        setPageInfo(res.data);
+      });
+  }, [searchParams, page]);
 
-    const [categoryName, setCategoryName] = useState("");
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [pageInfo, setPageInfo] = useState({
-        pages: 0,
-        books: [],
-    });
-    const [page, setPage] = useState(1);
+  const handlePageChange = (page) => {
+    setPage(page);
+  };
 
-    useEffect(() => {
-        axios
-          .get(
-            "/api/bookSales/search?keyword=" + searchParams.get("keyword") + "&page=" + (page - 1) + "&size=10")
-          .then((res) => {
-            setPageInfo(res.data);
-          });
-      }, [searchParams, page]);
-
-      const handlePageChange = (page) => {
-        setPage(page);
-      };
-
-
-    return(
-    <div style={{width: '1030px' , margin:'auto'}}>
-
-{       pageInfo.books.map((bookSales, i) => (
+  return (
+    <div className={styles.container}>
+      <div className={styles.bookList}>
+        {pageInfo.books.map((bookSales, i) => (
           <Link key={i} to={`/bookSalesDetail?id=${bookSales.id}`} style={{ color: "black" }}>
-                <div className={styles.container}>
-                    <div>
-                        <img src={bookSales.bookInfo.image}></img>
-                    </div>
-                    <div>
-                        <h6>{bookSales.bookInfo.title}</h6>
-                        <div>저자: {bookSales.bookInfo.title}</div>
-                        <div>가격: {bookSales.bookInfo.discount}</div>
-                        <p>
-                            {bookSales.bookInfo.description}
-                        </p>
-                    </div>
-                </div>
+            <div className={styles.bookContainer}>
+              <div className={styles.imageContainer}>
+                <img src={bookSales.bookInfo.image} alt={bookSales.bookInfo.title} className={styles.bookImage} />
+              </div>
+              <div className={styles.infoContainer}>
+                <h6 className={styles.bookTitle}>
+                  {bookSales.bookInfo.title} {bookSales.bookInfo.subtitle}
+                </h6>
+                <div className={styles.bookAuthor}>저자 : {bookSales.bookInfo.author}</div>
+                <div className={styles.bookPrice}>가격 : {bookSales.bookInfo.discount}원</div>
+                <p className={styles.bookDescription}>{bookSales.bookInfo.description}</p>
+              </div>
+            </div>
           </Link>
         ))}
-        
-    <Pagination
-
+      </div>
+      <Pagination
         activePage={page}
         itemsCountPerPage={10}
         totalItemsCount={pageInfo.pages * 10}
@@ -61,11 +55,7 @@ function SearchPage(){
         onChange={handlePageChange}
       />
     </div>
-    );
-
-
+  );
 }
-
-
 
 export default SearchPage;

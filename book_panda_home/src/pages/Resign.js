@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Form, Input, Title, Wrapper, Button, Error, Red } from '../components/Common';
-import axios from 'axios';
+import api from '../api';
 import { useNavigate } from 'react-router-dom';
 
 const Resign = () => {
@@ -34,7 +34,7 @@ const Resign = () => {
     }
 
     try {
-      const response = await axios.put('http://localhost:8080/api/users/delete-user',
+      const response = await api.put('/users/delete-user',
         { password },
         {
           headers: {

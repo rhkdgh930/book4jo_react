@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../api";
 import BookReview from "./BookReview";
 import PostBookReview from "./PostBookReview";
 import Notification from "../Notification";
@@ -18,16 +18,13 @@ const BookSalesDetail = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userRole, setUserRole] = useState("");
-
   const [newPrice, setNewPrice] = useState(0);
 
   const count = async () => {
     try {
       const idNumber = Number(id);
-      console.log("asaassa" + idNumber);
-      console.log(JSON.stringify(queryParams));
 
-      const response = await axios.get(`/api/getBookSales?id=${idNumber}`, {
+      const response = await api.get(`/getBookSales?id=${idNumber}`, {
         withCredentials: true,
       });
       console.log("Count data:", response.data);
@@ -42,8 +39,8 @@ const BookSalesDetail = () => {
   };
 
   useEffect(() => {
-    const roles = axios
-      .get("/api/api/users/role", {
+    const roles = api
+      .get("/users/role", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -61,15 +58,14 @@ const BookSalesDetail = () => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
+        alert("로그인이 필요합니다.");
         throw new Error("No access token found");
       }
       const idNumber = Number(id);
-      const response = await axios.post(`/api/cart/items/${idNumber}`, null, {
+      const response = await api.post(`/cart/items/${idNumber}`, null, {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-        withCredentials: true,
       });
       setShowNotification(true);
     } catch (error) {
@@ -118,8 +114,8 @@ const BookSalesDetail = () => {
   };
 
   const sendNewPrice = async () => {
-    axios.patch(
-      "/api/bookSales/price/" + newPrice,
+    api.patch(
+      "/bookSales/price/" + newPrice,
       {
         id: queryParams.bookSales.id,
       },
@@ -133,9 +129,9 @@ const BookSalesDetail = () => {
   };
 
   const sendNewStock = async () => {
-    axios
+    api
       .patch(
-        "/api/bookSales/stock/" + newStock,
+        "/bookSales/stock/" + newStock,
         {
           id: queryParams.bookSales.id,
         },
@@ -166,23 +162,25 @@ const BookSalesDetail = () => {
             </div>
             <div className={styles.bookDetails}>
               <h3 className={styles.title}>{queryParams.bookSales.bookInfo.title}</h3>
-              <p className={styles.price}>가격: {queryParams.bookSales.bookInfo.discount}원</p>
-              {userRole === "ROLE_ADMIN" ? (
-                <div>
-                  <input type="number" placeholder="가격 수정" onChange={handlePriceUpdate} />
-                  <button onClick={sendNewPrice}>가격 수정</button>
-                </div>
-              ) : null}
-              <p className={`${queryParams.bookSales.stock === "0" ? styles.zero : styles.stock}`}>
-                재고: {queryParams.bookSales.stock}권
-              </p>
-              {userRole === "ROLE_ADMIN" ? (
-                <div>
-                  <input type="number" placeholder="수량 수정" onChange={handleStockUpdate} />
-                  <button onClick={sendNewStock}>수량 수정</button>
-                </div>
-              ) : null}
-              <p className={styles.stock}>저자: {queryParams.bookSales.bookInfo.author}</p>
+              <div className={styles.littleInfos}>
+                <p className={styles.price}>가격: {queryParams.bookSales.bookInfo.discount}원</p>
+                {userRole === "ROLE_ADMIN" ? (
+                  <div>
+                    <input type="number" placeholder="가격 수정" onChange={handlePriceUpdate} />
+                    <button onClick={sendNewPrice}>가격 수정</button>
+                  </div>
+                ) : null}
+                <p className={`${queryParams.bookSales.stock === "0" ? styles.zero : styles.stock}`}>
+                  재고: {queryParams.bookSales.stock}권
+                </p>
+                {userRole === "ROLE_ADMIN" ? (
+                  <div>
+                    <input type="number" placeholder="수량 수정" onChange={handleStockUpdate} />
+                    <button onClick={sendNewStock}>수량 수정</button>
+                  </div>
+                ) : null}
+                <p className={styles.stock}>저자: {queryParams.bookSales.bookInfo.author}</p>
+              </div>
               <div className={styles.buttons}>
                 <button onClick={addToCart} disabled={loading}>
                   {loading ? "추가 중..." : "장바구니 담기"}
@@ -193,10 +191,16 @@ const BookSalesDetail = () => {
               </div>
             </div>
           </div>
-          <p className={styles.description}>{queryParams.bookSales.bookInfo.description}</p>
+          <div className={styles.bookDescContainer}>
+            <h3 className={styles.bookDesc}>책 소개</h3>
+            <div className={styles.bookSeperator} />
+            <p className={styles.description}>{queryParams.bookSales.bookInfo.description}</p>
+          </div>
+          <h2>리뷰</h2>
+          <hr style={{ width: "100%" }} />
           <div>
-            <BookReview bookSales={queryParams} />
             <PostBookReview bookSalesInfo={queryParams} />
+            <BookReview bookSales={queryParams} />
           </div>
         </div>
       )}

@@ -1,6 +1,6 @@
 import styles from "../styles/Nav.module.css";
 import { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import api from "../api";
 import { CategoryListContext } from "../context/CategoryListContext";
 import { Link } from "react-router-dom";
 
@@ -13,8 +13,8 @@ function Nav() {
   };
 
   const showCategories = () => {
-    axios
-      .get("/api/api/category")
+    api
+      .get("/category")
       .then((res) => {
         console.log(res.data);
         setCategoryList(res.data);

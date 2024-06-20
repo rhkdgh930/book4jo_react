@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import styles from "../styles/BookDetail.module.css";
 import { CategoryListContext } from "../context/CategoryListContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 
 function BookDetail(props) {
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ function BookDetail(props) {
         ...queryParams,
       });
       console.log("쿼리 파람 : " + JSON.stringify(queryParams));
-      const response = await axios.post("/api/bookSales", queryParams, {
+      const response = await api.post("/bookSales", queryParams, {
         // headers: {
         //   "Content-Type": "application/json",
         //   // Authorization: `Bearer ${token}`,

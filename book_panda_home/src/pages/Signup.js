@@ -3,7 +3,7 @@ import { Form, Input, Inputs, Title, Wrapper, Button, ButtonB, CustomLink, Error
 import { useNavigate } from 'react-router-dom';
 import { useInput } from '../hooks/useInput';
 import { signUp } from '../apis/signUp';
-import axios from 'axios';
+import api from '../api';
 
 const Signup = () => {
   const [email, onChangeEmail] = useInput();
@@ -54,7 +54,7 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8080/api/users/sign-up/send-email', {
+      const response = await api.post('/users/sign-up/send-email', {
         userEmail: email
       });
       setErrors({ ...errors, message: response.data });
@@ -72,7 +72,7 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8080/api/users/sign-up/verify-code', {
+      const response = await api.post('/users/sign-up/verify-code', {
         userEmail: email,
         authCode: code
       });

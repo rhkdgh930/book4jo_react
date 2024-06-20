@@ -1,28 +1,28 @@
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: "http://34.22.77.154/api",
   timeout: 5000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   withCredentials: true,
 });
 
 api.interceptors.request.use(
-  config => {
+  (config) => {
     return config;
   },
-  error => {
+  (error) => {
     return Promise.reject(error);
   }
 );
 
 api.interceptors.response.use(
-  response => {
+  (response) => {
     return response;
   },
-  error => {
+  (error) => {
     return Promise.reject(error);
   }
 );

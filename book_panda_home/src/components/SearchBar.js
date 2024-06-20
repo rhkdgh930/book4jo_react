@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link,useNavigate  } from "react-router-dom";
 import styles from '../styles/SearchBar.module.css';
-import axios from 'axios';
+import api from '../api';
 import panda from "../assets/images/panda1.png"
 
 function SearchBar(props) {
@@ -31,7 +31,7 @@ function SearchBar(props) {
 
     useEffect(() => {
         if (keyword) {
-            axios.get("http://localhost:8080/bookSales/title?keyword=" + keyword)
+            api.get("/bookSales/title?keyword=" + keyword)
                 .then((res) => {
                     setAutocompleteItem(res.data);
                     console.log(res.data);

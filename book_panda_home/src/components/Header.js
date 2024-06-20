@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styles from "../styles/Header.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api.js";
 import { logout } from "../apis/auth.js";
 
 const Header = ({ isLoggedIn, setIsLoggedIn }) => {
@@ -11,7 +11,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await axios.get("/api/api/users/login-check", { withCredentials: true });
+        const response = await api.get("/users/login-check", { withCredentials: true });
         setIsLoggedIn(response.data.isLoggedIn);
       } catch (error) {
         console.error("실패:", error);
@@ -35,7 +35,7 @@ const Header = ({ isLoggedIn, setIsLoggedIn }) => {
 
   const handleMyPageClick = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/api/users/is-user", {}, { withCredentials: true });
+      const response = await api.post("/users/is-user", {}, { withCredentials: true });
       console.log(response.data); // 추가된 로그: 서버에서 반환된 데이터 확인
       if (response.data === true) {
         navigate("/mypage/ordered");
