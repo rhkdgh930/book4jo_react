@@ -25,7 +25,7 @@ function OrderHist() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            const response = await api.get('/orders', {
+            const response = await api.get('/user/orders', {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
