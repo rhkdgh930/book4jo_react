@@ -86,9 +86,6 @@ const PostBookReview = ({ bookSalesInfo }) => {
             제출
           </button>
         </label>
-        <button type="submit" className={styles.submitbutton} onClick={createReview}>
-          제출
-        </button>
       </form>
     </div>
   );
