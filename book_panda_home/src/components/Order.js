@@ -38,6 +38,13 @@ function Order() {
     }
   };
 
+  const getKoreanDate = () => {
+    const date = new Date();
+    const offset = 9 * 60; // 한국 시간은 UTC+9
+    const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+    return koreanDate;
+  };
+
   const fetchOrderItems = async (orderId) => {
     try {
       const token = localStorage.getItem("accessToken");
@@ -90,7 +97,7 @@ function Order() {
 
     while (retryCount < MAX_RETRIES) {
       try {
-        const tokenResponse = await axios.post(`/api/payment/token`);
+        const tokenResponse = await api.post(`/payment/token`);
         const { access_token } = tokenResponse.data;
         return access_token;
       } catch (error) {
@@ -151,7 +158,7 @@ function Order() {
       if (response.status === 200) {
         const payment_token = await fetchToken();
 
-        const response2 = await axios.post(`/api/payment/cancelPayment`, null, {
+        const response2 = await api.post(`/payment/cancelPayment`, null, {
           params: { orderId },
           headers: {
             "Content-Type": "application/json",
