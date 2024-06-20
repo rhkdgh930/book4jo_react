@@ -13,6 +13,10 @@ function BookItem(props) {
         }
     };
 
+    const truncateTitle = (title) => {
+        return title.length > 22 ? title.substring(0, 22) + "..." : title;
+    };
+
     return (
         <div className="book-item">
             <div className="book-item-img-box">
@@ -21,7 +25,10 @@ function BookItem(props) {
                 </div>
                 <img src={props.book.bookInfo.image} alt="" />
             </div>
-            <h6 className="book-title">{props.book.bookInfo.title}</h6>
+            <div className="book-title"> <strong>{truncateTitle(props.book.bookInfo.title)}</strong></div>
+            <div className="book-author">{props.book.bookInfo.author} | {props.book.bookInfo.publisher}</div>
+            <div className="book-discount">{props.book.bookInfo.discount}원</div>
+
         </div>
     );
 }

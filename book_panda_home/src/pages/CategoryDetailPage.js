@@ -44,6 +44,10 @@ function CategoryDetailPage() {
     setPage(1);
   };
 
+  const truncateTitle = (title) => {
+    return title.length > 22 ? title.substring(0, 22) + "..." : title;
+  };
+
   return (
     <div className={styles.container}>
       <h1>{categoryName}</h1>
@@ -62,10 +66,10 @@ function CategoryDetailPage() {
               </div>
               <div className={styles.explain}>
                 <div>
-                  <strong>{bookSales.bookInfo.title}</strong>
+                  <strong>{truncateTitle(bookSales.bookInfo.title)}</strong>
                 </div>
-                <div>
-                  {bookSales.bookInfo.author} 지음 | {bookSales.bookInfo.publisher}
+                <div className={styles.author}>
+                  {bookSales.bookInfo.author} | {bookSales.bookInfo.publisher}
                 </div>
                 <div className={styles.priceTag}>{bookSales.bookInfo.discount}원</div>
               </div>

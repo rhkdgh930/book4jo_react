@@ -170,6 +170,7 @@ const BookSalesDetail = () => {
                     <button onClick={sendNewPrice}>가격 수정</button>
                   </div>
                 ) : null}
+                <p className={styles.author}>저자: {queryParams.bookSales.bookInfo.author}</p>
                 <p className={`${queryParams.bookSales.stock === "0" ? styles.zero : styles.stock}`}>
                   재고: {queryParams.bookSales.stock}권
                 </p>
@@ -179,7 +180,6 @@ const BookSalesDetail = () => {
                     <button onClick={sendNewStock}>수량 수정</button>
                   </div>
                 ) : null}
-                <p className={styles.stock}>저자: {queryParams.bookSales.bookInfo.author}</p>
               </div>
               <div className={styles.buttons}>
                 <button onClick={addToCart} disabled={loading}>
