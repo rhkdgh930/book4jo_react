@@ -79,7 +79,7 @@ const FindPassword = () => {
     }
 
     try {
-      await api.post('/api/users/change-password', {
+      await api.post('/users/change-password', {
         userEmail: email,
         newPassword: newPassword
       });
