@@ -122,6 +122,14 @@ const App = () => {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/mypage/ordered"
+            element={
+              <PrivateRoute>
+                <OrderHist />
+              </PrivateRoute>
+            }
+          />
           <Route path="/find-password" element={<FindPassword />} />
           <Route
             path="/resign"
