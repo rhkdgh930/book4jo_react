@@ -30,7 +30,7 @@ function Nav() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.categoryButton} style={{width:'100px', marginLeft:'10px'}} onMouseOver={() => toggleMenu(true)} onMouseOut={() => toggleMenu(false)}   >
+      <div className={styles.categoryButton} style={{width:'100px', marginLeft:'10px'}} onClick={()=>toggleMenu(!toggle)} onMouseOver={() => toggleMenu(true)} onMouseOut={() => toggleMenu(false)}   >
         
         카테고리
         
