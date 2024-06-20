@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import "../styles/MyPage.css";
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -14,7 +14,7 @@ function MypageCheck() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/api/mypage/checkingPassword', { password }, {
+            const response = await api.post('/mypage/checkingPassword', { password }, {
                 withCredentials: true,
             });
             if (response.status === 200) {

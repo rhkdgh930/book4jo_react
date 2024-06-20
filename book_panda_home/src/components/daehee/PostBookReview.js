@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
+import api from "../../api";
 import styles from "../../styles/PostBookReview.module.css";
 import Star from "./Star";
 
@@ -54,7 +54,7 @@ const PostBookReview = ({ bookSalesInfo }) => {
   const createReview = async () => {
     try {
       console.log("dfasfasdf" + JSON.stringify(queryParams));
-      const response = await axios.post("/api/review", queryParams, {
+      const response = await api.post("/review", queryParams, {
         "Content-Type": "application/json",
         withCredentials: true,
       });
@@ -86,6 +86,9 @@ const PostBookReview = ({ bookSalesInfo }) => {
             제출
           </button>
         </label>
+        <button type="submit" className={styles.submitbutton} onClick={createReview}>
+          제출
+        </button>
       </form>
     </div>
   );

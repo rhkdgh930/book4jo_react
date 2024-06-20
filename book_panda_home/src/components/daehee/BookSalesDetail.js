@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import api from "../../api";
 import BookReview from "./BookReview";
 import PostBookReview from "./PostBookReview";
 import Notification from "../Notification";
@@ -23,7 +23,8 @@ const BookSalesDetail = () => {
   const count = async () => {
     try {
       const idNumber = Number(id);
-      const response = await axios.get(`/api/getBookSales?id=${idNumber}`, {
+
+      const response = await api.get(`/getBookSales?id=${idNumber}`, {
         withCredentials: true,
       });
       console.log("Count data:", response.data);
@@ -38,8 +39,8 @@ const BookSalesDetail = () => {
   };
 
   useEffect(() => {
-    const roles = axios
-      .get("/api/api/users/role", {
+    const roles = api
+      .get("/users/role", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -60,7 +61,7 @@ const BookSalesDetail = () => {
         throw new Error("No access token found");
       }
       const idNumber = Number(id);
-      const response = await axios.post(`/api/cart/items/${idNumber}`, null, {
+      const response = await api.post(`/cart/items/${idNumber}`, null, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -112,8 +113,8 @@ const BookSalesDetail = () => {
   };
 
   const sendNewPrice = async () => {
-    axios.patch(
-      "/api/bookSales/price/" + newPrice,
+    api.patch(
+      "/bookSales/price/" + newPrice,
       {
         id: queryParams.bookSales.id,
       },
@@ -127,9 +128,9 @@ const BookSalesDetail = () => {
   };
 
   const sendNewStock = async () => {
-    axios
+    api
       .patch(
-        "/api/bookSales/stock/" + newStock,
+        "/bookSales/stock/" + newStock,
         {
           id: queryParams.bookSales.id,
         },

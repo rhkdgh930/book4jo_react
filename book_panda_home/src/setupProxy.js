@@ -8,7 +8,7 @@ module.exports = function (app) {
   app.use(
     "/api",
     createProxyMiddleware({
-      target: "http://localhost:8080", // 백엔드 서버 주소
+      target: "http://localhost:8080/api", // 백엔드 서버 주소
       changeOrigin: true,
       onProxyReq: (proxyReq, req, res) => {
         // 클라이언트에서 보내는 쿠키를 백엔드로 전달

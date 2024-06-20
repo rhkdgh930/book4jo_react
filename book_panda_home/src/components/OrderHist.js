@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api';
 import { Link, useNavigate } from 'react-router-dom';
 import styles from '../styles/OrderHistory.module.css';
 import OrderItem from './OrderItem';
@@ -25,7 +25,7 @@ function OrderHist() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            const response = await axios.get('/api/orders', {
+            const response = await api.get('/orders', {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ function OrderHist() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            const response = await axios.get('/api/order/items', {
+            const response = await api.get('/order/items', {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",

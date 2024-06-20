@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CartItem from "./CartItem";
 import styles from "../styles/Cart.module.css";
-import axios from "axios";
+import api from "../api";
 import { useNavigate } from "react-router-dom";
 import api from "../api"
 
@@ -22,7 +22,7 @@ function Cart() {
                 throw new Error("No access token found");
             }
 
-            const response = await axios.get("/api/cart/items", {
+            const response = await api.get("/cart/items", {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -49,7 +49,7 @@ function Cart() {
                 throw new Error("No access token found");
             }
 
-            await axios.patch(`/api/cart/items/${id}/quantity`, null, {
+            await api.patch(`/cart/items/${id}/quantity`, null, {
                 params: { quantity },
                 headers: {
                     "Content-Type": "application/json",
@@ -80,7 +80,7 @@ function Cart() {
                 throw new Error("No access token found");
             }
 
-            await axios.patch(`/api/cart/items/${id}/checked`, null, {
+            await api.patch(`/cart/items/${id}/checked`, null, {
                 params: { checked },
                 headers: {
                     "Content-Type": "application/json",
@@ -118,7 +118,7 @@ function Cart() {
                 throw new Error("No access token found");
             }
 
-            await axios.delete(`/api/cart/items/${id}`, {
+            await api.delete(`/cart/items/${id}`, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,

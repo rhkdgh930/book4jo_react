@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../../api";
 
 const BookSales = () => {
   const { state } = useLocation();
@@ -42,7 +42,7 @@ const BookSales = () => {
         },
       });
 
-      const response = await axios.post("/api/bookSales", queryParams, {
+      const response = await api.post("/bookSales", queryParams, {
         "Content-Type": "application/json",
         withCredentials: true,
       });

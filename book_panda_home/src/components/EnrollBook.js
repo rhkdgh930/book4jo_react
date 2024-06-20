@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import BookInfo from "./BookInfo";
 import styles from "../styles/EnrollBook.module.css";
-import axios from "axios";
+import api from "../api";
 import { CategoryListContext } from "../context/CategoryListContext";
 
 function EnrollBook() {
@@ -39,7 +39,7 @@ function EnrollBook() {
   const search = async () => {
     try {
       console.log(queryParams);
-      const response = await axios.post("/api/book", queryParams, {
+      const response = await api.post("/book", queryParams, {
         "Content-Type": "application/json",
         withCredentials: true,
       });

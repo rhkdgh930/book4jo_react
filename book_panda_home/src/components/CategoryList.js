@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useContext } from "react";
-import axios from "axios";
+import api from "../api";
 import styles from "../styles/CategoryList.module.css";
 import { CategoryListContext } from "../context/CategoryListContext";
 
@@ -13,8 +13,8 @@ function CategoryList() {
   let inputVal = "";
 
   const showCategories = () => {
-    axios
-      .get("/api/api/category")
+    api
+      .get("/category")
       .then((res) => {
         setCategoryList(res.data);
       })
@@ -24,9 +24,9 @@ function CategoryList() {
   };
 
   const addCategory = async () => {
-    await axios
+    await api
       .post(
-        "/api/api/category",
+        "/category",
         {
           name: inputVal,
         },
@@ -45,8 +45,8 @@ function CategoryList() {
   };
 
   const deleteCategory = async () => {
-    await axios
-      .delete("/api/api/category/" + selected, {
+    await api
+      .delete("/category/" + selected, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -58,9 +58,9 @@ function CategoryList() {
   };
 
   const updateCategory = async () => {
-    await axios
+    await api
       .put(
-        "/api/api/category/" + selected,
+        "/category/" + selected,
         {
           name: inputVal,
         },
