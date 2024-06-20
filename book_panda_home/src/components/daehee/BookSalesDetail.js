@@ -163,17 +163,17 @@ const BookSalesDetail = () => {
             <div className={styles.bookDetails}>
               <h3 className={styles.title}>{queryParams.bookSales.bookInfo.title}</h3>
               <div className={styles.littleInfos}>
-                <p className={styles.price}>가격: {queryParams.bookSales.bookInfo.discount}원</p>
+                <div className={styles.price}>가격: {queryParams.bookSales.bookInfo.discount}원</div>
                 {userRole === "ROLE_ADMIN" ? (
                   <div>
                     <input type="number" placeholder="가격 수정" onChange={handlePriceUpdate} />
                     <button onClick={sendNewPrice}>가격 수정</button>
                   </div>
                 ) : null}
-                <p className={styles.author}>저자: {queryParams.bookSales.bookInfo.author}</p>
-                <p className={`${queryParams.bookSales.stock === "0" ? styles.zero : styles.stock}`}>
+                <div className={styles.author}>저자: {queryParams.bookSales.bookInfo.author}</div>
+                <div className={`${queryParams.bookSales.stock === "0" ? styles.zero : styles.stock}`}>
                   재고: {queryParams.bookSales.stock}권
-                </p>
+                </div>
                 {userRole === "ROLE_ADMIN" ? (
                   <div>
                     <input type="number" placeholder="수량 수정" onChange={handleStockUpdate} />
@@ -204,7 +204,6 @@ const BookSalesDetail = () => {
           </div>
         </div>
       )}
-
       {showNotification && (
         <Notification
           message="장바구니에 추가되었습니다."
