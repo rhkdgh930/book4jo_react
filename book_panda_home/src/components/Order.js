@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
 import styles from '../styles/OrderDetail.module.css';
+import api from "../api";
 
 function Order() {
     const [searchParams] = useSearchParams();
@@ -23,9 +24,16 @@ function Order() {
         }
     }, [searchParams]);
 
+    const getKoreanDate = () => {
+        const date = new Date();
+        const offset = 9 * 60; // 한국 시간은 UTC+9
+        const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+        return koreanDate;
+    };
+
     const fetchOrder = async (orderId) => {
         try {
-            const response = await axios.get('/api/order', {
+            const response = await api.get('/order', {
                 params: { orderId },
                 withCredentials: true,
             });
@@ -44,7 +52,7 @@ function Order() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            const response = await axios.get('/api/order/items', {
+            const response = await api.get('/order/items', {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
@@ -64,7 +72,7 @@ function Order() {
 
     const fetchShipping = async (orderId) => {
         try {
-            const response = await axios.get(`/api/shipping`, {
+            const response = await api.get(`/shipping`, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
@@ -145,6 +153,8 @@ function Order() {
                 withCredentials: true,
             });
 
+            await api.put(`/shipping?orderId=${orderId}`, { statusLabel: "주문 취소", date: getKoreanDate() });
+
             if (response.status === 200) {
                 const payment_token = await fetchToken();
 
@@ -159,7 +169,7 @@ function Order() {
 
                 if (response2.status === 200) {
                     alert("주문이 성공적으로 취소되었습니다.");
-                    navigate(-1);
+                    navigate("/");
                 } else {
                     alert("결제 취소 실패: " + response2.data.error);
                 }
