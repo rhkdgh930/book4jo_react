@@ -104,6 +104,13 @@ function Order() {
         }
     };
 
+    const getKoreanDate = () => {
+        const date = new Date();
+        const offset = 9 * 60; // 한국 시간은 UTC+9
+        const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+        return koreanDate;
+    };
+
 
     const handleCancelOrder = async () => {
         try {
@@ -146,6 +153,8 @@ function Order() {
                 },
                 withCredentials: true,
             });
+
+            await api.put(`/shipping?orderId=${orderId}`, { statusLabel: "주문 취소", date: getKoreanDate() });
 
             if (response.status === 200) {
                 alert("주문이 성공적으로 취소되었습니다.");
