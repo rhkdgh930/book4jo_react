@@ -277,8 +277,8 @@ const MyPage = () => {
             {editMode.phoneNumber ? "저장" : "변경"}
           </button>
         </div>
-      </div>
       <p className="the-custom-link"><CustomLink to="/resign">회원탈퇴하기</CustomLink></p>
+      </div>
     </form>
   );
 };

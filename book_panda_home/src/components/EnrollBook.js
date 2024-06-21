@@ -19,9 +19,7 @@ function EnrollBook() {
     display: 100,
     sort: "sim",
   });
-  const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkc2ZAbmF2ZXIuY29tIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE3MTc4MTEyMDZ9.itU3soVS6d35eQXAafD5lvpL1Qgg4bfY0VwLNtHRMpg";
-
+  
   const salesInfo = {
     visitCount: 0,
     sellCount: 0,
