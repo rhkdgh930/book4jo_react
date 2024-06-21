@@ -51,6 +51,7 @@ function BookSalesOrder() {
         try {
             const response = await api.get('/bookSales/order', {
                 params: { bookId },
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 withCredentials: true,
             });
             const bookData = response.data;
@@ -98,7 +99,11 @@ function BookSalesOrder() {
 
         while (retryCount < MAX_RETRIES) {
             try {
-                const tokenResponse = await api.post(`/payment/token`);
+                const tokenResponse = await api.post(`/payment/token`,{},{
+                    headers:{
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    }
+                });
                 const { access_token } = tokenResponse.data;
                 return access_token;
             } catch (error) {
@@ -127,7 +132,8 @@ function BookSalesOrder() {
             console.log('결제 취소 요청 중...', cancelData);
 
             await api.post(`/payment/cancel`, cancelData, {
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                headers: { "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
                 withCredentials: true,
             });
 
@@ -201,7 +207,8 @@ function BookSalesOrder() {
 
 	                    const shippingResponse = await api.post(`/shipping`, shippingData, {
                             params: { orderId: orderResponse.data.id },
-                            headers: { "Content-Type": "application/json" },
+                            headers: { "Content-Type": "application/json",
+                                        Authorization: `Bearer ${token}`},
                             withCredentials: true,
                         });
 
@@ -219,7 +226,7 @@ function BookSalesOrder() {
                         };
 
                         await api.post(`/payment/save`, paymentData, {
-                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${payment_token}` },
+                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                             withCredentials: true,
                         });
 

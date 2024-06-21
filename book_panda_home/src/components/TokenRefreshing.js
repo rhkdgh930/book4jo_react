@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // Axios 인스턴스 생성
 const apiClient = axios.create({
-  baseURL: 'http://34.22.77.154/api'
+  //baseURL: 'http://34.22.77.154/api'
+  baseURL: "http://localhost:8080/api"
 });
 
 // 토큰 갱신 함수

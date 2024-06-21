@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from "../api";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
 import styles from '../styles/order.module.css';
@@ -25,8 +25,12 @@ function Order() {
 
     const fetchOrder = async (orderId) => {
         try {
-            const response = await axios.get('/api/order', {
+            const response = await api.get('/order', {
                 params: { orderId },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
                 withCredentials: true,
             });
             setOrder(response.data);
@@ -43,7 +47,7 @@ function Order() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            const response = await axios.get('/api/order/items', {
+            const response = await api.get('/order/items', {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
@@ -60,10 +64,11 @@ function Order() {
 
     const fetchShipping = async (orderId) => {
         try {
-            const response = await axios.get(`/api/shipping`, {
+            const response = await api.get(`/shipping`, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
                 withCredentials: true,
             });
@@ -80,7 +85,12 @@ function Order() {
 
         while (retryCount < MAX_RETRIES) {
             try {
-                const tokenResponse = await axios.post(`/api/payment/token`);
+                //const tokenResponse = await api.post(`/payment/token`);
+                const tokenResponse = await api.post(`/payment/token`,{},{
+                    headers:{
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    }
+                });
                 const { access_token } = tokenResponse.data;
                 return access_token;
             } catch (error) {
@@ -94,15 +104,17 @@ function Order() {
         }
     };
 
+
     const handleCancelOrder = async () => {
         try {
             setIsLoading(true);
             const orderId = order.id;
 
-            const response = await axios.post('/api/order/cancel', null, {
+            const response = await api.post('/order/cancel', null, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
                 withCredentials: true,
             });
@@ -125,11 +137,12 @@ function Order() {
         try {
             const payment_token = await fetchToken();
 
-            const response = await axios.post(`/api/payment/cancelPayment`, null, {
+            const response = await api.post(`/payment/cancelPayment`, null, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${payment_token}`,
+                    //Authorization: `Bearer ${payment_token}`,
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
                 withCredentials: true,
             });
