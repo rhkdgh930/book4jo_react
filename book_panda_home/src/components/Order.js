@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from "../api";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
-import styles from '../styles/order.module.css';
+import styles from '../styles/OrderDetail.module.css';
 
 function Order() {
     const [searchParams] = useSearchParams();
@@ -25,8 +25,12 @@ function Order() {
 
     const fetchOrder = async (orderId) => {
         try {
-            const response = await axios.get('/api/order', {
+            const response = await api.get('/order', {
                 params: { orderId },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                },
                 withCredentials: true,
             });
             setOrder(response.data);
@@ -43,7 +47,7 @@ function Order() {
             if (!token) {
                 throw new Error('No access token found');
             }
-            const response = await axios.get('/api/order/items', {
+            const response = await api.get('/order/items', {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
@@ -60,10 +64,11 @@ function Order() {
 
     const fetchShipping = async (orderId) => {
         try {
-            const response = await axios.get(`/api/shipping`, {
+            const response = await api.get(`/shipping`, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
                 withCredentials: true,
             });
@@ -80,7 +85,12 @@ function Order() {
 
         while (retryCount < MAX_RETRIES) {
             try {
-                const tokenResponse = await axios.post(`/api/payment/token`);
+                //const tokenResponse = await api.post(`/payment/token`);
+                const tokenResponse = await api.post(`/payment/token`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    }
+                });
                 const { access_token } = tokenResponse.data;
                 return access_token;
             } catch (error) {
@@ -94,15 +104,24 @@ function Order() {
         }
     };
 
+    const getKoreanDate = () => {
+        const date = new Date();
+        const offset = 9 * 60; // 한국 시간은 UTC+9
+        const koreanDate = new Date(date.getTime() + offset * 60 * 1000);
+        return koreanDate;
+    };
+
+
     const handleCancelOrder = async () => {
         try {
             setIsLoading(true);
             const orderId = order.id;
 
-            const response = await axios.post('/api/order/cancel', null, {
+            const response = await api.post('/order/cancel', null, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
                 withCredentials: true,
             });
@@ -125,14 +144,17 @@ function Order() {
         try {
             const payment_token = await fetchToken();
 
-            const response = await axios.post(`/api/payment/cancelPayment`, null, {
+            const response = await api.post(`/payment/cancelPayment`, null, {
                 params: { orderId },
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${payment_token}`,
+                    //Authorization: `Bearer ${payment_token}`,
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
                 withCredentials: true,
             });
+
+            await api.put(`/shipping?orderId=${orderId}`, { statusLabel: "주문 취소", date: getKoreanDate() });
 
             if (response.status === 200) {
                 alert("주문이 성공적으로 취소되었습니다.");
@@ -171,15 +193,51 @@ function Order() {
                             ))}
                         </tbody>
                     </table>
-                    <div className={styles.orderDetail}>주문 번호: {order.id}</div>
-                    <div className={styles.orderDetail}>주문 날짜: {formatDate(order.orderDate)}</div>
-                    <div className={styles.orderDetail}>총 가격: {order.totalPrice.toLocaleString()}원</div>
-                    <div className={styles.orderDetail}>받는 사람: {shipping.shippingUserName}</div>
-                    <div className={styles.orderDetail}>주소: {shipping.address1} {shipping.address2}</div>
-                    <div></div>
-                    <button className={styles.button} onClick={handleCancelOrder} disabled={isLoading}>
-                        {isLoading ? '취소 중...' : '주문 취소'}
-                    </button>
+                    <h3 className={styles.subheading}>주문 상세</h3>
+                    <table className={styles.infoTable}>
+                        <tbody>
+                            <tr>
+                                <th>주문 번호</th>
+                                <td>{order.id}</td>
+                            </tr>
+                            <tr>
+                                <th>주문 날짜</th>
+                                <td>{formatDate(order.orderDate)}</td>
+                            </tr>
+                            <tr>
+                                <th>총 가격</th>
+                                <td>{order.totalPrice.toLocaleString()}원</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 className={styles.subheading}>배송 정보</h3>
+                    <table className={styles.infoTable}>
+                        <tbody>
+                            <tr>
+                                <th>배송 상태</th>
+                                <td>{shipping.statusLabel}</td>
+                            </tr>
+                            <tr>
+                                <th>받는 사람</th>
+                                <td>{shipping.shippingUserName}</td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td>{shipping.address1} {shipping.address2}</td>
+                            </tr>
+                            <tr>
+                                <th>전화번호</th>
+                                <td>{shipping.phoneNumber}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {order.statusLabel !== '주문 취소' ? (
+                        <button className={styles.button} onClick={handleCancelOrder}>
+                            주문 취소
+                        </button>
+                    ) : (
+                        <div className={styles.cancelledMessage}>취소된 주문입니다.</div>
+                    )}
                 </>
             ) : (
                 <div className={styles.errorMessage}>주문 정보를 불러올 수 없습니다.</div>

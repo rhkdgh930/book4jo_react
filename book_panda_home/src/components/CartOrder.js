@@ -105,7 +105,11 @@ function CartOrder() {
 
     while (retryCount < MAX_RETRIES) {
       try {
-        const tokenResponse = await api.post(`/payment/token`);
+        const tokenResponse = await api.post(`/payment/token`, {}, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+          }
+        });
         const { access_token } = tokenResponse.data;
         return access_token;
       } catch (error) {
@@ -134,7 +138,10 @@ function CartOrder() {
       console.log("결제 취소 요청 중...", cancelData);
 
       await api.post(`/payment/cancel`, cancelData, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+        },
         withCredentials: true,
       });
 
@@ -209,7 +216,10 @@ function CartOrder() {
 
               const shippingResponse = await api.post(`/shipping`, shippingData, {
                 params: { orderId: orderResponse.data.id },
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
                 withCredentials: true,
               });
 
@@ -227,7 +237,10 @@ function CartOrder() {
               };
 
               await api.post(`/payment/save`, paymentData, {
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${payment_token}` },
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
+                },
                 withCredentials: true,
               });
 
@@ -353,7 +366,6 @@ function CartOrder() {
       <button className={styles.button} onClick={handlePayment} disabled={loading}>
         {loading ? "처리 중..." : "결제하기"}
       </button>
-      {error && <div className={styles.error}>{error}</div>}
     </div>
   );
 }

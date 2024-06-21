@@ -6,8 +6,6 @@ import { CategoryListContext } from "../context/CategoryListContext";
 function CategoryList() {
   const [categoryList, setCategoryList] = useContext(CategoryListContext);
   const inputRef = useRef(null);
-  const token =
-    "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkc2ZAbmF2ZXIuY29tIiwiYXV0aCI6IlVTRVIiLCJleHAiOjE3MTc4MTEyMDZ9.itU3soVS6d35eQXAafD5lvpL1Qgg4bfY0VwLNtHRMpg";
 
   let selected = "";
   let inputVal = "";
@@ -32,7 +30,7 @@ function CategoryList() {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       )
@@ -48,7 +46,7 @@ function CategoryList() {
     await api
       .delete("/category/" + selected, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       })
       .then((res) => {
@@ -66,7 +64,7 @@ function CategoryList() {
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       )

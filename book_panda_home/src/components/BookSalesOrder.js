@@ -51,6 +51,7 @@ function BookSalesOrder() {
         try {
             const response = await api.get('/bookSales/order', {
                 params: { bookId },
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 withCredentials: true,
             });
             const bookData = response.data;
@@ -98,7 +99,11 @@ function BookSalesOrder() {
 
         while (retryCount < MAX_RETRIES) {
             try {
-                const tokenResponse = await api.post(`/payment/token`);
+                const tokenResponse = await api.post(`/payment/token`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+                    }
+                });
                 const { access_token } = tokenResponse.data;
                 return access_token;
             } catch (error) {
@@ -127,7 +132,10 @@ function BookSalesOrder() {
             console.log('결제 취소 요청 중...', cancelData);
 
             await api.post(`/payment/cancel`, cancelData, {
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+                },
                 withCredentials: true,
             });
 
@@ -176,15 +184,15 @@ function BookSalesOrder() {
                         const payment_token = await fetchToken(); // 토큰 요청 함수 호출
                         const token = localStorage.getItem('accessToken');
                         if (!token) {
-                           throw new Error('No access token found');
+                            throw new Error('No access token found');
                         }
-                            const bookId = searchParams.get('bookId');
+                        const bookId = searchParams.get('bookId');
 
                         const orderData = {
                             orderDate: getKoreanDate(),
                         };
 
-	                    const shippingData = {
+                        const shippingData = {
                             address1: address,
                             address2: detailedAddress,
                             payDoneDate: getKoreanDate(),
@@ -199,9 +207,12 @@ function BookSalesOrder() {
                             withCredentials: true,
                         });
 
-	                    const shippingResponse = await api.post(`/shipping`, shippingData, {
+                        const shippingResponse = await api.post(`/shipping`, shippingData, {
                             params: { orderId: orderResponse.data.id },
-                            headers: { "Content-Type": "application/json" },
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${token}`
+                            },
                             withCredentials: true,
                         });
 
@@ -219,7 +230,7 @@ function BookSalesOrder() {
                         };
 
                         await api.post(`/payment/save`, paymentData, {
-                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${payment_token}` },
+                            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
                             withCredentials: true,
                         });
 
@@ -255,100 +266,99 @@ function BookSalesOrder() {
     };
 
     return (
-            <div className={styles.orderInfo}>
-                <h2 className={styles.heading}>주문 정보</h2>
-                <h3 className={styles.subheading}>주문 상품</h3>
-                <table className={styles.orderTable}>
-                    <thead>
+        <div className={styles.orderInfo}>
+            <h2 className={styles.heading}>주문 정보</h2>
+            <h3 className={styles.subheading}>주문 상품</h3>
+            <table className={styles.orderTable}>
+                <thead>
+                    <tr>
+                        <th>상품</th>
+                        <th>수량</th>
+                        <th>가격</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {book && (
                         <tr>
-                            <th>상품</th>
-                            <th>수량</th>
-                            <th>가격</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {book && (
-                            <tr>
-                                <td>
-                                    <div className={style.itemInfo}>
-                                        <img src={book.image} alt={book.title} className={style.itemImage} />
-                                        <span className={style.itemTitle}>{truncateText(book.title, 40)}</span>
-                                    </div>
-                                </td>
-                                <td>{book.quantity.toLocaleString()}</td>
-                                <td>{book.discount.toLocaleString()}원</td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-                <div className={styles.orderDetail}>총 가격: {book && book.discount.toLocaleString()}원</div>
-                <h3 className={styles.subheading}>배송지 정보 입력</h3>
-                <table className={styles.addressTable}>
-                    <tbody>
-                        <tr>
-                            <th>받으시는 분</th>
                             <td>
-                                <input
-                                    type="text"
-                                    value={userName}
-                                    onChange={(e) => setUserName(e.target.value)}
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>주소</th>
-                            <td>
-                                <div className={styles.addressInputWrapper}>
-                                    <input
-                                        type="text"
-                                        value={address}
-                                        onChange={(e) => setAddress(e.target.value)}
-                                        placeholder="주소를 입력해주세요."
-                                        readOnly
-                                    />
-                                    <button onClick={handlePostcode}>주소 검색</button>
+                                <div className={style.itemInfo}>
+                                    <img src={book.image} alt={book.title} className={style.itemImage} />
+                                    <span className={style.itemTitle}>{truncateText(book.title, 40)}</span>
                                 </div>
                             </td>
+                            <td>{book.quantity.toLocaleString()}</td>
+                            <td>{book.discount.toLocaleString()}원</td>
                         </tr>
-                        <tr>
-                            <th>상세 주소</th>
-                            <td>
+                    )}
+                </tbody>
+            </table>
+            <div className={styles.orderDetail}>총 가격: {book && book.discount.toLocaleString()}원</div>
+            <h3 className={styles.subheading}>배송지 정보 입력</h3>
+            <table className={styles.addressTable}>
+                <tbody>
+                    <tr>
+                        <th>받으시는 분</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>주소</th>
+                        <td>
+                            <div className={styles.addressInputWrapper}>
                                 <input
                                     type="text"
-                                    value={detailedAddress}
-                                    onChange={(e) => setDetailedAddress(e.target.value)}
-                                    placeholder="상세 주소를 입력해주세요."
-                                />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>우편번호</th>
-                            <td>
-                                <input
-                                    type="text"
-                                    value={postCode}
-                                    onChange={(e) => setPostCode(e.target.value)}
-                                    placeholder="우편번호를 입력해주세요."
+                                    value={address}
+                                    onChange={(e) => setAddress(e.target.value)}
+                                    placeholder="주소를 입력해주세요."
                                     readOnly
                                 />
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>휴대전화번호</th>
-                            <td>
-                                <input
-                                    type="text"
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button className={styles.button} onClick={handlePayment}>결제하기</button>
-                {error && <div className={styles.error}>{error}</div>}
-            </div>
-        );
-    }
+                                <button onClick={handlePostcode}>주소 검색</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>상세 주소</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={detailedAddress}
+                                onChange={(e) => setDetailedAddress(e.target.value)}
+                                placeholder="상세 주소를 입력해주세요."
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>우편번호</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={postCode}
+                                onChange={(e) => setPostCode(e.target.value)}
+                                placeholder="우편번호를 입력해주세요."
+                                readOnly
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>휴대전화번호</th>
+                        <td>
+                            <input
+                                type="text"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                            />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button className={styles.button} onClick={handlePayment}>결제하기</button>
+        </div>
+    );
+}
 
-    export default BookSalesOrder;
+export default BookSalesOrder;
