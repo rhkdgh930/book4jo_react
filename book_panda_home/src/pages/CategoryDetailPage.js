@@ -48,6 +48,11 @@ function CategoryDetailPage() {
     return title.length > 22 ? title.substring(0, 22) + "..." : title;
   };
 
+  const truncateAuthorPublisher = (author, publisher) => {
+    const combined = `${author} | ${publisher}`;
+    return combined.length > 10 ? combined.substring(0, 12) + "..." : combined;
+  };
+
   return (
     <div className={styles.container}>
       <h1>{categoryName}</h1>
@@ -69,7 +74,7 @@ function CategoryDetailPage() {
                   <strong>{truncateTitle(bookSales.bookInfo.title)}</strong>
                 </div>
                 <div className={styles.author}>
-                  {bookSales.bookInfo.author} | {bookSales.bookInfo.publisher}
+                  {truncateAuthorPublisher(bookSales.bookInfo.author, bookSales.bookInfo.publisher)}
                 </div>
                 <div className={styles.priceTag}>{bookSales.bookInfo.discount}원</div>
               </div>

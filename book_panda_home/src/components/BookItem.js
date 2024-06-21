@@ -17,6 +17,11 @@ function BookItem(props) {
         return title.length > 22 ? title.substring(0, 22) + "..." : title;
     };
 
+    const truncateAuthorPublisher = (author, publisher) => {
+        const combined = `${author} | ${publisher}`;
+        return combined.length > 10 ? combined.substring(0, 12) + "..." : combined;
+    };
+
     return (
         <div className="book-item">
             <div className="book-item-img-box">
@@ -26,9 +31,8 @@ function BookItem(props) {
                 <img src={props.book.bookInfo.image} alt="" />
             </div>
             <div className="book-title"> <strong>{truncateTitle(props.book.bookInfo.title)}</strong></div>
-            <div className="book-author">{props.book.bookInfo.author} | {props.book.bookInfo.publisher}</div>
+            <div className="book-author">{truncateAuthorPublisher(props.book.bookInfo.author, props.book.bookInfo.publisher)}</div>
             <div className="book-discount">{props.book.bookInfo.discount}원</div>
-
         </div>
     );
 }
