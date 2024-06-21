@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from "../api";
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import OrderItem from './OrderItem';
-import styles from '../styles/order.module.css';
+import styles from '../styles/OrderDetail.module.css';
 
 function Order() {
     const [searchParams] = useSearchParams();
@@ -86,8 +86,8 @@ function Order() {
         while (retryCount < MAX_RETRIES) {
             try {
                 //const tokenResponse = await api.post(`/payment/token`);
-                const tokenResponse = await api.post(`/payment/token`,{},{
-                    headers:{
+                const tokenResponse = await api.post(`/payment/token`, {}, {
+                    headers: {
                         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                     }
                 });
@@ -184,15 +184,51 @@ function Order() {
                             ))}
                         </tbody>
                     </table>
-                    <div className={styles.orderDetail}>주문 번호: {order.id}</div>
-                    <div className={styles.orderDetail}>주문 날짜: {formatDate(order.orderDate)}</div>
-                    <div className={styles.orderDetail}>총 가격: {order.totalPrice.toLocaleString()}원</div>
-                    <div className={styles.orderDetail}>받는 사람: {shipping.shippingUserName}</div>
-                    <div className={styles.orderDetail}>주소: {shipping.address1} {shipping.address2}</div>
-                    <div></div>
-                    <button className={styles.button} onClick={handleCancelOrder} disabled={isLoading}>
-                        {isLoading ? '취소 중...' : '주문 취소'}
-                    </button>
+                    <h3 className={styles.subheading}>주문 상세</h3>
+                    <table className={styles.infoTable}>
+                        <tbody>
+                            <tr>
+                                <th>주문 번호</th>
+                                <td>{order.id}</td>
+                            </tr>
+                            <tr>
+                                <th>주문 날짜</th>
+                                <td>{formatDate(order.orderDate)}</td>
+                            </tr>
+                            <tr>
+                                <th>총 가격</th>
+                                <td>{order.totalPrice.toLocaleString()}원</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3 className={styles.subheading}>배송 정보</h3>
+                    <table className={styles.infoTable}>
+                        <tbody>
+                            <tr>
+                                <th>배송 상태</th>
+                                <td>{shipping.statusLabel}</td>
+                            </tr>
+                            <tr>
+                                <th>받는 사람</th>
+                                <td>{shipping.shippingUserName}</td>
+                            </tr>
+                            <tr>
+                                <th>주소</th>
+                                <td>{shipping.address1} {shipping.address2}</td>
+                            </tr>
+                            <tr>
+                                <th>전화번호</th>
+                                <td>{shipping.phoneNumber}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {order.statusLabel !== '주문 취소' ? (
+                        <button className={styles.button} onClick={handleCancelOrder}>
+                            주문 취소
+                        </button>
+                    ) : (
+                        <div className={styles.cancelledMessage}>취소된 주문입니다.</div>
+                    )}
                 </>
             ) : (
                 <div className={styles.errorMessage}>주문 정보를 불러올 수 없습니다.</div>
