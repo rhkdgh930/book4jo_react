@@ -67,41 +67,6 @@ function ShippingManagement() {
     return (
         <div className={styles.container}>
             <h2 className={styles.title}>주문 배송 관리</h2>
-            <div className={styles.searchContainer}>
-                <div className={styles.searchBox}>
-                    <input
-                        type="text"
-                        placeholder="주문 번호 검색"
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                    />
-                    <button onClick={fetchOrders}>검색</button>
-                </div>
-                <div className={styles.filterButtons}>
-                    <button
-                        className={filterStatus === '' ? styles.active : ''}
-                        onClick={() => handleFilterChange('')}
-                    >전체</button>
-                    <button
-                        className={filterStatus === '주문 완료' ? styles.active : ''}
-                        onClick={() => handleFilterChange('주문 완료')}
-                    >주문 완료</button>
-                    <button
-                        className={filterStatus === '배송 중' ? styles.active : ''}
-                        onClick={() => handleFilterChange('배송 중')}
-                    >배송 중</button>
-                    <button
-                        className={filterStatus === '배송 완료' ? styles.active : ''}
-                        onClick={() => handleFilterChange('배송 완료')}
-                    >배송 완료
-                    </button>
-                    <button
-                        className={filterStatus === '주문 취소' ? styles.active : ''}
-                        onClick={() => handleFilterChange('주문 취소')}
-                    >주문 취소</button>
-                </div>
-            </div>
-
 
             <div className={styles.ordersTable}>
                 <table>
