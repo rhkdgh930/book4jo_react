@@ -169,7 +169,7 @@ function CartOrder() {
       return;
     }
 
-    IMP.init("imp14170881");
+    IMP.init("본인꺼 사용해야함!");
 
     IMP.request_pay(
       {
